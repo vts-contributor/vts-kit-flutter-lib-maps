@@ -1,0 +1,24 @@
+name: vts_kit_flutter_lib_maps
+description: A new Flutter project.
+
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.6 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_core:
+    git:
+      url: https://github.com/vts-contributor/vts-kit-flutter-core
+      ref: master
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
