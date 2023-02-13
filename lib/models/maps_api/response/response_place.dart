@@ -1,5 +1,4 @@
-
-import 'package:flutter_core/models/maps_api/response/response.dart';
+import '../maps_api.dart';
 
 class PlaceResponse extends MapsAPIResponse {
   final String? status;

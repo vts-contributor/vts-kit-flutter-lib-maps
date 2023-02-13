@@ -1,6 +1,8 @@
 import 'package:flutter_core/models/models.dart';
 import 'package:flutter_core/extensions/extensions.dart';
 
+import 'maps_api.dart';
+
 class Route {
   final ViewPort? bounds;
   final String? copyrights;

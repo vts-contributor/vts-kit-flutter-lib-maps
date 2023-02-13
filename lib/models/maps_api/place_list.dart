@@ -1,4 +1,4 @@
-import 'package:flutter_core/models/maps_api/maps_api.dart';
+import 'maps_api.dart';
 
 class PlaceList<T extends Place> {
   final List<T> values;

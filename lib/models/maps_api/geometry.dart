@@ -1,5 +1,6 @@
 import 'package:flutter_core/models/lat_lng.dart';
-import 'package:flutter_core/models/maps_api/maps_api.dart';
+
+import 'maps_api.dart';
 
 class Geometry {
   final CoreLatLng? location;

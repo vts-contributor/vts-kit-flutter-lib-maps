@@ -1,5 +1,5 @@
 import 'package:flutter_core/extensions/extension_functions.dart';
-import 'package:flutter_core/models/maps_api/maps_api.dart';
+import 'maps_api.dart';
 
 class AutocompletePlace extends Place {
   final String? description;

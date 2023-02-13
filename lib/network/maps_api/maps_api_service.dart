@@ -1,6 +1,7 @@
-import 'package:flutter_core/models/maps_api/maps_api.dart';
 import 'package:flutter_core/network/custom_cancel_token.dart';
-import 'package:flutter_core/network/maps_api/maps_api.dart';
+
+import '../../models/maps_api/maps_api.dart';
+import 'maps_api_service_abstract.dart';
 
 abstract class MapsAPIService extends MapsAPIAbstractService {
   Future<List<GeocodingPlace>> geocode({

@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_core/bases/bases.dart';
-import 'package:flutter_core/models/maps_api/response/response.dart';
+
+import '../maps_api.dart';
 
 abstract class MapsAPIResponseParser {
   @protected

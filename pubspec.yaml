@@ -14,7 +14,7 @@ dependencies:
   flutter_core:
     git:
       url: https://github.com/vts-contributor/vts-kit-flutter-core
-      ref: master
+      ref: split-map-api
 
 dev_dependencies:
   flutter_test:

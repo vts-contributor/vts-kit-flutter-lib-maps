@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_core/bases/bases.dart';
+
+import '../../bases/maps_api_config.dart';
 
 class MapsAPIInterceptorsWrapper extends InterceptorsWrapper {
   static MapsAPIInterceptorsWrapper? _instance;

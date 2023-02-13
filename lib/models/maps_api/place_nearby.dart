@@ -1,5 +1,5 @@
 import 'package:flutter_core/extensions/extensions.dart';
-import 'package:flutter_core/models/maps_api/maps_api.dart';
+import 'maps_api.dart';
 
 class NearbyPlace extends Place {
   final String? adrAddress;

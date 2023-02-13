@@ -129,8 +129,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: master
-      resolved-ref: e4341a5f7807eb079882328dd123812ac655f62a
+      ref: split-map-api
+      resolved-ref: "93f055885fc21ac2157be223a954dafcd8cd9955"
       url: "https://github.com/vts-contributor/vts-kit-flutter-core"
     source: git
     version: "1.0.0+1"
