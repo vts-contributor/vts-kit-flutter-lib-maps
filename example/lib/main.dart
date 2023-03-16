@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:map_core_example/test_google_map_screen.dart';
+import 'package:map_core_example/test_map_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -22,6 +24,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        TestMapScreen.routeName: (_) => const TestMapScreen(),
+        TestGoogleMapScreen.routeName: (_) => const TestGoogleMapScreen(),
+      },
     );
   }
 }
@@ -92,21 +98,17 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, TestMapScreen.routeName),
+              child: Text("Test map"),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, TestGoogleMapScreen.routeName),
+              child: Text("Test google map"),
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

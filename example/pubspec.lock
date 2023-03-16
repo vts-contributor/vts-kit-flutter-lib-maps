@@ -126,7 +126,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_core:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "."
       ref: develop
@@ -178,7 +178,7 @@ packages:
     source: hosted
     version: "4.6.5"
   google_maps_flutter:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
@@ -297,12 +297,19 @@ packages:
     source: hosted
     version: "1.1.11"
   location:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: location
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.4"
+  maps_core:
+    dependency: "direct main"
+    description:
+      path: ".."
+      relative: true
+    source: path
+    version: "1.0.0+1"
   matcher:
     dependency: transitive
     description:
@@ -561,7 +568,7 @@ packages:
     source: hosted
     version: "2.0.15"
   vtmap_gl:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: vtmap_gl
       url: "https://pub.dartlang.org"
@@ -589,5 +596,5 @@ packages:
     source: hosted
     version: "1.0.0"
 sdks:
-  dart: ">=2.18.0 <3.0.0"
+  dart: ">=2.18.2 <3.0.0"
   flutter: ">=3.3.0"

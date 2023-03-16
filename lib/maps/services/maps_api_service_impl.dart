@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_core/bases/bases.dart';
+import 'package:flutter_core/bases/bases.dart' hide MapAPIConfig;
 import 'package:flutter_core/extensions/map.dart';
-import 'package:flutter_core/models/maps_api/maps_api.dart';
 import 'package:flutter_core/network/custom_cancel_token.dart';
-import 'package:flutter_core/network/maps_api/maps_api.dart';
+
+import '../models/models.dart';
+import 'maps_api_config.dart';
+import 'maps_api_service.dart';
+import 'maps_api_service_abstract.dart';
 
 class MapsAPIServiceImpl extends MapsAPIService {
   static MapsAPIAbstractService? _instance;

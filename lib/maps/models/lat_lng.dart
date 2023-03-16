@@ -1,5 +1,3 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart' as google;
-import 'package:vtmap_gl/vtmap_gl.dart' as viettel;
 import 'package:flutter_core/log/log.dart';
 
 class LatLng {
@@ -30,14 +28,6 @@ class LatLng {
     }
   }
 
-  google.LatLng toGoogleLatLng() {
-    return google.LatLng(lat, lng);
-  }
-
-  viettel.LatLng toViettelLatLng() {
-    return viettel.LatLng(lat, lng);
-  }
-
   /// The [latLngMap] structured {lat: ..., lng: ...}
   ///
   /// The [lat] from -90.0 to +90.0.
@@ -58,14 +48,6 @@ class LatLng {
     return LatLng(-91, -181);
   }
 
-  factory LatLng.fromGoogleLatLng(google.LatLng latLng,
-          {bool receiveNow = false}) =>
-      LatLng(latLng.latitude, latLng.longitude, receiveNow: receiveNow);
-
-  factory LatLng.fromViettelLatLng(viettel.LatLng latLng,
-          {bool receiveNow = false}) =>
-      LatLng(latLng.latitude, latLng.longitude, receiveNow: receiveNow);
-
   static LatLng? fromMapsAPIJson(Map<String, dynamic>? json) {
     final double? lat = json?['lat'];
     final double? lng = json?['lng'];
@@ -77,4 +59,11 @@ class LatLng {
 
   @override
   String toString() => '{lat:$lat, lng:$lng}';
+
+  Map<String, dynamic> toJson() {
+    return {
+      "lat": lat,
+      "lng": lng
+    };
+  }
 }
