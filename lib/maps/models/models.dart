@@ -16,3 +16,7 @@ export 'place_nearby.dart';
 export 'response/response.dart';
 export 'maps_api_const.dart';
 export 'lat_lng.dart';
+export 'camera_position.dart';
+export 'core_map_data.dart';
+export 'core_map_type.dart';
+export 'polygon.dart';

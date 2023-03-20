@@ -1,8 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:maps_core/maps/models/geometry.dart';
-import 'package:vtmap_gl/vtmap_gl.dart';
+import 'package:maps_core/maps/controllers/core_map_controller.dart';
+import 'package:maps_core/maps/models/camera_position.dart';
+import 'package:maps_core/maps/models/core_map_callbacks.dart';
+import 'package:maps_core/maps/models/core_map_data.dart';
+import 'package:maps_core/maps/models/core_map_type.dart';
+import 'package:maps_core/maps/models/lat_lng.dart';
+import 'package:maps_core/maps/models/polygon.dart';
+import 'package:maps_core/maps/views/core_map.dart';
 
 class TestMapScreen extends StatefulWidget {
   
@@ -15,84 +23,106 @@ class TestMapScreen extends StatefulWidget {
 }
 
 class _TestMapScreenState extends State<TestMapScreen> {
-  MapboxMapController? controller;
+
+  CoreMapType _type = CoreMapType.viettel;
+
+  Completer<CoreMapController> _controller = Completer();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: Icon(Icons.swap_horiz),
+            onPressed: () {
+              _controller = Completer();
+
+              setState(() {
+                if (_type == CoreMapType.viettel) {
+                  _type = CoreMapType.google;
+                } else {
+                  _type = CoreMapType.viettel;
+                }
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.add),
             onPressed: () async {
-              controller?.addFill(
-                  FillOptions(geometry: [
-                    [
-                      LatLng(9.85419858085518, 105.49970250115466),
-                      LatLng(10.111173278744552, 105.79221346758048),
-                      LatLng(9.739171049977948, 106.4115676734868),
-                      LatLng(9.408755662724216, 106.01194001513039),
-                      LatLng(9.148388064993938, 105.04703715806114),
-                    ],
-                    [
-                      LatLng(10.85419858085518, 105.49970250115466),
-                      LatLng(11.111173278744552, 105.79221346758048),
-                      LatLng(10.739171049977948, 106.4115676734868),
-                      LatLng(10.408755662724216, 106.01194001513039),
-                      LatLng(10.148388064993938, 105.04703715806114),
-                    ],
-                    // [
-                    //   LatLng(9.749998867791605, 105.59033970201901),
-                    //   LatLng(9.605997144751647, 105.67252492760872),
-                    //   LatLng(9.575401419508188, 105.58270292414889)
-                    // ],
-                    // [
-                    //   LatLng(9.861925859419564, 105.93872468331696),
-                    //   LatLng(9.776638107960828, 106.03507919611933),
-                    //   LatLng(9.683279273763315, 105.85380206186403)
-                    // ],
-                  ],
-                      fillColor: "#FF0000",
-                      fillOutlineColor: "#FF0000",
-                    fillOpacity: 0.5,
-                  ),
-              );
-              controller?.addFill(
-                FillOptions(geometry: [
-                  // [
-                  //   LatLng(9.85419858085518, 105.49970250115466),
-                  //   LatLng(10.111173278744552, 105.79221346758048),
-                  //   LatLng(9.739171049977948, 106.4115676734868),
-                  //   LatLng(9.408755662724216, 106.01194001513039),
-                  //   LatLng(9.148388064993938, 105.04703715806114),
-                  // ],
-                  [
-                    LatLng(9.749998867791605, 105.59033970201901),
-                    LatLng(9.605997144751647, 105.67252492760872),
-                    LatLng(9.575401419508188, 105.58270292414889)
-                  ],
-                  [
-                    LatLng(9.861925859419564, 105.93872468331696),
-                    LatLng(9.776638107960828, 106.03507919611933),
-                    LatLng(9.683279273763315, 105.85380206186403)
-                  ],
-                ],
-                  fillColor: "#FF0000",
-                  fillOutlineColor: "#FF0000",
-                  fillOpacity: 1,
-                ),
-              );
-            }
-          )
+              (await _controller.future).addPolygon(polygon1());
+            },
+          ),
         ],
       ),
-      body: VTMap(
-        accessToken: "49013166841fe36d7fa7f395fce4a663",
-        initialCameraPosition:
-        const CameraPosition(target: LatLng(9.823077422713277, 105.81830599510204),zoom: 6),
-        onMapCreated: (controller) {
-          this.controller = controller;
-        },
+      body: CoreMap(
+        type: _type,
+        data: CoreMapData(
+          accessToken: "49013166841fe36d7fa7f395fce4a663",
+          initialCameraPosition: CameraPosition(target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
+        ),
+        callbacks: CoreMapCallbacks(
+          onMapCreated: (controller) {
+            _controller.complete(controller);
+          }
+        ),
       ),
     );
+  }
+
+  Polygon polygon1() {
+    List<LatLng> polygonCoords = [];
+    polygonCoords.addAll([
+      LatLng(9.85419858085518, 105.49970250115466),
+      LatLng(10.111173278744552, 105.79221346758048),
+      LatLng(9.739171049977948, 106.4115676734868),
+      LatLng(9.408755662724216, 106.01194001513039),
+      LatLng(9.148388064993938, 105.04703715806114),
+    ]);
+
+    return Polygon(
+        polygonId: 'test1',
+        points: polygonCoords,
+        holes: [
+          [
+            LatLng(9.749998867791605, 105.59033970201901),
+            LatLng(9.605997144751647, 105.67252492760872),
+            LatLng(9.575401419508188, 105.58270292414889)
+          ],
+          [
+            LatLng(9.861925859419564, 105.93872468331696),
+            LatLng(9.776638107960828, 106.03507919611933),
+            LatLng(9.683279273763315, 105.85380206186403)
+          ],
+        ],
+        strokeColor: Colors.red);
+  }
+
+  Polygon polygon2() {
+    List<LatLng> polygonCoords = [];
+    polygonCoords.addAll([
+      LatLng(9.85419858085518, 105.49970250115466),
+      LatLng(10.111173278744552, 105.79221346758048),
+      LatLng(9.739171049977948, 106.4115676734868),
+      LatLng(9.408755662724216, 106.01194001513039),
+      LatLng(9.148388064993938, 105.04703715806114),
+    ]);
+
+    return Polygon(
+        polygonId: 'test2',
+        points: polygonCoords,
+        holes: [
+          [
+            LatLng(9.749998867791605, 105.59033970201901),
+            LatLng(9.605997144751647, 105.67252492760872),
+            LatLng(9.575401419508188, 105.58270292414889)
+          ],
+          [
+            LatLng(9.861925859419564, 105.93872468331696),
+            LatLng(9.776638107960828, 106.03507919611933),
+            LatLng(9.683279273763315, 105.85380206186403)
+          ],
+        ],
+        strokeColor: Colors.red);
   }
 }

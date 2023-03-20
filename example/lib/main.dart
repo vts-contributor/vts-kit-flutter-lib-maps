@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:map_core_example/test_google_map_screen.dart';
 import 'package:map_core_example/test_map_screen.dart';
+import 'package:map_core_example/test_vt_map_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       routes: {
         TestMapScreen.routeName: (_) => const TestMapScreen(),
         TestGoogleMapScreen.routeName: (_) => const TestGoogleMapScreen(),
+        TestVTMapScreen.routeName: (_) => const TestVTMapScreen(),
       },
     );
   }
@@ -105,7 +107,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestGoogleMapScreen.routeName),
               child: Text("Test google map"),
-            )
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, TestVTMapScreen.routeName),
+              child: Text("Test vt map"),
+            ),
           ],
         ),
       ),
