@@ -13,7 +13,7 @@ export 'place_geocoding.dart';
 export 'place_detail.dart';
 export 'place_autocomplete.dart';
 export 'place_nearby.dart';
-export 'response/response.dart';
+export 'network/response.dart';
 export 'maps_api_const.dart';
 export 'lat_lng.dart';
 export 'camera_position.dart';

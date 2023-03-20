@@ -1,4 +1,4 @@
-import 'package:maps_core/maps/models/extensions/convert_extensions.dart';
+import 'package:maps_core/extensions/convert.dart';
 import 'package:maps_core/maps/models/lat_lng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:maps_core/maps/models/polygon.dart';

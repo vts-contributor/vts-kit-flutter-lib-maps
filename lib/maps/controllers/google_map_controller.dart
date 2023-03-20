@@ -1,5 +1,4 @@
 import 'package:maps_core/maps/models/core_map_type.dart';
-import 'package:maps_core/maps/models/extensions/convert_extensions.dart';
 import 'package:maps_core/maps/models/polygon.dart';
 
 import '../models/core_map_data.dart';

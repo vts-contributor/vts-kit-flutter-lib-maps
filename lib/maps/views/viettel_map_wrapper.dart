@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:maps_core/extensions/convert.dart';
 import 'package:maps_core/maps/controllers/viettel_map_controller.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
-import 'package:maps_core/maps/models/extensions/convert_extensions.dart';
 
 import '../models/core_map_data.dart';
 

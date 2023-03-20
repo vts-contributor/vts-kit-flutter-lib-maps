@@ -6,8 +6,6 @@ import 'package:maps_core/maps/models/core_map_type.dart';
 import '../models/core_map_data.dart';
 import '../models/polygon.dart';
 
-export 'core_map_controller.dart';
-
 abstract class CoreMapController extends ChangeNotifier {
 
   CoreMapType get coreMapType;

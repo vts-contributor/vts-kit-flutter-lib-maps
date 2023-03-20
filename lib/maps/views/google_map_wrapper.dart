@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
+import 'package:maps_core/extensions/convert.dart';
+import 'package:maps_core/extensions/list_convert.dart';
 import 'package:maps_core/maps/controllers/google_map_controller.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
-import 'package:maps_core/maps/models/extensions/convert_extensions.dart';
-import 'package:maps_core/maps/models/extensions/list_convert_extensions.dart';
 
 import '../models/core_map_data.dart';
 

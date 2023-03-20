@@ -1,4 +1,4 @@
-import 'package:flutter_core/extensions/extensions.dart';
+import 'package:maps_core/extensions/extensions.dart';
 import 'package:maps_core/maps/models/models.dart';
 
 class NearbyPlace extends Place {

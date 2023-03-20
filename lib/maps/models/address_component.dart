@@ -1,5 +1,4 @@
-import 'package:flutter_core/extensions/extension_functions.dart';
-
+import 'package:maps_core/extensions/utils.dart';
 
 class AddressComponent {
   final List<String>? types;

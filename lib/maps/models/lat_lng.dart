@@ -1,4 +1,4 @@
-import 'package:flutter_core/log/log.dart';
+import '../../log/log.dart';
 
 class LatLng {
   late final double lat;

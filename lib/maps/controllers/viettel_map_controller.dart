@@ -1,7 +1,7 @@
+import 'package:maps_core/extensions/convert.dart';
 import 'package:maps_core/maps/controllers/core_map_controller.dart';
 import 'package:maps_core/maps/models/core_map_data.dart';
 import 'package:maps_core/maps/models/core_map_type.dart';
-import 'package:maps_core/maps/models/extensions/convert_extensions.dart';
 import 'package:maps_core/maps/models/polygon.dart';
 
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;

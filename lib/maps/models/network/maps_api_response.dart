@@ -1,4 +1,4 @@
-import 'package:flutter_core/network/response_json.dart';
+import 'json_response.dart';
 
 class MapsAPIResponse extends JsonResponse {
   MapsAPIResponse({

@@ -1,13 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_core/extensions/extension_functions.dart';
-import 'package:flutter_core/network/custom_cancel_token.dart';
-import 'package:flutter_core/network/dio_network.dart' as dio_network;
-import 'package:flutter_core/log/log.dart';
+import 'package:maps_core/extensions/utils.dart';
 import 'package:maps_core/maps/services/maps_api_interceptor.dart';
-import 'package:maps_core/maps/models/response/response.dart';
 
+import '../../log/log.dart';
+import '../models/network/custom_cancel_token.dart';
+import '../models/network/maps_api_response.dart';
+import '../models/network/maps_api_response_parser.dart';
 import 'maps_api_config.dart';
+
+import 'dio_network.dart' as dio_network;
 
 abstract class MapsAPIAbstractService {
   @protected
