@@ -19,8 +19,8 @@ class CoreMapCallbacks {
     void Function(CoreMapData data, CoreMapType oldType, CoreMapType newType)? onChangeMapType
   }) {
     return CoreMapCallbacks(
-      onMapCreated: onMapCreated,
-      onChangeMapType: onChangeMapType,
+      onMapCreated: onMapCreated ?? this.onMapCreated,
+      onChangeMapType: onChangeMapType ?? this.onChangeMapType,
     );
   }
 }

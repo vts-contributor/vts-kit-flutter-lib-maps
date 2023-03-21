@@ -23,3 +23,13 @@ extension ListPolygonConvert on List<Polygon> {
     return map((e) => e.toFillOptions()).toList();
   }
 }
+
+extension SetPolygonConvert on Set<Polygon> {
+  Set<ggmap.Polygon> toGoogle() {
+    return map((e) => e.toGoogle()).toSet();
+  }
+
+  Set<vtmap.FillOptions> toFillOptions() {
+    return map((e) => e.toFillOptions()).toSet();
+  }
+}

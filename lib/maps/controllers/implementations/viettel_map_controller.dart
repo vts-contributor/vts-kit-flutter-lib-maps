@@ -5,10 +5,12 @@ import 'package:maps_core/maps/controllers/core_map_controller.dart';
 import 'package:maps_core/maps/models/core_map_data.dart';
 import 'package:maps_core/maps/models/core_map_type.dart';
 import 'package:maps_core/maps/models/polygon.dart';
+import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 import '../../models/core_map_callbacks.dart';
+import '../../models/lat_lng.dart';
 
 class ViettelMapController extends BaseCoreMapController {
 
@@ -16,8 +18,7 @@ class ViettelMapController extends BaseCoreMapController {
 
   CoreMapData _data;
 
-  ///Used get Fill object from polygon id in case we need to remove it
-  final Map<String, vt.Fill> _fillMap = {};
+  final Map<String, ViettelPolygon> _viettelPolygonMap = {};
 
   ViettelMapController(this._controller, {
     required CoreMapData data,
@@ -29,19 +30,39 @@ class ViettelMapController extends BaseCoreMapController {
 
   @override
   Future<void> addPolygon(Polygon polygon) async {
+    if (_viettelPolygonMap.containsKey(polygon.polygonId)) {
+      return;
+    }
+
     final fill = await _controller.addFill(polygon.toFillOptions());
-    _fillMap.putIfAbsent(polygon.polygonId, () => fill);
+
+    final outlineOptions = polygon.getOutlineLineOptions();
+    List<Future<vt.Line>> outlineFutures = [];
+    for (final outlineOption in outlineOptions) {
+      outlineFutures.add(_controller.addLine(outlineOption));
+    }
+    final outlines = await Future.wait(outlineFutures);
+
+    _viettelPolygonMap.putIfAbsent(polygon.polygonId, () => ViettelPolygon(polygon.polygonId, fill, outlines));
     data.polygons.add(polygon);
   }
 
+
   @override
   Future<bool> removePolygon(String polygonId) async {
-    if (_fillMap.containsKey(polygonId)) {
-      final polygon = _fillMap[polygonId];
+    if (_viettelPolygonMap.containsKey(polygonId)) {
+      final polygon = _viettelPolygonMap[polygonId];
 
       if (polygon != null) {
-        _controller.removeFill(polygon);
+        _controller.removeFill(polygon.fill);
+
+        for (final outline in polygon.outlines) {
+          _controller.removeLine(outline);
+        }
+
         data.polygons.removeWhere((polygon) => polygon.polygonId == polygonId);
+        _viettelPolygonMap.removeWhere((key, value) => key == polygonId);
+
         return true;
       }
     }
@@ -78,6 +99,8 @@ class ViettelMapController extends BaseCoreMapController {
     _controller.clearLines();
     _controller.clearSymbols();
     _controller.clearRoute();
+
+    _viettelPolygonMap.clear();
   }
 
   void onMapLoaded() {

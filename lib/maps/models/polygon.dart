@@ -15,7 +15,7 @@ class Polygon {
     this.points = const <LatLng>[],
     this.holes = const <List<LatLng>>[],
     this.strokeColor = Colors.black,
-    this.strokeWidth = 10,
+    this.strokeWidth = 1,
     this.visible = true,
     this.zIndex = 0,
     this.onTap,

@@ -5,6 +5,7 @@ import 'package:maps_core/maps/models/lat_lng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:maps_core/maps/models/polygon.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
+import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 
 extension ColorConverter on Color {
   String toHex() {
@@ -51,6 +52,30 @@ extension PolygonConvert on Polygon {
       fillColor: fillColor.toHex(),
       fillOpacity: fillColor.alpha / 255,
       fillOutlineColor: strokeColor.toHex(),
+    );
+  }
+
+  List<vtmap.LineOptions> getOutlineLineOptions() {
+    List<vtmap.LineOptions> result = [];
+
+    result.add(_toFillOutline(points));
+
+    for (final hole in holes) {
+      result.add(_toFillOutline(hole));
+    }
+
+    return result;
+  }
+
+  vtmap.LineOptions _toFillOutline(List<LatLng> points) {
+    //to connect first point and last point
+    if (points.length > 2) {
+      points.add(points.first);
+    }
+    return vtmap.LineOptions(
+      geometry: points.map((e) => e.toViettel()).toList(),
+      lineWidth: strokeWidth.toDouble(),
+      lineColor: strokeColor.toHex(),
     );
   }
 }

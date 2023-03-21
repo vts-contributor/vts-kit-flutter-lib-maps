@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:map_core_example/test_shapes.dart';
 import 'package:maps_core/maps/controllers/core_map_controller.dart';
 import 'package:maps_core/maps/controllers/core_map_controller_completer.dart';
 import 'package:maps_core/maps/models/camera_position.dart';
@@ -29,6 +30,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -42,7 +44,15 @@ class _TestMapScreenState extends State<TestMapScreen> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-              (await _controllerCompleter.controller).addPolygon(polygon1());
+              final controller = await _controllerCompleter.controller;
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return TestDialog(
+                    controller: controller,
+                  );
+                }
+              );
             },
           ),
         ],
@@ -54,67 +64,40 @@ class _TestMapScreenState extends State<TestMapScreen> {
           initialCameraPosition: CameraPosition(target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
         ),
         callbacks: CoreMapCallbacks(
-          onMapCreated: (controller) {
-            _controllerCompleter.complete(controller);
-          }
+            onMapCreated: (controller) {
+              _controllerCompleter.complete(controller);
+            }
         ),
       ),
     );
   }
+}
 
-  Polygon polygon1() {
-    List<LatLng> polygonCoords = [];
-    polygonCoords.addAll([
-      LatLng(9.85419858085518, 105.49970250115466),
-      LatLng(10.111173278744552, 105.79221346758048),
-      LatLng(9.739171049977948, 106.4115676734868),
-      LatLng(9.408755662724216, 106.01194001513039),
-      LatLng(9.148388064993938, 105.04703715806114),
-    ]);
+class TestDialog extends StatelessWidget {
+  final CoreMapController controller;
 
-    return Polygon(
-        polygonId: 'test1',
-        points: polygonCoords,
-        holes: [
-          [
-            LatLng(9.749998867791605, 105.59033970201901),
-            LatLng(9.605997144751647, 105.67252492760872),
-            LatLng(9.575401419508188, 105.58270292414889)
+  const TestDialog({super.key,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      title: Text("Test features"),
+      children: [
+        Row(
+          children: [
+            ElevatedButton(onPressed: () {
+              controller.addPolygon(polygon1());
+            }, child: Text("add a polygon")),
+            SizedBox(width: 10,),
+            IconButton(onPressed: () {
+              controller.removePolygon(polygon1().polygonId);
+            }, icon: Icon(Icons.delete),)
           ],
-          [
-            LatLng(9.861925859419564, 105.93872468331696),
-            LatLng(9.776638107960828, 106.03507919611933),
-            LatLng(9.683279273763315, 105.85380206186403)
-          ],
-        ],
-        strokeColor: Colors.red);
+        )
+      ],
+    );
   }
-
-  Polygon polygon2() {
-    List<LatLng> polygonCoords = [];
-    polygonCoords.addAll([
-      LatLng(9.85419858085518, 105.49970250115466),
-      LatLng(10.111173278744552, 105.79221346758048),
-      LatLng(9.739171049977948, 106.4115676734868),
-      LatLng(9.408755662724216, 106.01194001513039),
-      LatLng(9.148388064993938, 105.04703715806114),
-    ]);
-
-    return Polygon(
-        polygonId: 'test2',
-        points: polygonCoords,
-        holes: [
-          [
-            LatLng(9.749998867791605, 105.59033970201901),
-            LatLng(9.605997144751647, 105.67252492760872),
-            LatLng(9.575401419508188, 105.58270292414889)
-          ],
-          [
-            LatLng(9.861925859419564, 105.93872468331696),
-            LatLng(9.776638107960828, 106.03507919611933),
-            LatLng(9.683279273763315, 105.85380206186403)
-          ],
-        ],
-        strokeColor: Colors.red);
-  }
+  
 }

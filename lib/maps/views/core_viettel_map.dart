@@ -23,12 +23,17 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
 
   ViettelMapController? _controller;
 
+  /// just to make sure if onStyleLoadedCallback may be called first (may never happen)
+  bool onStyleLoadedWasCalled = false;
+
   @override
   Widget build(BuildContext context) {
     return vt.VTMap(
       accessToken: widget.data.accessToken,
       initialCameraPosition: widget.data.initialCameraPosition.toViettel(),
       onStyleLoadedCallback: () {
+        onStyleLoadedWasCalled = true;
+
         _controller?.onMapLoaded();
 
         if (_controller != null) {
@@ -37,14 +42,24 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
         }
       },
       onMapCreated: (vt.MapboxMapController mapboxMapController) {
-        _controller = ViettelMapController(mapboxMapController,
+        final controller = ViettelMapController(mapboxMapController,
             data: widget.data,
             callback: widget.callbacks
         );
 
+        _controller = controller;
+
         //don't call onMapCreated from callbacks here because map is not ready yet
         //use onStyleLoadedCallback to be synchronized with GoogleMap
+        //but just to make sure controller will be returned
+        if (onStyleLoadedWasCalled) {
+          widget.callbacks?.onMapCreated?.call(controller);
+        }
       },
     );
+  }
+
+  void _tryReturnController() {
+
   }
 }

@@ -20,3 +20,5 @@ export 'camera_position.dart';
 export 'core_map_data.dart';
 export 'core_map_type.dart';
 export 'polygon.dart';
+import 'joint_type.dart';
+import 'polyline.dart';

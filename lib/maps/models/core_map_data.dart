@@ -8,15 +8,15 @@ class CoreMapData {
   CoreMapData({
     this.accessToken,
     required this.initialCameraPosition,
-    List<Polygon>? polygons,
-  }): polygons = polygons ?? [];
+    Set<Polygon>? polygons,
+  }): polygons = polygons ?? {};
 
   ///should be removed, use file instead
   final String? accessToken;
 
   final CameraPosition initialCameraPosition;
 
-  final List<Polygon> polygons;
+  final Set<Polygon> polygons;
 
   CoreMapData copyWith() {
     return CoreMapData(

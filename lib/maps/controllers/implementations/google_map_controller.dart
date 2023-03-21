@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:maps_core/extensions/convert.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
 import 'package:maps_core/maps/models/core_map_type.dart';
@@ -41,9 +42,11 @@ class GoogleMapController extends BaseCoreMapController with ChangeNotifier {
   CoreMapData get data => _data;
 
   @override
-  Future<void> reloadWithData(CoreMapData data) {
-    // TODO: implement reloadWithData
-    throw UnimplementedError();
+  Future<void> reloadWithData(CoreMapData data) async {
+    _data = data;
+    controller.moveCamera(gg.CameraUpdate.newCameraPosition(
+        data.initialCameraPosition.toGoogle()));
+    notifyListeners();
   }
 
   @override
