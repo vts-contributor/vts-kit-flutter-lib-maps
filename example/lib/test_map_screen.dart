@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:maps_core/maps/controllers/core_map_controller.dart';
+import 'package:maps_core/maps/controllers/core_map_controller_completer.dart';
 import 'package:maps_core/maps/models/camera_position.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
 import 'package:maps_core/maps/models/core_map_data.dart';
@@ -24,9 +25,7 @@ class TestMapScreen extends StatefulWidget {
 
 class _TestMapScreenState extends State<TestMapScreen> {
 
-  CoreMapType _type = CoreMapType.viettel;
-
-  Completer<CoreMapController> _controller = Completer();
+  CoreMapControllerCompleter _controllerCompleter = CoreMapControllerCompleter();
 
   @override
   Widget build(BuildContext context) {
@@ -35,35 +34,28 @@ class _TestMapScreenState extends State<TestMapScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.swap_horiz),
-            onPressed: () {
-              _controller = Completer();
-
-              setState(() {
-                if (_type == CoreMapType.viettel) {
-                  _type = CoreMapType.google;
-                } else {
-                  _type = CoreMapType.viettel;
-                }
-              });
+            onPressed: () async {
+              final controller = await _controllerCompleter.controller;
+              controller.changeMapType(controller.coreMapType == CoreMapType.viettel?CoreMapType.google: CoreMapType.viettel);
             },
           ),
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-              (await _controller.future).addPolygon(polygon1());
+              (await _controllerCompleter.controller).addPolygon(polygon1());
             },
           ),
         ],
       ),
       body: CoreMap(
-        initialType: _type,
+        initialType: CoreMapType.viettel,
         initialData: CoreMapData(
           accessToken: "49013166841fe36d7fa7f395fce4a663",
           initialCameraPosition: CameraPosition(target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
         ),
         callbacks: CoreMapCallbacks(
           onMapCreated: (controller) {
-            _controller.complete(controller);
+            _controllerCompleter.complete(controller);
           }
         ),
       ),

@@ -10,13 +10,10 @@ class CoreMapControllerCompleter {
 
   void complete(CoreMapController controller) {
     if (_completer.isCompleted) {
-      _completer.completeError(NullThrownError());
-    } else {
-
+      _completer = Completer();
     }
 
-    _completer = Completer();
-    _completer.complete();
+    _completer.complete(controller);
   }
 
 }
