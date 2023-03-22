@@ -43,7 +43,8 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
         _controller = controller;
         widget.callbacks?.onMapCreated?.call(controller);
       },
-      polygons:data.polygons.toGoogle().toSet(),
+      polygons: data.polygons.toGoogle().toSet(),
+      polylines: data.polylines.toGoogle().toSet(),
     );
   }
 

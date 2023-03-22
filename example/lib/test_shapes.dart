@@ -67,5 +67,6 @@ Polyline polyline() => Polyline(
       LatLng(10.781534156930388, 107.0149202769658),
       LatLng(11.447301198223213, 107.27501155457392),
     ],
-    jointType: JointType.bevel
+    jointType: JointType.bevel,
+    color: Colors.blue
 );

@@ -27,6 +27,8 @@ class CoreMapData {
     return CoreMapData(
       accessToken: accessToken,
       initialCameraPosition: initialCameraPosition,
+      polygons: polygons,
+      polylines: polylines
     );
   }
 }

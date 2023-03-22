@@ -95,6 +95,17 @@ class TestDialog extends StatelessWidget {
               controller.removePolygon(polygon1().id);
             }, icon: Icon(Icons.delete),)
           ],
+        ),
+        Row(
+          children: [
+            ElevatedButton(onPressed: () {
+              controller.addPolyline(polyline());
+            }, child: Text("add a polyline")),
+            SizedBox(width: 10,),
+            IconButton(onPressed: () {
+              controller.removePolyline(polyline().id);
+            }, icon: Icon(Icons.delete),)
+          ],
         )
       ],
     );

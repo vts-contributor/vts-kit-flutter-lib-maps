@@ -22,3 +22,5 @@ export 'core_map_type.dart';
 export 'polygon.dart';
 export 'joint_type.dart';
 export 'polyline.dart';
+export 'circle.dart';
+export 'marker.dart';

@@ -8,9 +8,17 @@ abstract class CoreMapController {
 
   Future<void> addPolygon(Polygon polygon);
   Future<void> removePolygon(String polygonId);
-  Future<void> reloadWithData(CoreMapData data);
-  void changeMapType(CoreMapType type);
+
   Future<void> addPolyline(Polyline polyline);
   Future<void> removePolyline(String polylineId);
+
+  Future<void> addCircle(Circle circle);
+  Future<void> removeCircle(Circle circle);
+
+  Future<void> addMarker(Marker marker);
+  Future<void> removeMarker(Marker marker);
+
+  Future<void> reloadWithData(CoreMapData data);
+  void changeMapType(CoreMapType type);
 }
 

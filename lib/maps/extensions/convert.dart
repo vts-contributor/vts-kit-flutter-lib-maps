@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 
-extension ConvertColor on Color {
+extension ColorConvert on Color {
   String toHex() {
     String hexString = value.toRadixString(16);
 
@@ -14,7 +14,7 @@ extension ConvertColor on Color {
 }
 
 
-extension Convert on LatLng {
+extension LatLngConvert on LatLng {
   ggmap.LatLng toGoogle() {
     return ggmap.LatLng(lat, lng);
   }
@@ -24,7 +24,7 @@ extension Convert on LatLng {
   }
 }
 
-extension ConvertPolygon on Polygon {
+extension PolygonConvert on Polygon {
   ggmap.Polygon toGoogle() {
     return ggmap.Polygon(
       polygonId: ggmap.PolygonId(id),
@@ -78,7 +78,7 @@ extension ConvertPolygon on Polygon {
   }
 }
 
-extension ConvertCameraPosition on CameraPosition {
+extension CameraPositionConvert on CameraPosition {
   vtmap.CameraPosition toViettel() {
     return vtmap.CameraPosition(
       target: target.toViettel(),
@@ -98,7 +98,7 @@ extension ConvertCameraPosition on CameraPosition {
   }
 }
 
-extension ConvertJointType on JointType {
+extension JointTypeConvert on JointType {
   ggmap.JointType toGoogle() {
     switch (this) {
       case JointType.bevel:
@@ -126,7 +126,7 @@ extension ConvertJointType on JointType {
   }
 }
 
-extension ConvertPolyline on Polyline {
+extension PolylineConvert on Polyline {
   ggmap.Polyline toGoogle() {
     return ggmap.Polyline(
       polylineId: ggmap.PolylineId(id),
@@ -134,6 +134,7 @@ extension ConvertPolyline on Polyline {
       color: color,
       geodesic: geodesic,
       jointType: jointType.toGoogle(),
+      points: points.toGoogle(),
       visible: visible,
       onTap: onTap,
       width: width,
@@ -146,7 +147,7 @@ extension ConvertPolyline on Polyline {
       geometry: points.toViettel(),
       lineWidth: width.toDouble(),
       lineColor: color.toHex(),
-      lineJoin: jointType.toViettel()
+      lineJoin: jointType.toViettel(),
     );
   }
 }
