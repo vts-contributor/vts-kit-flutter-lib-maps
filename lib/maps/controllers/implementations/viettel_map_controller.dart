@@ -1,10 +1,11 @@
-import 'package:maps_core/extensions/convert.dart';
-import 'package:maps_core/extensions/extensions.dart';
+import 'package:maps_core/maps/extensions/convert.dart';
+import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/controllers/core_map_controller.dart';
 import 'package:maps_core/maps/models/core_map_data.dart';
 import 'package:maps_core/maps/models/core_map_type.dart';
 import 'package:maps_core/maps/models/polygon.dart';
+import 'package:maps_core/maps/models/polyline.dart';
 import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
@@ -20,6 +21,8 @@ class ViettelMapController extends BaseCoreMapController {
 
   final Map<String, ViettelPolygon> _viettelPolygonMap = {};
 
+  final Map<String, vt.Line> _viettelPolylineMap = {};
+
   ViettelMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callback,
@@ -30,7 +33,7 @@ class ViettelMapController extends BaseCoreMapController {
 
   @override
   Future<void> addPolygon(Polygon polygon) async {
-    if (_viettelPolygonMap.containsKey(polygon.polygonId)) {
+    if (data.polygons.any((e) => e.id == polygon.id)) {
       return;
     }
 
@@ -43,13 +46,13 @@ class ViettelMapController extends BaseCoreMapController {
     }
     final outlines = await Future.wait(outlineFutures);
 
-    _viettelPolygonMap.putIfAbsent(polygon.polygonId, () => ViettelPolygon(polygon.polygonId, fill, outlines));
+    _viettelPolygonMap.putIfAbsent(polygon.id, () => ViettelPolygon(polygon.id, fill, outlines));
     data.polygons.add(polygon);
   }
 
 
   @override
-  Future<bool> removePolygon(String polygonId) async {
+  Future<void> removePolygon(String polygonId) async {
     if (_viettelPolygonMap.containsKey(polygonId)) {
       final polygon = _viettelPolygonMap[polygonId];
 
@@ -60,14 +63,10 @@ class ViettelMapController extends BaseCoreMapController {
           _controller.removeLine(outline);
         }
 
-        data.polygons.removeWhere((polygon) => polygon.polygonId == polygonId);
+        data.polygons.removeWhere((polygon) => polygon.id == polygonId);
         _viettelPolygonMap.removeWhere((key, value) => key == polygonId);
-
-        return true;
       }
     }
-
-    return false;
   }
 
   @override
@@ -105,5 +104,30 @@ class ViettelMapController extends BaseCoreMapController {
 
   void onMapLoaded() {
     _addShapes(_data);
+  }
+
+  @override
+  Future<void> addPolyline(Polyline polyline) async {
+    if (data.polylines.any((e) => e.id == polyline.id)) {
+      return;
+    }
+
+    data.polylines.add(polyline);
+    final line = await _controller.addLine(polyline.toLineOptions());
+    _viettelPolylineMap.putIfAbsent(polyline.id, () => line);
+  }
+
+  @override
+  Future<void> removePolyline(String polylineId) async {
+    if (_viettelPolylineMap.containsKey(polylineId)) {
+      final line = _viettelPolylineMap[polylineId];
+
+      if (line != null) {
+        _controller.removeLine(line);
+
+        data.polylines.removeWhere((e) => e.id == polylineId);
+        _viettelPolylineMap.removeWhere((key, value) => key == polylineId);
+      }
+    }
   }
 }

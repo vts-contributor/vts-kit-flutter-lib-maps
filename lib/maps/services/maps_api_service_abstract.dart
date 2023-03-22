@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:maps_core/extensions/utils.dart';
+import 'package:maps_core/maps/extensions/utils.dart';
 import 'package:maps_core/maps/services/maps_api_interceptor.dart';
 
 import '../../log/log.dart';

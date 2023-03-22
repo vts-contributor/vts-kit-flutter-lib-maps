@@ -5,8 +5,8 @@ import 'dart:ui';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../maps/models/network/language.dart';
-import '../maps/models/network/token.dart';
+import '../models/network/language.dart';
+import '../models/network/token.dart';
 
 
 typedef R LetCallback<T, R>(final T it);

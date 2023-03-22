@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:maps_core/extensions/convert.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
+import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
 import 'package:maps_core/maps/models/core_map_type.dart';
 import 'package:maps_core/maps/models/polygon.dart';
+import 'package:maps_core/maps/models/polyline.dart';
 
 import '../../models/core_map_data.dart';
 import '../core_map_controller.dart';
@@ -33,7 +34,7 @@ class GoogleMapController extends BaseCoreMapController with ChangeNotifier {
 
   @override
   Future<bool> removePolygon(String polygonId) async {
-    _data.polygons.removeWhere((polygon) => polygon.polygonId == polygonId);
+    _data.polygons.removeWhere((polygon) => polygon.id == polygonId);
     notifyListeners();
     return true;
   }
@@ -54,4 +55,18 @@ class GoogleMapController extends BaseCoreMapController with ChangeNotifier {
     dispose();
     controller.dispose();
   }
+
+  @override
+  Future<void> addPolyline(Polyline polyline) async {
+    _data.polylines.add(polyline);
+    notifyListeners();
+  }
+
+  @override
+  Future<void> removePolyline(String polylineId) async {
+    _data.polylines.removeWhere((polyline) => polyline.id == polylineId);
+    notifyListeners();
+  }
+  
+  
 }

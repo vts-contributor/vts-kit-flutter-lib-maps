@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:maps_core/extensions/extensions.dart';
 import 'dart:ui';
 
 class AppSetting {

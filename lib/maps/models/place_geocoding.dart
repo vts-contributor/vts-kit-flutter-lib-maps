@@ -1,4 +1,4 @@
-import 'package:maps_core/extensions/extensions.dart';
+import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:maps_core/maps/models/models.dart';
 
 class GeocodingPlace extends Place {

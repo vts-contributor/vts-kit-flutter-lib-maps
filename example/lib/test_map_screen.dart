@@ -92,7 +92,7 @@ class TestDialog extends StatelessWidget {
             }, child: Text("add a polygon")),
             SizedBox(width: 10,),
             IconButton(onPressed: () {
-              controller.removePolygon(polygon1().polygonId);
+              controller.removePolygon(polygon1().id);
             }, icon: Icon(Icons.delete),)
           ],
         )

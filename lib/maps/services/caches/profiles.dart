@@ -4,7 +4,7 @@ import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:maps_core/maps/models/models.dart';
 
-import '../../../extensions/utils.dart';
+import '../../extensions/utils.dart';
 
 part 'shared_preferences.dart';
 

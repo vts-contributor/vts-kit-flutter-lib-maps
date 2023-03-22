@@ -1,8 +1,8 @@
-import 'package:maps_core/extensions/convert.dart';
 import 'package:maps_core/maps/models/lat_lng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:maps_core/maps/models/polygon.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
+import 'convert.dart';
 
 extension ListLatLnConvert on List<LatLng> {
   List<ggmap.LatLng> toGoogle() {

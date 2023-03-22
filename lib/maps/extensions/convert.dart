@@ -1,13 +1,11 @@
 import 'dart:ui';
 
-import 'package:maps_core/maps/models/camera_position.dart';
-import 'package:maps_core/maps/models/lat_lng.dart';
+import 'package:maps_core/maps.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:maps_core/maps/models/polygon.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 
-extension ColorConverter on Color {
+extension ConvertColor on Color {
   String toHex() {
     String hexString = value.toRadixString(16);
 
@@ -16,7 +14,7 @@ extension ColorConverter on Color {
 }
 
 
-extension LatLngConvert on LatLng {
+extension Convert on LatLng {
   ggmap.LatLng toGoogle() {
     return ggmap.LatLng(lat, lng);
   }
@@ -26,10 +24,10 @@ extension LatLngConvert on LatLng {
   }
 }
 
-extension PolygonConvert on Polygon {
+extension ConvertPolygon on Polygon {
   ggmap.Polygon toGoogle() {
     return ggmap.Polygon(
-      polygonId: ggmap.PolygonId(polygonId),
+      polygonId: ggmap.PolygonId(id),
       consumeTapEvents: consumeTapEvents,
       fillColor: fillColor,
       geodesic: geodesic,
@@ -96,6 +94,59 @@ extension ConvertCameraPosition on CameraPosition {
         bearing: bearing,
         tilt: tilt,
         zoom: zoom
+    );
+  }
+}
+
+extension ConvertJointType on JointType {
+  ggmap.JointType toGoogle() {
+    switch (this) {
+      case JointType.bevel:
+        return ggmap.JointType.bevel;
+      case JointType.mitered:
+        return ggmap.JointType.mitered;
+      case JointType.round:
+        return ggmap.JointType.round;
+      default:
+        return ggmap.JointType.bevel;
+    }
+  }
+
+  String toViettel() {
+    switch (this) {
+      case JointType.bevel:
+        return "bevel";
+      case JointType.mitered:
+        return "mitered";
+      case JointType.round:
+        return "round";
+      default:
+        return "bevel";
+    }
+  }
+}
+
+extension ConvertPolyline on Polyline {
+  ggmap.Polyline toGoogle() {
+    return ggmap.Polyline(
+      polylineId: ggmap.PolylineId(id),
+      consumeTapEvents: consumeTapEvents,
+      color: color,
+      geodesic: geodesic,
+      jointType: jointType.toGoogle(),
+      visible: visible,
+      onTap: onTap,
+      width: width,
+      zIndex: zIndex,
+    );
+  }
+
+  vtmap.LineOptions toLineOptions() {
+    return vtmap.LineOptions(
+      geometry: points.toViettel(),
+      lineWidth: width.toDouble(),
+      lineColor: color.toHex(),
+      lineJoin: jointType.toViettel()
     );
   }
 }

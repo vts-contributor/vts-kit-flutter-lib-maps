@@ -1,4 +1,4 @@
-import 'package:maps_core/extensions/utils.dart';
+import 'package:maps_core/maps/extensions/utils.dart';
 
 class AddressComponent {
   final List<String>? types;

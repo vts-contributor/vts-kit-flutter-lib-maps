@@ -1,0 +1,15 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
+import 'package:maps_core/maps.dart';
+import 'package:vtmap_gl/vtmap_gl.dart' as vt;
+
+void main() {
+  group("convert test", ()  {
+    test("polyline test", () {
+      expect(JointType.bevel.toGoogle(), gg.JointType.bevel);
+      expect(JointType.mitered.toGoogle(), gg.JointType.mitered);
+      expect(JointType.round.toGoogle(), gg.JointType.round);
+
+    });
+  });
+}

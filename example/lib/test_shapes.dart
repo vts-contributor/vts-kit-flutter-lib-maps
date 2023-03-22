@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maps_core/maps/models/lat_lng.dart';
-import 'package:maps_core/maps/models/polygon.dart';
+import 'package:maps_core/maps/models/models.dart';
 
 Polygon polygon1() {
   List<LatLng> polygonCoords = [];
@@ -13,7 +12,7 @@ Polygon polygon1() {
   ]);
 
   return Polygon(
-      polygonId: 'test1',
+      id: 'test1',
       points: polygonCoords,
       strokeWidth: 10,
       holes: [
@@ -42,7 +41,7 @@ Polygon polygon2() {
   ]);
 
   return Polygon(
-      polygonId: 'test2',
+      id: 'test2',
       points: polygonCoords,
       holes: [
         [
@@ -58,3 +57,15 @@ Polygon polygon2() {
       ],
       strokeColor: Colors.red);
 }
+
+Polyline polyline() => Polyline(
+    id: "test1",
+    points: [
+      LatLng(10.015567019306467, 105.74686134987519),
+      LatLng(10.19612670788822, 105.97871325750828),
+      LatLng(10.651704727581484, 106.2319038895347),
+      LatLng(10.781534156930388, 107.0149202769658),
+      LatLng(11.447301198223213, 107.27501155457392),
+    ],
+    jointType: JointType.bevel
+);

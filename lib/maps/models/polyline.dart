@@ -5,7 +5,6 @@
 import 'package:flutter/foundation.dart'
     show immutable, listEquals, VoidCallback;
 import 'package:flutter/material.dart' show Color, Colors;
-import 'package:maps_core/maps/models/pattern_item.dart';
 
 import 'joint_type.dart';
 import 'lat_lng.dart';
@@ -16,13 +15,12 @@ import 'lat_lng.dart';
 class Polyline{
   /// Creates an immutable object representing a line drawn through geographical locations on the map.
   const Polyline({
-    required this.polylineId,
+    required this.id,
     this.consumeTapEvents = false,
     this.color = Colors.black,
     this.geodesic = false,
     this.jointType = JointType.mitered,
     this.points = const <LatLng>[],
-    this.patterns = const <PatternItem>[],
     this.visible = true,
     this.width = 10,
     this.zIndex = 0,
@@ -30,7 +28,7 @@ class Polyline{
   });
 
   /// Uniquely identifies a [Polyline].
-  final String polylineId;
+  final String id;
 
   /// True if the [Polyline] consumes tap events.
   ///
@@ -55,13 +53,6 @@ class Polyline{
   ///
   /// Supported on Android only.
   final JointType jointType;
-
-  /// The stroke pattern for the polyline.
-  ///
-  /// Solid or a sequence of PatternItem objects to be repeated along the line.
-  /// Available PatternItem types: Gap (defined by gap length in pixels), Dash (defined by line width and dash
-  /// length in pixels) and Dot (circular, centered on the line, diameter defined by line width in pixels).
-  final List<PatternItem> patterns;
 
   /// The vertices of the polyline to be drawn.
   ///
@@ -96,7 +87,6 @@ class Polyline{
 
     bool? geodesicParam,
     JointType? jointTypeParam,
-    List<PatternItem>? patternsParam,
     List<LatLng>? pointsParam,
     bool? visibleParam,
     int? widthParam,
@@ -104,12 +94,11 @@ class Polyline{
     VoidCallback? onTapParam,
   }) {
     return Polyline(
-      polylineId: polylineId,
+      id: id,
       color: colorParam ?? color,
       consumeTapEvents: consumeTapEventsParam ?? consumeTapEvents,
       geodesic: geodesicParam ?? geodesic,
       jointType: jointTypeParam ?? jointType,
-      patterns: patternsParam ?? patterns,
       points: pointsParam ?? points,
       visible: visibleParam ?? visible,
       width: widthParam ?? width,
@@ -123,7 +112,6 @@ class Polyline{
   @override
   Polyline clone() {
     return copyWith(
-      patternsParam: List<PatternItem>.of(patterns),
       pointsParam: List<LatLng>.of(points),
     );
   }
@@ -139,7 +127,7 @@ class Polyline{
       }
     }
 
-    addIfPresent('polylineId', polylineId);
+    addIfPresent('polylineId', id);
     addIfPresent('consumeTapEvents', consumeTapEvents);
     addIfPresent('color', color.value);
     addIfPresent('geodesic', geodesic);
@@ -152,9 +140,6 @@ class Polyline{
       json['points'] = _pointsToJson();
     }
 
-    if (patterns != null) {
-      json['pattern'] = _patternToJson();
-    }
 
     return json;
   }
@@ -168,12 +153,11 @@ class Polyline{
       return false;
     }
     return other is Polyline &&
-        polylineId == other.polylineId &&
+        id == other.id &&
         consumeTapEvents == other.consumeTapEvents &&
         color == other.color &&
         geodesic == other.geodesic &&
         jointType == other.jointType &&
-        listEquals(patterns, other.patterns) &&
         listEquals(points, other.points) &&
         visible == other.visible &&
         width == other.width &&
@@ -181,22 +165,12 @@ class Polyline{
   }
 
   @override
-  int get hashCode => polylineId.hashCode;
+  int get hashCode => id.hashCode;
 
   Object _pointsToJson() {
     final List<Object> result = <Object>[];
     for (final LatLng point in points) {
       result.add(point.toJson());
-    }
-    return result;
-  }
-
-  Object _patternToJson() {
-    final List<Object> result = <Object>[];
-    for (final PatternItem patternItem in patterns) {
-      if (patternItem != null) {
-        result.add(patternItem.toJson());
-      }
     }
     return result;
   }

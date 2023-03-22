@@ -8,7 +8,7 @@ import 'lat_lng.dart';
 class Polygon {
   /// Creates an immutable representation of a polygon through geographical locations on the map.
   const Polygon({
-    required this.polygonId,
+    required this.id,
     this.consumeTapEvents = false,
     this.fillColor = Colors.black,
     this.geodesic = false,
@@ -22,7 +22,7 @@ class Polygon {
   });
 
   /// Uniquely identifies a [Polygon].
-  final String polygonId;
+  final String id;
 
   /// True if the [Polygon] consumes tap events.
   ///
@@ -90,7 +90,7 @@ class Polygon {
     VoidCallback? onTapParam,
   }) {
     return Polygon(
-      polygonId: polygonId,
+      id: id,
       consumeTapEvents: consumeTapEventsParam ?? consumeTapEvents,
       fillColor: fillColorParam ?? fillColor,
       geodesic: geodesicParam ?? geodesic,
@@ -121,7 +121,7 @@ class Polygon {
       }
     }
 
-    addIfPresent('polygonId', polygonId);
+    addIfPresent('polygonId', id);
     addIfPresent('consumeTapEvents', consumeTapEvents);
     addIfPresent('fillColor', fillColor.value);
     addIfPresent('geodesic', geodesic);
@@ -150,7 +150,7 @@ class Polygon {
       return false;
     }
     return other is Polygon &&
-        polygonId == other.polygonId &&
+        id == other.id &&
         consumeTapEvents == other.consumeTapEvents &&
         fillColor == other.fillColor &&
         geodesic == other.geodesic &&
@@ -163,7 +163,7 @@ class Polygon {
   }
 
   @override
-  int get hashCode => polygonId.hashCode;
+  int get hashCode => id.hashCode;
 
   Object _pointsToJson() {
     final List<Object> result = <Object>[];

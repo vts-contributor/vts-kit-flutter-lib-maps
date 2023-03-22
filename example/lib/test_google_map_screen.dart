@@ -50,6 +50,25 @@ class _TestGoogleMapScreenState extends State<TestGoogleMapScreen> {
     return polygonSet;
   }
 
+  Polyline polyline() => Polyline(
+    polylineId: PolylineId("test2"),
+    points: [
+      LatLng(10.015567019306467, 105.74686134987519),
+      LatLng(10.19612670788822, 105.97871325750828),
+      LatLng(10.651704727581484, 106.2319038895347),
+      LatLng(10.781534156930388, 107.0149202769658),
+      LatLng(11.447301198223213, 107.27501155457392),
+    ],
+    endCap: Cap.roundCap,
+    startCap: Cap.roundCap,
+    jointType: JointType.bevel,
+    patterns: [
+      PatternItem.gap(1000),
+      PatternItem.dash(1000)
+    ],
+    width: 10
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,12 +83,13 @@ class _TestGoogleMapScreenState extends State<TestGoogleMapScreen> {
         ],
       ),
       body: GoogleMap(
-        mapType: MapType.hybrid,
-        polygons: myPolygon(),
+        mapType: MapType.normal,
+        // polygons: myPolygon(),
         initialCameraPosition: const CameraPosition(target: LatLng(9.823077422713277, 105.81830599510204),zoom: 8),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
+        polylines: {polyline()},
       ),
     );
   }

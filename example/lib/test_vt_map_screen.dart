@@ -1,6 +1,10 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:maps_core/maps/models/geometry.dart';
 import 'package:vtmap_gl/vtmap_gl.dart';
 
@@ -24,63 +28,57 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           IconButton(
               icon: const Icon(Icons.add),
               onPressed: () async {
-                controller?.addFill(
-                  FillOptions(geometry: [
-                    [
-                      LatLng(9.85419858085518, 105.49970250115466),
-                      LatLng(10.111173278744552, 105.79221346758048),
-                      LatLng(9.739171049977948, 106.4115676734868),
-                      LatLng(9.408755662724216, 106.01194001513039),
-                      LatLng(9.148388064993938, 105.04703715806114),
-                    ],
-                    [
-                      LatLng(10.85419858085518, 105.49970250115466),
-                      LatLng(11.111173278744552, 105.79221346758048),
-                      LatLng(10.739171049977948, 106.4115676734868),
-                      LatLng(10.408755662724216, 106.01194001513039),
-                      LatLng(10.148388064993938, 105.04703715806114),
-                    ],
-                    // [
-                    //   LatLng(9.749998867791605, 105.59033970201901),
-                    //   LatLng(9.605997144751647, 105.67252492760872),
-                    //   LatLng(9.575401419508188, 105.58270292414889)
-                    // ],
-                    // [
-                    //   LatLng(9.861925859419564, 105.93872468331696),
-                    //   LatLng(9.776638107960828, 106.03507919611933),
-                    //   LatLng(9.683279273763315, 105.85380206186403)
-                    // ],
-                  ],
-                    fillColor: "#FF0000",
-                    fillOutlineColor: "#FF0000",
-                    fillOpacity: 0.5,
-                  ),
-                );
-                controller?.addFill(
-                  FillOptions(geometry: [
-                    // [
-                    //   LatLng(9.85419858085518, 105.49970250115466),
-                    //   LatLng(10.111173278744552, 105.79221346758048),
-                    //   LatLng(9.739171049977948, 106.4115676734868),
-                    //   LatLng(9.408755662724216, 106.01194001513039),
-                    //   LatLng(9.148388064993938, 105.04703715806114),
-                    // ],
-                    [
-                      LatLng(9.749998867791605, 105.59033970201901),
-                      LatLng(9.605997144751647, 105.67252492760872),
-                      LatLng(9.575401419508188, 105.58270292414889)
-                    ],
-                    [
-                      LatLng(9.861925859419564, 105.93872468331696),
-                      LatLng(9.776638107960828, 106.03507919611933),
-                      LatLng(9.683279273763315, 105.85380206186403)
-                    ],
-                  ],
-                    fillColor: "#FF0000",
-                    fillOutlineColor: "#FF0000",
-                    fillOpacity: 1,
-                  ),
-                );
+                // final line = await controller?.addLine(LineOptions(
+                //   geometry: [
+                //     LatLng(10.015567019306467, 105.74686134987519),
+                //     LatLng(10.19612670788822, 105.97871325750828),
+                //     LatLng(10.651704727581484, 106.2319038895347),
+                //     LatLng(10.781534156930388, 107.0149202769658),
+                //     LatLng(11.447301198223213, 107.27501155457392),
+                //   ],
+                //   lineWidth: 5,
+                //   lineColor: Colors.blueAccent.toHex(),
+                //   draggable: true
+                // ));
+                Point<double> pa = Point(10.015567019306467, 105.74686134987519);
+                Point<double> pb = Point(10.19612670788822, 105.97871325750828);
+
+                Point<double> p1 = Point(lerpDouble(pa.x, pb.x, 0.2) ?? 0, lerpDouble(pa.y, pb.y, 0.2) ?? 0);
+                Point<double> p2 = Point(lerpDouble(pa.x, pb.x, 0.4) ?? 0, lerpDouble(pa.y, pb.y, 0.4) ?? 0);
+                Point<double> p3 = Point(lerpDouble(pa.x, pb.x, 0.6) ?? 0, lerpDouble(pa.y, pb.y, 0.6) ?? 0);
+                Point<double> p4 = Point(lerpDouble(pa.x, pb.x, 0.8) ?? 0, lerpDouble(pa.y, pb.y, 0.8) ?? 0);
+
+                controller?.addLine(LineOptions(
+                  lineWidth: 10,
+                  geometry: [
+                    LatLng(pa.x, pa.y),
+                    LatLng(p1.x, p1.y),
+                  ]
+                ));
+                controller?.addLine(LineOptions(
+                    lineWidth: 10,
+                    geometry: [
+                      LatLng(p2.x, p2.y),
+                      LatLng(p3.x, p3.y),
+                    ]
+                ));
+
+                controller?.addLine(LineOptions(
+                    lineWidth: 10,
+                    lineColor: Colors.blueAccent.toHex(),
+                    geometry: [
+                      LatLng(p4.x, p4.y),
+                      LatLng(pb.x, pb.y),
+                    ]
+                ));
+
+                // controller?.addLine(LineOptions(
+                //     lineWidth: 10,
+                //     geometry: [
+                //       LatLng(p2.x, p2.y),
+                //       LatLng(pb.x, pb.y),
+                //     ]
+                // ));
               }
           )
         ],
