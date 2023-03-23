@@ -5,6 +5,7 @@
 import 'package:flutter/foundation.dart'
     show immutable, listEquals, VoidCallback;
 import 'package:flutter/material.dart' show Color, Colors;
+import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import 'joint_type.dart';
 import 'lat_lng.dart';
@@ -12,7 +13,7 @@ import 'lat_lng.dart';
 
 /// Draws a line through geographical locations on the map.
 @immutable
-class Polyline{
+class Polyline implements MapObject {
   /// Creates an immutable object representing a line drawn through geographical locations on the map.
   const Polyline({
     required this.id,
@@ -28,6 +29,7 @@ class Polyline{
   });
 
   /// Uniquely identifies a [Polyline].
+  @override
   final String id;
 
   /// True if the [Polyline] consumes tap events.

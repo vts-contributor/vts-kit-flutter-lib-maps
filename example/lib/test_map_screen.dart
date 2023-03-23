@@ -1,18 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:map_core_example/test_shapes.dart';
-import 'package:maps_core/maps/controllers/core_map_controller.dart';
+import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/controllers/core_map_controller_completer.dart';
-import 'package:maps_core/maps/models/camera_position.dart';
-import 'package:maps_core/maps/models/core_map_callbacks.dart';
-import 'package:maps_core/maps/models/core_map_data.dart';
-import 'package:maps_core/maps/models/core_map_type.dart';
-import 'package:maps_core/maps/models/lat_lng.dart';
-import 'package:maps_core/maps/models/polygon.dart';
-import 'package:maps_core/maps/views/core_map.dart';
 
 class TestMapScreen extends StatefulWidget {
   
@@ -84,6 +75,7 @@ class TestDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimpleDialog(
       title: Text("Test features"),
+      alignment: Alignment.center,
       children: [
         Row(
           children: [
@@ -106,9 +98,21 @@ class TestDialog extends StatelessWidget {
               controller.removePolyline(polyline().id);
             }, icon: Icon(Icons.delete),)
           ],
+        ),
+        Row(
+          children: [
+            ElevatedButton(onPressed: () {
+              controller.addCircle(circle());
+            }, child: Text("add a circle")),
+            SizedBox(width: 10,),
+            IconButton(onPressed: () {
+              controller.removeCircle(circle().id);
+            }, icon: Icon(Icons.delete),)
+          ],
         )
       ],
     );
   }
-  
+
+
 }

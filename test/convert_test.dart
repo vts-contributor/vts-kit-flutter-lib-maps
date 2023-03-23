@@ -10,6 +10,9 @@ void main() {
       expect(JointType.mitered.toGoogle(), gg.JointType.mitered);
       expect(JointType.round.toGoogle(), gg.JointType.round);
 
+      expect(JointType.bevel.toViettel(), "bevel");
+      expect(JointType.mitered.toViettel(), "mitered");
+      expect(JointType.round.toViettel(), "round");
     });
   });
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:map_core_example/test_shapes.dart';
 
 class TestGoogleMapScreen extends StatefulWidget {
 
@@ -90,6 +91,13 @@ class _TestGoogleMapScreenState extends State<TestGoogleMapScreen> {
           _controller.complete(controller);
         },
         polylines: {polyline()},
+        circles: {Circle(circleId: CircleId("test2123"),
+            center: LatLng(8.848028919141523, 104.96513564005897),
+            radius: 10000,
+            strokeColor: Colors.red,
+            strokeWidth: 5,
+            fillColor: Colors.black
+        )},
       ),
     );
   }

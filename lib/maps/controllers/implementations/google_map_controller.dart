@@ -3,6 +3,7 @@ import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
 import 'package:maps_core/maps/models/core_map_type.dart';
+import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import '../../../maps.dart';
 import '../../models/core_map_data.dart';
@@ -29,58 +30,54 @@ class GoogleMapController extends BaseCoreMapController with ChangeNotifier {
 
   @override
   Future<void> addPolygon(Polygon polygon) async {
-    if (_data.polygons.any((e) => e.id == polygon.id)) {
-      return;
-    }
-
-    _data.polygons.add(polygon);
-    notifyListeners();
+   _addMapObject(polygon, data.polygons);
   }
 
   @override
-  Future<bool> removePolygon(String polygonId) async {
-    _data.polygons.removeWhere((polygon) => polygon.id == polygonId);
-    notifyListeners();
-    return true;
+  Future<void> removePolygon(String polygonId) async {
+    _removeMapObject(polygonId, data.polygons);
   }
 
   @override
   Future<void> addPolyline(Polyline polyline) async {
-    if (_data.polylines.any((e) => e.id == polyline.id)) {
-      return;
-    }
-    _data.polylines.add(polyline);
-    notifyListeners();
+    _addMapObject(polyline, data.polylines);
   }
 
   @override
   Future<void> removePolyline(String polylineId) async {
-    _data.polylines.removeWhere((polyline) => polyline.id == polylineId);
+    _removeMapObject(polylineId, data.polylines);
+  }
+
+  @override
+  Future<void> addCircle(Circle circle) async {
+    _addMapObject(circle, data.circles);
+  }
+
+  @override
+  Future<void> removeCircle(String circleId) async {
+    _removeMapObject(circleId, data.circles);
+  }
+
+  @override
+  Future<void> addMarker(Marker marker) async {
+    _addMapObject(marker, data.markers);
+  }
+
+  @override
+  Future<void> removeMarker(String markerId) async {
+    _removeMapObject(markerId, data.markers);
+  }
+
+  void _addMapObject(MapObject object, Set<MapObject> objects) {
+    if (!objects.any((element) => element.id == object.id)) {
+      objects.add(object);
+      notifyListeners();
+    }
+  }
+
+  void _removeMapObject(String objectId, Set<MapObject> objects) {
+    objects.removeWhere((element) => element.id == objectId);
     notifyListeners();
-  }
-
-  @override
-  Future<void> addCircle(Circle circle) {
-    // TODO: implement addCircle
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> removeCircle(Circle circle) {
-    // TODO: implement removeCircle
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> addMarker(Marker marker) {
-    // TODO: implement addMarker
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> removeMarker(Marker marker) {
-    // TODO: implement removeMarker
-    throw UnimplementedError();
   }
 
   @override

@@ -1,7 +1,6 @@
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/models/lat_lng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:maps_core/maps/models/polygon.dart';
+import 'package:maps_core/maps/models/map_objects/polygon.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 import 'convert.dart';
 
@@ -35,7 +34,7 @@ extension SetPolygonConvert on Set<Polygon> {
   }
 }
 
-extension SetPolylineCover on Set<Polyline> {
+extension SetPolylineConvert on Set<Polyline> {
   Set<ggmap.Polyline> toGoogle() {
     return map((e) => e.toGoogle()).toSet();
   }
@@ -44,3 +43,14 @@ extension SetPolylineCover on Set<Polyline> {
     return map((e) => e.toLineOptions()).toSet();
   }
 }
+
+extension SetCircleConvert on Set<Circle> {
+  Set<ggmap.Circle> toGoogle() {
+    return map((e) => e.toGoogle()).toSet();
+  }
+
+  Set<vtmap.CircleOptions> toCircleOptions() {
+    return map((e) => e.toCircleOptions()).toSet();
+  }
+}
+

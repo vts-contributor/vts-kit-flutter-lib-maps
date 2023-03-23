@@ -1,19 +1,11 @@
-import 'package:maps_core/maps/extensions/convert.dart';
-import 'package:maps_core/maps/extensions/extensions.dart';
+import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
-import 'package:maps_core/maps/controllers/core_map_controller.dart';
-import 'package:maps_core/maps/models/circle.dart';
-import 'package:maps_core/maps/models/core_map_data.dart';
-import 'package:maps_core/maps/models/core_map_type.dart';
-import 'package:maps_core/maps/models/marker.dart';
-import 'package:maps_core/maps/models/polygon.dart';
-import 'package:maps_core/maps/models/polyline.dart';
 import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
-import '../../models/core_map_callbacks.dart';
-import '../../models/lat_lng.dart';
+import '../../../maps.dart';
+
 
 class ViettelMapController extends BaseCoreMapController {
 
@@ -21,17 +13,25 @@ class ViettelMapController extends BaseCoreMapController {
 
   CoreMapData _data;
 
+  //Store vtmap shapes so that we can remove them
   final Map<String, ViettelPolygon> _viettelPolygonMap = {};
-
   final Map<String, vt.Line> _viettelPolylineMap = {};
+  final Map<String, vt.Circle> _viettelCircleMap = {};
+  final Map<String, vt.Symbol> _viettelMarkerMap = {};
 
   ViettelMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callback,
-  }): _data = data, super(callback);
+  }): _data = data, super(callback) {
+    initAssets(data);
+  }
 
   @override
   CoreMapType get coreMapType => CoreMapType.viettel;
+
+  void initAssets(CoreMapData data) async {
+    _controller.addImageFromAsset(Constant.markerAssetName, Constant.markerAssetPath);
+  }
 
   @override
   Future<void> addPolygon(Polygon polygon) async {
@@ -82,7 +82,7 @@ class ViettelMapController extends BaseCoreMapController {
     }
 
     //add a dummy object to map
-    _viettelPolylineMap.putIfAbsent(polyline.id, () => vt.Line("dummy", const vt.LineOptions()));;
+    _viettelPolylineMap.putIfAbsent(polyline.id, () => vt.Line("dummy", const vt.LineOptions()));
     final line = await _controller.addLine(polyline.toLineOptions());
 
     _viettelPolylineMap.update(polyline.id, (_) => line);
@@ -104,25 +104,49 @@ class ViettelMapController extends BaseCoreMapController {
   }
 
   @override
-  Future<void> addCircle(Circle circle) {
-    // TODO: implement addCircle
-    throw UnimplementedError();
+  Future<void> addCircle(Circle circle) async {
+    if (_viettelCircleMap.containsKey(circle.id)) {
+      return;
+    }
+
+    //add a dummy object to map
+    _viettelCircleMap.putIfAbsent(circle.id, () => vt.Circle("dummy", const vt.CircleOptions()));
+    final vtCircle = await _controller.addCircle(circle.toCircleOptions());
+
+    _viettelCircleMap.update(circle.id, (_) => vtCircle);
+    data.circles.add(circle);
   }
 
   @override
-  Future<void> removeCircle(Circle circle) {
-    // TODO: implement removeCircle
-    throw UnimplementedError();
+  Future<void> removeCircle(String circleId) async {
+    if (_viettelCircleMap.containsKey(circleId)) {
+      final circle = _viettelCircleMap[circleId];
+
+      if (circle != null) {
+        _controller.removeCircle(circle);
+
+        data.circles.removeWhere((e) => e.id == circleId);
+        _viettelCircleMap.removeWhere((key, value) => key == circleId);
+      }
+    }
   }
 
   @override
-  Future<void> addMarker(Marker marker) {
-    // TODO: implement addMarker
-    throw UnimplementedError();
+  Future<void> addMarker(Marker marker) async {
+    if (_viettelMarkerMap.containsKey(marker.id)) {
+      return;
+    }
+
+    //add a dummy object to map
+    _viettelMarkerMap.putIfAbsent(marker.id, () => vt.Symbol("dummy", const vt.SymbolOptions()));
+    final symbol = await _controller.addSymbol(marker.toSymbolOptions());
+
+    _viettelMarkerMap.update(marker.id, (_) => symbol);
+    data.markers.add(marker);
   }
 
   @override
-  Future<void> removeMarker(Marker marker) {
+  Future<void> removeMarker(String markerId) {
     // TODO: implement removeMarker
     throw UnimplementedError();
   }
@@ -149,16 +173,23 @@ class ViettelMapController extends BaseCoreMapController {
   Future<void> _addShapes(CoreMapData data) async {
     _addPolygons(data.polygons);
     _addPolylines(data.polylines);
+    _addCircles(data.circles);
   }
   void _addPolygons(Set<Polygon> polygons) {
-    for (var polygon in data.polygons) {
+    for (var polygon in polygons) {
       addPolygon(polygon);
     }
   }
 
   void _addPolylines(Set<Polyline> polylines) {
-    for (var polyline in data.polylines) {
+    for (var polyline in polylines) {
       addPolyline(polyline);
+    }
+  }
+
+  void _addCircles(Set<Circle> circles) {
+    for (var circle in circles) {
+      addCircle(circle);
     }
   }
 
@@ -169,6 +200,9 @@ class ViettelMapController extends BaseCoreMapController {
     _controller.clearRoute();
 
     _viettelPolygonMap.clear();
+    _viettelPolylineMap.clear();
+    _viettelCircleMap.clear();
+    _viettelMarkerMap.clear();
   }
 
   void onMapLoaded() {

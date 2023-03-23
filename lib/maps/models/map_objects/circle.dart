@@ -5,13 +5,13 @@
 import 'package:flutter/foundation.dart' show VoidCallback;
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:flutter/material.dart' show Color, Colors;
+import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import 'lat_lng.dart';
 
-
 /// Draws a circle on the map.
 @immutable
-class Circle {
+class Circle implements MapObject {
   /// Creates an immutable representation of a [Circle] to draw on [GoogleMap].
   const Circle({
     required this.id,
@@ -27,6 +27,7 @@ class Circle {
   });
 
   /// Uniquely identifies a [Circle].
+  @override
   final String id;
 
   /// True if the [Circle] consumes tap events.

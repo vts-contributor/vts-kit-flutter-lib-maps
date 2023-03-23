@@ -6,6 +6,7 @@ import 'dart:ui' show Offset;
 
 import 'package:flutter/foundation.dart'
     show immutable, ValueChanged, VoidCallback;
+import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import 'lat_lng.dart';
 
@@ -109,7 +110,7 @@ class InfoWindow {
 /// the map's surface; that is, it will not necessarily change orientation
 /// due to map rotations, tilting, or zooming.
 @immutable
-class Marker{
+class Marker implements MapObject{
   /// Creates a set of marker configuration options.
   ///
   /// Default marker options.
@@ -146,9 +147,10 @@ class Marker{
     this.onDrag,
     this.onDragStart,
     this.onDragEnd,
-  }) : assert(alpha == null || (0.0 <= alpha && alpha <= 1.0));
+  }) : assert((0.0 <= alpha && alpha <= 1.0));
 
   /// Uniquely identifies a [Marker].
+  @override
   final String id;
 
   /// The opacity of the marker, between 0.0 and 1.0 inclusive.

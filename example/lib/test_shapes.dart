@@ -70,3 +70,12 @@ Polyline polyline() => Polyline(
     jointType: JointType.bevel,
     color: Colors.blue
 );
+
+Circle circle() => Circle(
+  id: "test1",
+  center: LatLng(8.848028919141523, 104.96513564005897),
+  radius: 100000,
+  strokeColor: Colors.red,
+  strokeWidth: 5,
+  fillColor: Colors.black
+);

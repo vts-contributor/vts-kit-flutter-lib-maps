@@ -2,10 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart'
     show immutable, listEquals, VoidCallback;
 import 'package:flutter/material.dart' show Color, Colors;
+import 'package:maps_core/maps/models/map_objects/map_object.dart';
+
 import 'lat_lng.dart';
 
 /// Draws a polygon through geographical locations on the map.
-class Polygon {
+class Polygon implements MapObject {
   /// Creates an immutable representation of a polygon through geographical locations on the map.
   const Polygon({
     required this.id,
@@ -22,6 +24,7 @@ class Polygon {
   });
 
   /// Uniquely identifies a [Polygon].
+  @override
   final String id;
 
   /// True if the [Polygon] consumes tap events.

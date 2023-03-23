@@ -1,5 +1,5 @@
 import '../models/models.dart';
-import '../models/polyline.dart';
+import '../models/map_objects/polyline.dart';
 
 abstract class CoreMapController {
 
@@ -13,10 +13,10 @@ abstract class CoreMapController {
   Future<void> removePolyline(String polylineId);
 
   Future<void> addCircle(Circle circle);
-  Future<void> removeCircle(Circle circle);
+  Future<void> removeCircle(String circleId);
 
   Future<void> addMarker(Marker marker);
-  Future<void> removeMarker(Marker marker);
+  Future<void> removeMarker(String markerId);
 
   Future<void> reloadWithData(CoreMapData data);
   void changeMapType(CoreMapType type);

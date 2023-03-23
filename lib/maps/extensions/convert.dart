@@ -1,16 +1,24 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:maps_core/maps.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
+import 'package:maps_core/maps/constants.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 
 extension ColorConvert on Color {
-  String toHex() {
-    String hexString = value.toRadixString(16);
+  String? toHex() {
+    if (this == Colors.transparent) {
+      return null;
+    } else {
+      String hexString = value.toRadixString(16);
 
-    return '#${hexString.substring(2, hexString.length)}';
+      return '#${hexString.substring(2, hexString.length)}';
+    }
   }
+
+  double? get opacity => this == Colors.transparent? null: alpha / 255;
 }
 
 
@@ -21,6 +29,12 @@ extension LatLngConvert on LatLng {
 
   vtmap.LatLng toViettel() {
     return vtmap.LatLng(lat, lng);
+  }
+}
+
+extension GoogleLatLngConvert on ggmap.LatLng {
+  LatLng toCore() {
+    return LatLng(latitude, longitude);
   }
 }
 
@@ -48,7 +62,7 @@ extension PolygonConvert on Polygon {
         ...holes.map((list) => list.map((e) => e.toViettel()).toList()).toList()
       ],
       fillColor: fillColor.toHex(),
-      fillOpacity: fillColor.alpha / 255,
+      fillOpacity: fillColor.opacity,
       fillOutlineColor: strokeColor.toHex(),
     );
   }
@@ -74,6 +88,7 @@ extension PolygonConvert on Polygon {
       geometry: points.map((e) => e.toViettel()).toList(),
       lineWidth: strokeWidth.toDouble(),
       lineColor: strokeColor.toHex(),
+      lineOpacity: strokeColor.opacity,
     );
   }
 }
@@ -148,6 +163,78 @@ extension PolylineConvert on Polyline {
       lineWidth: width.toDouble(),
       lineColor: color.toHex(),
       lineJoin: jointType.toViettel(),
+      lineOpacity: color.opacity
+    );
+  }
+}
+
+extension CircleConvert on Circle {
+  ggmap.Circle toGoogle() {
+    return ggmap.Circle(
+      circleId: ggmap.CircleId(id),
+      consumeTapEvents: consumeTapEvents,
+      fillColor: fillColor,
+      center: center.toGoogle(),
+      radius: radius,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      visible: visible,
+      zIndex: zIndex,
+      onTap: onTap
+    );
+  }
+
+  vtmap.CircleOptions toCircleOptions() {
+    return vtmap.CircleOptions(
+      geometry: center.toViettel(),
+      circleColor: fillColor.toHex(),
+      circleRadius: radius / 1000, //kilometer -> meter
+      circleStrokeColor: strokeColor.toHex(),
+      circleStrokeWidth: strokeWidth.toDouble(),
+      circleOpacity: fillColor.opacity,
+      circleStrokeOpacity: strokeColor.opacity
+    );
+  }
+}
+
+extension InfoWindowConvert on InfoWindow {
+  ggmap.InfoWindow toGoogle() {
+    return ggmap.InfoWindow(
+      title: title,
+      snippet: snippet,
+      anchor: anchor,
+      onTap: onTap
+    );
+  }
+}
+
+extension MarkerConvert on Marker {
+  ggmap.Marker toGoogle() {
+    return ggmap.Marker(
+      markerId: ggmap.MarkerId(id),
+      alpha: alpha,
+      anchor: anchor,
+      consumeTapEvents: consumeTapEvents,
+      draggable: draggable,
+      flat: flat,
+      icon: ggmap.BitmapDescriptor.defaultMarker,
+      infoWindow: infoWindow.toGoogle(),
+      position: position.toGoogle(),
+      rotation: rotation,
+      visible: visible,
+      zIndex: zIndex,
+      onTap: onTap,
+      onDrag: (ggmap.LatLng value) => onDrag?.call(value.toCore()),
+      onDragStart: (ggmap.LatLng value) => onDragStart?.call(value.toCore()),
+      onDragEnd: (ggmap.LatLng value) => onDragEnd?.call(value.toCore()),
+    );
+  }
+
+  vtmap.SymbolOptions toSymbolOptions() {
+    return vtmap.SymbolOptions(
+      geometry: position.toViettel(),
+      iconImage: Constant.markerAssetName,
+      textField: infoWindow.title,
     );
   }
 }
