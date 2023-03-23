@@ -79,3 +79,11 @@ Circle circle() => Circle(
   strokeWidth: 5,
   fillColor: Colors.black
 );
+
+Marker marker() => Marker(
+  id: "test1",
+  position: LatLng(8.848028919141523, 104.96513564005897),
+  infoWindow: InfoWindow(
+    title: "Test"
+  ),
+);

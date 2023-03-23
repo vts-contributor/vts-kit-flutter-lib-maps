@@ -54,3 +54,13 @@ extension SetCircleConvert on Set<Circle> {
   }
 }
 
+extension SetMarkerConvert on Set<Marker> {
+  Set<ggmap.Marker> toGoogle() {
+    return map((e) => e.toGoogle()).toSet();
+  }
+
+  Set<vtmap.SymbolOptions> toSymbolOptions() {
+    return map((e) => e.toSymbolOptions()).toSet();
+  }
+}
+

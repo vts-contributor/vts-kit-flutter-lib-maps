@@ -6,6 +6,7 @@ import 'dart:ui' show Offset;
 
 import 'package:flutter/foundation.dart'
     show immutable, ValueChanged, VoidCallback;
+import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import 'lat_lng.dart';
@@ -21,7 +22,7 @@ class InfoWindow {
   const InfoWindow({
     this.title,
     this.snippet,
-    this.anchor = const Offset(0.5, 0.0),
+    this.anchor = Anchor.top,
     this.onTap,
   });
 
@@ -44,7 +45,7 @@ class InfoWindow {
   /// The image point is specified in normalized coordinates: An anchor of
   /// (0.0, 0.0) means the top left corner of the image. An anchor
   /// of (1.0, 1.0) means the bottom right corner of the image.
-  final Offset anchor;
+  final Anchor anchor;
 
   /// onTap callback for this [InfoWindow].
   final VoidCallback? onTap;
@@ -54,7 +55,7 @@ class InfoWindow {
   InfoWindow copyWith({
     String? titleParam,
     String? snippetParam,
-    Offset? anchorParam,
+    Anchor? anchorParam,
     VoidCallback? onTapParam,
   }) {
     return InfoWindow(
@@ -76,7 +77,7 @@ class InfoWindow {
 
     addIfPresent('title', title);
     addIfPresent('snippet', snippet);
-    addIfPresent('anchor', _offsetToJson(anchor));
+    addIfPresent('anchor', _offsetToJson(anchor.offset));
 
     return json;
   }
@@ -102,6 +103,18 @@ class InfoWindow {
   String toString() {
     return 'InfoWindow{title: $title, snippet: $snippet, anchor: $anchor}';
   }
+}
+
+enum Anchor {
+  center,
+  top,
+  bottom,
+  left,
+  right,
+  topLeft,
+  topRight,
+  bottomLeft,
+  bottomRight
 }
 
 /// Marks a geographical location on the map.
@@ -133,7 +146,7 @@ class Marker implements MapObject{
   const Marker({
     required this.id,
     this.alpha = 1.0,
-    this.anchor = const Offset(0.5, 1.0),
+    this.anchor = Anchor.bottom,
     this.consumeTapEvents = false,
     this.draggable = false,
     this.flat = false,
@@ -163,7 +176,7 @@ class Marker implements MapObject{
   /// The image point is specified in normalized coordinates: An anchor of
   /// (0.0, 0.0) means the top left corner of the image. An anchor
   /// of (1.0, 1.0) means the bottom right corner of the image.
-  final Offset anchor;
+  final Anchor anchor;
 
   /// True if the marker icon consumes tap events. If not, the map will perform
   /// default tap handling by centering the map on the marker and displaying its
@@ -217,7 +230,7 @@ class Marker implements MapObject{
   /// unless overwritten by the specified parameters.
   Marker copyWith({
     double? alphaParam,
-    Offset? anchorParam,
+    Anchor? anchorParam,
     bool? consumeTapEventsParam,
     bool? draggableParam,
     bool? flatParam,
@@ -269,7 +282,7 @@ class Marker implements MapObject{
 
     addIfPresent('markerId', id);
     addIfPresent('alpha', alpha);
-    addIfPresent('anchor', _offsetToJson(anchor));
+    addIfPresent('anchor', _offsetToJson(anchor.offset));
     addIfPresent('consumeTapEvents', consumeTapEvents);
     addIfPresent('draggable', draggable);
     addIfPresent('flat', flat);

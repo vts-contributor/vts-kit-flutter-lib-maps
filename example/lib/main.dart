@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:map_core_example/test_google_map_screen.dart';
 import 'package:map_core_example/test_map_screen.dart';
 import 'package:map_core_example/test_vt_map_screen.dart';
+import 'package:maps_core/maps/constants.dart';
 
 void main() => runApp(const MyApp());
 

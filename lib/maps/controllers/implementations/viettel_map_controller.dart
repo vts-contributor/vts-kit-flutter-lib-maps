@@ -23,13 +23,12 @@ class ViettelMapController extends BaseCoreMapController {
     required CoreMapData data,
     CoreMapCallbacks? callback,
   }): _data = data, super(callback) {
-    initAssets(data);
   }
 
   @override
   CoreMapType get coreMapType => CoreMapType.viettel;
 
-  void initAssets(CoreMapData data) async {
+  void _initAssets(CoreMapData data) async {
     _controller.addImageFromAsset(Constant.markerAssetName, Constant.markerAssetPath);
   }
 
@@ -146,9 +145,17 @@ class ViettelMapController extends BaseCoreMapController {
   }
 
   @override
-  Future<void> removeMarker(String markerId) {
-    // TODO: implement removeMarker
-    throw UnimplementedError();
+  Future<void> removeMarker(String markerId) async {
+    if (_viettelMarkerMap.containsKey(markerId)) {
+      final marker = _viettelMarkerMap[markerId];
+
+      if (marker != null) {
+        _controller.removeSymbol(marker);
+
+        data.markers.removeWhere((e) => e.id == markerId);
+        _viettelMarkerMap.removeWhere((key, value) => key == markerId);
+      }
+    }
   }
 
 
@@ -174,6 +181,7 @@ class ViettelMapController extends BaseCoreMapController {
     _addPolygons(data.polygons);
     _addPolylines(data.polylines);
     _addCircles(data.circles);
+    _addMarkers(data.markers);
   }
   void _addPolygons(Set<Polygon> polygons) {
     for (var polygon in polygons) {
@@ -193,6 +201,12 @@ class ViettelMapController extends BaseCoreMapController {
     }
   }
 
+  void _addMarkers(Set<Marker> markers) {
+    for (var marker in markers) {
+      addMarker(marker);
+    }
+  }
+
   Future<void> _clearShapes() async {
     _controller.clearCircles();
     _controller.clearLines();
@@ -205,7 +219,8 @@ class ViettelMapController extends BaseCoreMapController {
     _viettelMarkerMap.clear();
   }
 
-  void onMapLoaded() {
+  void onStyleLoaded() {
+    _initAssets(data);
     _addShapes(_data);
   }
 }

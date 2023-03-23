@@ -34,7 +34,7 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
       onStyleLoadedCallback: () {
         onStyleLoadedWasCalled = true;
 
-        _controller?.onMapLoaded();
+        _controller?.onStyleLoaded();
 
         if (_controller != null) {
           //use '!' instead of 'late' because this is less error-prone

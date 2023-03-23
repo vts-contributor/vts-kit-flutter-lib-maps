@@ -1,9 +1,12 @@
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:maps_core/maps/models/geometry.dart';
 import 'package:vtmap_gl/vtmap_gl.dart';
@@ -28,11 +31,12 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           IconButton(
               icon: const Icon(Icons.add),
               onPressed: () async {
-                controller?.addCircle(CircleOptions(
-                  circleRadius: 100,
-                  circleStrokeWidth: 10,
-                  circleStrokeColor: "#d1af60",
-                  circleColor: "#13b5d1"
+                final ByteData bytes = await rootBundle.load(Constant.markerAssetPath);
+                final Uint8List list = bytes.buffer.asUint8List();
+                await controller?.addImage(Constant.markerAssetName, list);
+                controller?.addSymbol(SymbolOptions(
+                  iconImage: Constant.markerAssetName,
+                  geometry: LatLng(9.823077422713277, 105.81830599510204)
                 ));
               }
           )

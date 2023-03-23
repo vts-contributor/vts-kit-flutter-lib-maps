@@ -109,6 +109,17 @@ class TestDialog extends StatelessWidget {
               controller.removeCircle(circle().id);
             }, icon: Icon(Icons.delete),)
           ],
+        ),
+        Row(
+          children: [
+            ElevatedButton(onPressed: () {
+              controller.addMarker(marker());
+            }, child: Text("add a marker")),
+            SizedBox(width: 10,),
+            IconButton(onPressed: () {
+              controller.removeMarker(marker().id);
+            }, icon: Icon(Icons.delete),)
+          ],
         )
       ],
     );

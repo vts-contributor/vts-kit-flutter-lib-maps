@@ -202,7 +202,7 @@ extension InfoWindowConvert on InfoWindow {
     return ggmap.InfoWindow(
       title: title,
       snippet: snippet,
-      anchor: anchor,
+      anchor: anchor.offset,
       onTap: onTap
     );
   }
@@ -213,7 +213,7 @@ extension MarkerConvert on Marker {
     return ggmap.Marker(
       markerId: ggmap.MarkerId(id),
       alpha: alpha,
-      anchor: anchor,
+      anchor: anchor.offset,
       consumeTapEvents: consumeTapEvents,
       draggable: draggable,
       flat: flat,
@@ -234,7 +234,59 @@ extension MarkerConvert on Marker {
     return vtmap.SymbolOptions(
       geometry: position.toViettel(),
       iconImage: Constant.markerAssetName,
-      textField: infoWindow.title,
+      iconSize: 1,
+      iconColor: Colors.blue.toHex(),
+      iconAnchor: anchor.string,
+      // textField: infoWindow.title,
+      // textAnchor: infoWindow.anchor.toString()
     );
+  }
+}
+
+extension AnchorConvert on Anchor {
+  Offset get offset {
+    switch(this) {
+      case Anchor.center:
+        return const Offset(0.5, 0.5);
+      case Anchor.top:
+        return const Offset(0.5, 0);
+      case Anchor.bottom:
+        return const Offset(0.5, 1);
+      case Anchor.left:
+        return const Offset(0, 0.5);
+      case Anchor.right:
+        return const Offset(1, 0.5);
+      case Anchor.topLeft:
+        return const Offset(0, 0);
+      case Anchor.topRight:
+        return const Offset(1, 0);
+      case Anchor.bottomLeft:
+        return const Offset(0, 1);
+      case Anchor.bottomRight:
+        return const Offset(1, 1);
+    }
+  }
+
+  String get string {
+    switch(this) {
+      case Anchor.center:
+        return "center";
+      case Anchor.top:
+        return "top";
+      case Anchor.bottom:
+        return "bottom";
+      case Anchor.left:
+        return "left";
+      case Anchor.right:
+        return "right";
+      case Anchor.topLeft:
+        return "top-left";
+      case Anchor.topRight:
+        return "top-right";
+      case Anchor.bottomLeft:
+        return "bottom-left";
+      case Anchor.bottomRight:
+        return "bottom-right";
+    }
   }
 }
