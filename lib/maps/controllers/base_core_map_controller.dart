@@ -4,7 +4,7 @@ import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
 
 abstract class BaseCoreMapController implements CoreMapController {
-  CoreMapCallbacks? callbacks;
+  final CoreMapCallbacks? callbacks;
 
   final String logTag = "CORE MAP CONTROLLER";
 

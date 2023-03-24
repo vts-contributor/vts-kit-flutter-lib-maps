@@ -48,7 +48,7 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
       circles: data.circles.toGoogle().toSet(),
       markers: data.markers.toGoogle(_controller).toSet(),
       onCameraMove: (position) {
-        _controller?.currentCameraPosition = position;
+        _controller?.onCameraMove(position);
       },
     );
   }

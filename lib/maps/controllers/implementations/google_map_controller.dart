@@ -28,7 +28,7 @@ class GoogleMapController extends BaseCoreMapController
 
   final Map<String, Uint8List> _bitmapMap = {};
 
-  gg.CameraPosition currentCameraPosition;
+  gg.CameraPosition _currentCameraPosition;
 
   @override
   CoreMapData get data => _data;
@@ -36,7 +36,10 @@ class GoogleMapController extends BaseCoreMapController
   GoogleMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callback,
-  }): _data = data, currentCameraPosition = data.initialCameraPosition.toGoogle(), super(callback) {
+  }): _data = data,
+        _currentCameraPosition = data.initialCameraPosition.toGoogle(),
+        super(callback)
+  {
     _initAssets(data);
   }
 
@@ -151,6 +154,10 @@ class GoogleMapController extends BaseCoreMapController
 
   @override
   CameraPosition getCurrentPosition() {
-    return currentCameraPosition.toCore();
+    return _currentCameraPosition.toCore();
+  }
+
+  void onCameraMove(gg.CameraPosition position) {
+    _currentCameraPosition = position;
   }
 }
