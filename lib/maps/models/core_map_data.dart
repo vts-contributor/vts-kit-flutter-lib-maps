@@ -28,12 +28,21 @@ class CoreMapData {
   final Set<Circle> circles;
   final Set<Marker> markers;
 
-  CoreMapData copyWith() {
+  CoreMapData copyWith({
+    String? accessToken,
+    CameraPosition? initialCameraPosition,
+    Set<Polygon>? polygons,
+    Set<Polyline>? polylines,
+    Set<Marker>? markers,
+    Set<Circle>? circles,
+  }) {
     return CoreMapData(
-      accessToken: accessToken,
-      initialCameraPosition: initialCameraPosition,
-      polygons: polygons,
-      polylines: polylines
+      accessToken: accessToken ?? this.accessToken,
+      initialCameraPosition: initialCameraPosition ?? this.initialCameraPosition,
+      polygons: polygons ?? this.polygons,
+      polylines: polylines ?? this.polylines,
+      markers: markers ?? this.markers,
+      circles: circles ?? this.circles,
     );
   }
 }

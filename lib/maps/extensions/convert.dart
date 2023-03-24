@@ -33,6 +33,12 @@ extension LatLngConvert on LatLng {
   }
 }
 
+extension VTLatLngConvert on vtmap.LatLng {
+  LatLng toCore() {
+    return LatLng(latitude, longitude);
+  }
+}
+
 extension GoogleLatLngConvert on ggmap.LatLng {
   LatLng toCore() {
     return LatLng(latitude, longitude);
@@ -109,7 +115,30 @@ extension CameraPositionConvert on CameraPosition {
         target: target.toGoogle(),
         bearing: bearing,
         tilt: tilt,
-        zoom: zoom
+        //persist with vtmap_gl zoom
+        zoom: zoom > 1? zoom + 1: zoom
+    );
+  }
+}
+
+extension VTCameraPositionConvert on vtmap.CameraPosition {
+  CameraPosition toCore() {
+    return CameraPosition(
+      target: target.toCore(),
+      bearing: bearing,
+      tilt: tilt,
+      zoom: zoom
+    );
+  }
+}
+
+extension GGCameraPositionConvert on ggmap.CameraPosition {
+  CameraPosition toCore() {
+    return CameraPosition(
+        target: target.toCore(),
+        bearing: bearing,
+        tilt: tilt,
+        zoom: zoom > 1? zoom - 1: zoom
     );
   }
 }

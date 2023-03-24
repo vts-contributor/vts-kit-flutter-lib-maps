@@ -17,11 +17,18 @@ abstract class BaseCoreMapController implements CoreMapController {
       return;
     }
 
-    callbacks?.onChangeMapType?.call(data, coreMapType, type);
+    callbacks?.onChangeMapType?.call(getCurrentData(), coreMapType, type);
 
     //After map has been changed, the controller is re-created so should free resources here
     onDispose();
   }
 
   void onDispose();
+
+  ///Need to persist camera position
+  CoreMapData getCurrentData() {
+    return data.copyWith(
+      initialCameraPosition: getCurrentPosition()
+    );
+  }
 }

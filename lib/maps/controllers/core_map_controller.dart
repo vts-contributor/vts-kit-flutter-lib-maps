@@ -21,5 +21,8 @@ abstract class CoreMapController {
 
   Future<void> reloadWithData(CoreMapData data);
   void changeMapType(CoreMapType type);
+
+  CameraPosition getCurrentPosition();
 }
+
 

@@ -87,5 +87,5 @@ Marker marker() => Marker(
     title: "Test"
   ),
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
-  icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
+  // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
 );

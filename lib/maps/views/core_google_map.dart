@@ -47,6 +47,9 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
       polylines: data.polylines.toGoogle().toSet(),
       circles: data.circles.toGoogle().toSet(),
       markers: data.markers.toGoogle(_controller).toSet(),
+      onCameraMove: (position) {
+        _controller?.currentCameraPosition = position;
+      },
     );
   }
 

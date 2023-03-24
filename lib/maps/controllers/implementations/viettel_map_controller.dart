@@ -259,4 +259,9 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   bool _checkMarkerIconDataWasAdded(MarkerIconData data) {
     return _markerIconNames.contains(data.name);
   }
+
+  @override
+  CameraPosition getCurrentPosition() {
+    return _controller.cameraPosition?.toCore() ?? data.initialCameraPosition;
+  }
 }

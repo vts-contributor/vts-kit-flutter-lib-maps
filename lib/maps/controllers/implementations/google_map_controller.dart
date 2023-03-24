@@ -22,19 +22,21 @@ class GoogleMapController extends BaseCoreMapController
   @override
   CoreMapType get coreMapType => CoreMapType.google;
 
-  final gg.GoogleMapController controller;
+  final gg.GoogleMapController _controller;
 
   CoreMapData _data;
 
   final Map<String, Uint8List> _bitmapMap = {};
 
+  gg.CameraPosition currentCameraPosition;
+
   @override
   CoreMapData get data => _data;
 
-  GoogleMapController(this.controller, {
+  GoogleMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callback,
-  }): _data = data, super(callback) {
+  }): _data = data, currentCameraPosition = data.initialCameraPosition.toGoogle(), super(callback) {
     _initAssets(data);
   }
 
@@ -100,7 +102,7 @@ class GoogleMapController extends BaseCoreMapController
   @override
   Future<void> reloadWithData(CoreMapData data) async {
     _data = data;
-    controller.moveCamera(gg.CameraUpdate.newCameraPosition(
+    _controller.moveCamera(gg.CameraUpdate.newCameraPosition(
         data.initialCameraPosition.toGoogle()));
     notifyListeners();
   }
@@ -108,7 +110,7 @@ class GoogleMapController extends BaseCoreMapController
   @override
   void onDispose() {
     dispose();
-    controller.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -147,4 +149,8 @@ class GoogleMapController extends BaseCoreMapController
     return _bitmapMap[name];
   }
 
+  @override
+  CameraPosition getCurrentPosition() {
+    return currentCameraPosition.toCore();
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_core_example/test_shapes.dart';
+import 'package:maps_core/log/log.dart';
 
 class TestGoogleMapScreen extends StatefulWidget {
 
@@ -98,6 +99,9 @@ class _TestGoogleMapScreenState extends State<TestGoogleMapScreen> {
             strokeWidth: 5,
             fillColor: Colors.black
         )},
+        onTap: (pos) {
+          Log.d("GOOGLEMAP", pos.toString());
+        }
       ),
     );
   }
