@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -168,5 +169,21 @@ extension RootBundleImage on AssetBundle {
   Future<Uint8List> loadImageAsUint8List(String path) async {
     final ByteData bytes = await rootBundle.load(path);
     return bytes.buffer.asUint8List();
+  }
+}
+
+extension DioImageDownload on Dio {
+  Future<Uint8List> downloadImageToBitmap(String url) async {
+
+    final response = await get<List<int>>(
+      url,
+      options: Options(responseType: ResponseType.bytes), // Set the response type to `stream`.
+    );
+
+    if (response.data != null) {
+      return Uint8List.fromList(response.data!);
+    } else {
+      throw NullThrownError();
+    }
   }
 }

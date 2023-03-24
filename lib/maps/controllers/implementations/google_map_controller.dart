@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
@@ -123,11 +124,19 @@ class GoogleMapController extends BaseCoreMapController
   @override
   Future<void> processBitmapMarkerIcon(MarkerIconData<Uint8List> markerIconData) async {
     if (_checkMarkerIconWasAdded(markerIconData)) return;
+
+    _bitmapMap.putIfAbsent(markerIconData.name, () => markerIconData.data);
+    notifyListeners();
   }
 
   @override
   Future<void> processNetworkMarkerIcon(MarkerIconData<String> markerIconData) async {
     if (_checkMarkerIconWasAdded(markerIconData)) return;
+
+    Uint8List bitmap = await Dio().downloadImageToBitmap(markerIconData.data);
+
+    _bitmapMap.putIfAbsent(markerIconData.name, () => bitmap);
+    notifyListeners();
   }
 
   bool _checkMarkerIconWasAdded(MarkerIconData data) {

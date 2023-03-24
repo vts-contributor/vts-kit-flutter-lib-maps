@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
@@ -239,13 +240,22 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   @override
   Future<void> processBitmapMarkerIcon(MarkerIconData<Uint8List> markerIconData) async {
     if (_checkMarkerIconDataWasAdded(markerIconData)) return;
+
+    _markerIconNames.add(markerIconData.name);
+
+    await _controller.addImage(markerIconData.name, markerIconData.data);
   }
 
   @override
   Future<void> processNetworkMarkerIcon(MarkerIconData<String> markerIconData) async {
     if (_checkMarkerIconDataWasAdded(markerIconData)) return;
-  }
 
+    _markerIconNames.add(markerIconData.name);
+
+    Uint8List bitmap = await Dio().downloadImageToBitmap(markerIconData.data);
+
+    await _controller.addImage(markerIconData.name,bitmap);
+  }
   bool _checkMarkerIconDataWasAdded(MarkerIconData data) {
     return _markerIconNames.contains(data.name);
   }
