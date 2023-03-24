@@ -46,7 +46,7 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
       polygons: data.polygons.toGoogle().toSet(),
       polylines: data.polylines.toGoogle().toSet(),
       circles: data.circles.toGoogle().toSet(),
-      markers: data.markers.toGoogle().toSet(),
+      markers: data.markers.toGoogle(_controller).toSet(),
     );
   }
 

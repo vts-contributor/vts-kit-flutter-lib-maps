@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:typed_data';
 import 'dart:ui' show Offset;
 
 import 'package:flutter/foundation.dart'
     show immutable, ValueChanged, VoidCallback;
+import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import 'lat_lng.dart';
+import 'marker_icon.dart';
 
 Object _offsetToJson(Offset offset) {
   return <Object>[offset.dx, offset.dy];
@@ -150,7 +153,7 @@ class Marker implements MapObject{
     this.consumeTapEvents = false,
     this.draggable = false,
     this.flat = false,
-    this.icon,
+    this.icon = MarkerIcon.defaultIcon,
     this.infoWindow = InfoWindow.noText,
     required this.position,
     this.rotation = 0.0,
@@ -191,7 +194,7 @@ class Marker implements MapObject{
   final bool flat;
 
   /// A description of the bitmap used to draw the marker icon.
-  final String? icon;
+  final MarkerIcon icon;
 
   /// A Google Maps InfoWindow.
   ///
@@ -234,7 +237,7 @@ class Marker implements MapObject{
     bool? consumeTapEventsParam,
     bool? draggableParam,
     bool? flatParam,
-    String? iconParam,
+    MarkerIcon? iconParam,
     InfoWindow? infoWindowParam,
     LatLng? positionParam,
     double? rotationParam,

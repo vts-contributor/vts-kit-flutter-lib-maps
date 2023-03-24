@@ -1,6 +1,7 @@
 import '../models/models.dart';
-import '../models/map_objects/polyline.dart';
 
+//This interface should only be used by client
+//If you're a maintainer, please make your new controller extends BaseCoreMapController
 abstract class CoreMapController {
 
   CoreMapType get coreMapType;

@@ -31,12 +31,15 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           IconButton(
               icon: const Icon(Icons.add),
               onPressed: () async {
-                final ByteData bytes = await rootBundle.load(Constant.markerAssetPath);
+                final ByteData bytes = await rootBundle.load(Constant.markerDefaultAssetPath);
                 final Uint8List list = bytes.buffer.asUint8List();
-                await controller?.addImage(Constant.markerAssetName, list);
+                await controller?.addImage(Constant.markerDefaultName, list);
                 controller?.addSymbol(SymbolOptions(
-                  iconImage: Constant.markerAssetName,
-                  geometry: LatLng(9.823077422713277, 105.81830599510204)
+                  iconImage: Constant.markerDefaultName,
+                  geometry: LatLng(9.823077422713277, 105.81830599510204),
+                  iconSize: 0.1,
+                  textField: "ssssssssssssssssssssssssadada",
+                  textSize: 100
                 ));
               }
           )
@@ -45,7 +48,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
       body: VTMap(
         accessToken: "49013166841fe36d7fa7f395fce4a663",
         initialCameraPosition:
-        const CameraPosition(target: LatLng(9.823077422713277, 105.81830599510204),zoom: 6),
+        const CameraPosition(target: LatLng(9.823077422713277, 105.81830599510204),zoom: 10),
         onMapCreated: (controller) {
           this.controller = controller;
         },

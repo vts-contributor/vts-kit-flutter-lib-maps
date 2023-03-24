@@ -1,5 +1,6 @@
 import 'package:maps_core/maps.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
+import 'package:maps_core/maps/controllers/implementations/google_map_controller.dart';
 import 'package:maps_core/maps/models/map_objects/polygon.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 import 'convert.dart';
@@ -55,8 +56,8 @@ extension SetCircleConvert on Set<Circle> {
 }
 
 extension SetMarkerConvert on Set<Marker> {
-  Set<ggmap.Marker> toGoogle() {
-    return map((e) => e.toGoogle()).toSet();
+  Set<ggmap.Marker> toGoogle([GoogleMapController? controller]) {
+    return map((e) => e.toGoogle(controller?.getBitmapOf(e.icon.data.name))).toSet();
   }
 
   Set<vtmap.SymbolOptions> toSymbolOptions() {

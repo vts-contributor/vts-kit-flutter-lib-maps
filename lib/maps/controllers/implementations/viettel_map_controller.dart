@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
@@ -19,18 +21,15 @@ class ViettelMapController extends BaseCoreMapController {
   final Map<String, vt.Circle> _viettelCircleMap = {};
   final Map<String, vt.Symbol> _viettelMarkerMap = {};
 
+  //used to check if marker icon has been added
+  final Set<String> _markerIconNames = {};
+
   ViettelMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callback,
-  }): _data = data, super(callback) {
-  }
-
+  }): _data = data, super(callback);
   @override
   CoreMapType get coreMapType => CoreMapType.viettel;
-
-  void _initAssets(CoreMapData data) async {
-    _controller.addImageFromAsset(Constant.markerAssetName, Constant.markerAssetPath);
-  }
 
   @override
   Future<void> addPolygon(Polygon polygon) async {
@@ -138,6 +137,9 @@ class ViettelMapController extends BaseCoreMapController {
 
     //add a dummy object to map
     _viettelMarkerMap.putIfAbsent(marker.id, () => vt.Symbol("dummy", const vt.SymbolOptions()));
+
+    //marker resource must has been initialized before being added to the map
+    await marker.icon.data.initResource(this);
     final symbol = await _controller.addSymbol(marker.toSymbolOptions());
 
     _viettelMarkerMap.update(marker.id, (_) => symbol);
@@ -157,7 +159,6 @@ class ViettelMapController extends BaseCoreMapController {
       }
     }
   }
-
 
   @override
   Future<void> reloadWithData(CoreMapData data) async {
@@ -219,8 +220,32 @@ class ViettelMapController extends BaseCoreMapController {
     _viettelMarkerMap.clear();
   }
 
-  void onStyleLoaded() {
-    _initAssets(data);
+  Future<void> onStyleLoaded() async {
     _addShapes(_data);
+  }
+
+  @override
+  Future<void> processAssetMarkerIcon(MarkerIconData<String> markerIconData) async {
+    if (_checkMarkerIconDataWasAdded(markerIconData)) return;
+
+    _markerIconNames.add(markerIconData.name);
+
+    if (! await _controller.addImageFromAsset(markerIconData.name, markerIconData.data)) {
+      _markerIconNames.remove(markerIconData.name);
+    }
+  }
+
+  @override
+  Future<void> processBitmapMarkerIcon(MarkerIconData<Uint8List> markerIconData) async {
+    if (_checkMarkerIconDataWasAdded(markerIconData)) return;
+  }
+
+  @override
+  Future<void> processNetworkMarkerIcon(MarkerIconData<String> markerIconData) async {
+    if (_checkMarkerIconDataWasAdded(markerIconData)) return;
+  }
+
+  bool _checkMarkerIconDataWasAdded(MarkerIconData data) {
+    return _markerIconNames.contains(data.name);
   }
 }

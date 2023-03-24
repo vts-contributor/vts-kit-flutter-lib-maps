@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
@@ -19,14 +22,23 @@ class GoogleMapController extends BaseCoreMapController with ChangeNotifier {
 
   CoreMapData _data;
 
+  final Map<String, Uint8List> _bitmapMap = {};
+
   @override
   CoreMapData get data => _data;
 
   GoogleMapController(this.controller, {
     required CoreMapData data,
     CoreMapCallbacks? callback,
-  }): _data = data, super(callback);
+  }): _data = data, super(callback) {
+    _initAssets(data);
+  }
 
+  Future<void> _initAssets(CoreMapData data) async {
+    for (final marker in data.markers) {
+      await marker.icon.data.initResource(this);
+    }
+  }
 
   @override
   Future<void> addPolygon(Polygon polygon) async {
@@ -60,6 +72,7 @@ class GoogleMapController extends BaseCoreMapController with ChangeNotifier {
 
   @override
   Future<void> addMarker(Marker marker) async {
+    await marker.icon.data.initResource(this);
     _addMapObject(marker, data.markers);
   }
 
@@ -92,6 +105,35 @@ class GoogleMapController extends BaseCoreMapController with ChangeNotifier {
   void onDispose() {
     dispose();
     controller.dispose();
+  }
+
+  @override
+  Future<void> processAssetMarkerIcon(MarkerIconData<String> markerIconData) async {
+    if (_checkMarkerIconWasAdded(markerIconData)) return;
+
+    final ByteData bytes = await rootBundle.load(markerIconData.data);
+    final Uint8List bitmap = bytes.buffer.asUint8List();
+
+    _bitmapMap.putIfAbsent(markerIconData.name, () => bitmap);
+    notifyListeners();
+  }
+
+  @override
+  Future<void> processBitmapMarkerIcon(MarkerIconData<Uint8List> markerIconData) async {
+    if (_checkMarkerIconWasAdded(markerIconData)) return;
+  }
+
+  @override
+  Future<void> processNetworkMarkerIcon(MarkerIconData<String> markerIconData) async {
+    if (_checkMarkerIconWasAdded(markerIconData)) return;
+  }
+
+  bool _checkMarkerIconWasAdded(MarkerIconData data) {
+    return _bitmapMap.containsKey(data.name);
+  }
+
+  Uint8List? getBitmapOf(String name) {
+    return _bitmapMap[name];
   }
 
 }

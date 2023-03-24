@@ -86,4 +86,5 @@ Marker marker() => Marker(
   infoWindow: InfoWindow(
     title: "Test"
   ),
+  icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
 );

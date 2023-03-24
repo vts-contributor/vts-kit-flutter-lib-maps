@@ -1,4 +1,4 @@
 class Constant {
-  static String markerAssetPath = "packages/maps_core/assets/marker.png";
-  static String markerAssetName = "map_marker";
+  static const String markerDefaultAssetPath = "packages/maps_core/assets/default_marker.png";
+  static const String markerDefaultName = "default_08506dfjlsdp42odfo_marker_2432023";
 }

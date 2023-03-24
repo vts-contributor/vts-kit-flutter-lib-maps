@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -209,7 +210,15 @@ extension InfoWindowConvert on InfoWindow {
 }
 
 extension MarkerConvert on Marker {
-  ggmap.Marker toGoogle() {
+  ggmap.Marker toGoogle([Uint8List? markerBitmap]) {
+    ggmap.BitmapDescriptor markerDescriptor;
+
+    if (markerBitmap != null) {
+      markerDescriptor = ggmap.BitmapDescriptor.fromBytes(markerBitmap);
+    } else {
+      markerDescriptor = ggmap.BitmapDescriptor.defaultMarker;
+    }
+
     return ggmap.Marker(
       markerId: ggmap.MarkerId(id),
       alpha: alpha,
@@ -217,7 +226,7 @@ extension MarkerConvert on Marker {
       consumeTapEvents: consumeTapEvents,
       draggable: draggable,
       flat: flat,
-      icon: ggmap.BitmapDescriptor.defaultMarker,
+      icon: markerDescriptor,
       infoWindow: infoWindow.toGoogle(),
       position: position.toGoogle(),
       rotation: rotation,
@@ -233,8 +242,7 @@ extension MarkerConvert on Marker {
   vtmap.SymbolOptions toSymbolOptions() {
     return vtmap.SymbolOptions(
       geometry: position.toViettel(),
-      iconImage: Constant.markerAssetName,
-      iconSize: 1,
+      iconImage: icon.data.name,
       iconColor: Colors.blue.toHex(),
       iconAnchor: anchor.string,
       // textField: infoWindow.title,

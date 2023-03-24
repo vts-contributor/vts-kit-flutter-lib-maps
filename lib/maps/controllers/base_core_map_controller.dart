@@ -1,6 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/models/core_map_callbacks.dart';
 
 abstract class BaseCoreMapController implements CoreMapController {
   CoreMapCallbacks? callbacks;
@@ -24,5 +25,9 @@ abstract class BaseCoreMapController implements CoreMapController {
 
   void onDispose();
 
+  Future<void> processAssetMarkerIcon(MarkerIconData<String> markerIconData);
 
+  Future<void> processNetworkMarkerIcon(MarkerIconData<String> markerIconData);
+
+  Future<void> processBitmapMarkerIcon(MarkerIconData<Uint8List> markerIconData);
 }
