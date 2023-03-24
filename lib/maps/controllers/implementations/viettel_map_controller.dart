@@ -7,9 +7,10 @@ import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 import '../../../maps.dart';
+import '../marker_icon_data_processor.dart';
 
 
-class ViettelMapController extends BaseCoreMapController {
+class ViettelMapController extends BaseCoreMapController implements MarkerIconDataProcessor {
 
   final vt.MapboxMapController _controller;
 

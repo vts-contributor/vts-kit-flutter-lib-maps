@@ -1,8 +1,11 @@
 // Copied from flutter_core
 
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/network/language.dart';
@@ -159,4 +162,11 @@ extension Tokenx on Token {
 
 extension MapX on Map<String, String>? {
   String valueOrKey(String key) => this?[key] ?? key;
+}
+
+extension RootBundleImage on AssetBundle {
+  Future<Uint8List> loadImageAsUint8List(String path) async {
+    final ByteData bytes = await rootBundle.load(path);
+    return bytes.buffer.asUint8List();
+  }
 }

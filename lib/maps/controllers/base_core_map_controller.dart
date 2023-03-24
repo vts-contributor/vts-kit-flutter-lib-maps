@@ -24,10 +24,4 @@ abstract class BaseCoreMapController implements CoreMapController {
   }
 
   void onDispose();
-
-  Future<void> processAssetMarkerIcon(MarkerIconData<String> markerIconData);
-
-  Future<void> processNetworkMarkerIcon(MarkerIconData<String> markerIconData);
-
-  Future<void> processBitmapMarkerIcon(MarkerIconData<Uint8List> markerIconData);
 }
