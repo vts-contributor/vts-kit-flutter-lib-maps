@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
@@ -26,10 +27,14 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   //used to check if marker icon has been added
   final Set<String> _markerIconNames = {};
 
+  bool _cameraIsMoving = false;
+
   ViettelMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callback,
-  }): _data = data, super(callback);
+  }): _data = data, super(callback) {
+    _initHandlers();
+  }
   @override
   CoreMapType get coreMapType => CoreMapType.viettel;
 
@@ -224,6 +229,8 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
 
   Future<void> onStyleLoaded() async {
     _addShapes(_data);
+
+    callbacks?.onMapCreated?.call(this);
   }
 
   @override
@@ -263,5 +270,33 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   @override
   CameraPosition getCurrentPosition() {
     return _controller.cameraPosition?.toCore() ?? data.initialCameraPosition;
+  }
+
+  void _initHandlers() {
+    _initCameraMoveHandler();
+  }
+
+  void _initCameraMoveHandler() {
+    if (callbacks?.onCameraMove != null) {
+      _controller.addListener(() {
+        if (_cameraIsMoving) {
+          _onCameraMove(_controller.cameraPosition);
+        }
+      });
+    }
+  }
+
+  void _onCameraMove(vt.CameraPosition? position) {
+    if (position != null) {
+      callbacks?.onCameraMove?.call(position.toCore());
+    }
+  }
+
+  void onCameraMovingStared() {
+    _cameraIsMoving = true;
+  }
+
+  void onCameraIdle() {
+    _cameraIsMoving = false;
   }
 }

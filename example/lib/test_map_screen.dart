@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:map_core_example/test_shapes.dart';
+import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/controllers/core_map_controller_completer.dart';
 
@@ -55,9 +56,12 @@ class _TestMapScreenState extends State<TestMapScreen> {
           initialCameraPosition: CameraPosition(target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
         ),
         callbacks: CoreMapCallbacks(
-            onMapCreated: (controller) {
-              _controllerCompleter.complete(controller);
-            }
+          onMapCreated: (controller) {
+            _controllerCompleter.complete(controller);
+          },
+          onCameraMove: (position) {
+            Log.d("Test Map Screen", "${position.toString()}");
+          }
         ),
       ),
     );

@@ -23,23 +23,13 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
 
   ViettelMapController? _controller;
 
-  /// just to make sure if onStyleLoadedCallback may be called first (may never happen)
-  bool onStyleLoadedWasCalled = false;
-
   @override
   Widget build(BuildContext context) {
     return vt.VTMap(
       accessToken: widget.data.accessToken,
       initialCameraPosition: widget.data.initialCameraPosition.toViettel(),
       onStyleLoadedCallback: () {
-        onStyleLoadedWasCalled = true;
-
         _controller?.onStyleLoaded();
-
-        if (_controller != null) {
-          //use '!' instead of 'late' because this is less error-prone
-          widget.callbacks?.onMapCreated?.call(_controller!);
-        }
       },
       onMapCreated: (vt.MapboxMapController mapboxMapController) {
         final controller = ViettelMapController(mapboxMapController,
@@ -49,17 +39,16 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
 
         _controller = controller;
 
-        //don't call onMapCreated from callbacks here because map is not ready yet
-        //use onStyleLoadedCallback to be synchronized with GoogleMap
-        //but just to make sure controller will be returned
-        if (onStyleLoadedWasCalled) {
-          widget.callbacks?.onMapCreated?.call(controller);
-        }
+        //return the controller back to user in onStyleLoaded()
+      },
+      trackCameraPosition: widget.callbacks?.onCameraMove != null,
+      myLocationTrackingMode: vt.MyLocationTrackingMode.None,
+      onCameraMovingStarted: () {
+        _controller?.onCameraMovingStared();
+      },
+      onCameraIdle: () {
+        _controller?.onCameraIdle();
       },
     );
-  }
-
-  void _tryReturnController() {
-
   }
 }

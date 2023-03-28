@@ -159,5 +159,7 @@ class GoogleMapController extends BaseCoreMapController
 
   void onCameraMove(gg.CameraPosition position) {
     _currentCameraPosition = position;
+
+    callbacks?.onCameraMove?.call(position.toCore());
   }
 }

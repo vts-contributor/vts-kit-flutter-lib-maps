@@ -28,7 +28,7 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
   Widget build(BuildContext context) {
 
     CoreMapData data = _controller?.data ?? widget.data;
-    final test = data.circles.toGoogle().toList();
+
     return gg.GoogleMap(
       initialCameraPosition: data.initialCameraPosition.toGoogle(),
       onMapCreated: (gg.GoogleMapController googleMapController) {

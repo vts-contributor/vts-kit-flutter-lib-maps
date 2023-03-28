@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:maps_core/maps/models/geometry.dart';
@@ -52,6 +53,19 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
         onMapCreated: (controller) {
           this.controller = controller;
         },
+        onCameraTrackingChanged: (mode) {
+          Log.d("VTMAP", "onCameraTrackingChanged: ${mode.toString()}");
+        },
+        onCameraMovingStarted: () {
+          Log.d("VTMAP", "onCameraMovingStarted: ${controller?.cameraPosition?.target.toString()}");
+        },
+        onCameraIdle: () {
+          Log.d("VTMAP", "onCameraIdle: ${controller?.cameraPosition?.target.toString()}");
+        },
+        onCameraTrackingDismissed: () {
+          Log.d("VTMAP", "onCameraTrackingDismissed: ${controller?.cameraPosition?.target.toString()}");
+        },
+        trackCameraPosition: true,
       ),
     );
   }
