@@ -20,3 +20,4 @@ export 'core_map_type.dart';
 export 'map_objects/map_objects.dart';
 export 'core_map_callbacks.dart';
 export 'camera_position.dart';
+export 'camera_update.dart';

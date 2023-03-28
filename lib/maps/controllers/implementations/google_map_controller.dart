@@ -173,4 +173,9 @@ class GoogleMapController extends BaseCoreMapController
   Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate) async {
     return (await _controller.getLatLng(screenCoordinate.toGoogle())).toCore();
   }
+
+  @override
+  Future<void> moveCamera(CameraUpdate cameraUpdate) async {
+    await _controller.moveCamera(cameraUpdate.toGoogle());
+  }
 }

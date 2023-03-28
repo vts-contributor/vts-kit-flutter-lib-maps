@@ -14,5 +14,13 @@ void main() {
       expect(JointType.mitered.toViettel(), "mitered");
       expect(JointType.round.toViettel(), "round");
     });
+
+    test("camera update test", () {
+      CameraPosition position1 = CameraPosition(
+        target: LatLng(10.3091231, 105.102020321),
+        zoom: 5,
+      );
+
+    });
   });
 }
