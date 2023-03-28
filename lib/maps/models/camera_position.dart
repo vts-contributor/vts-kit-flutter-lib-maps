@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:ui' show Offset;
+
 import 'package:flutter/foundation.dart';
 
-import 'lat_lng.dart';
-
+import 'map_objects/lat_lng.dart';
 
 /// The position of the map "camera", the view point from which the world is shown in the map view.
 ///
@@ -67,6 +68,26 @@ class CameraPosition {
     'zoom': zoom,
   };
 
+  /// Deserializes [CameraPosition] from a map.
+  ///
+  /// Mainly for internal use.
+  static CameraPosition? fromMap(Object? json) {
+    if (json == null || json is! Map<dynamic, dynamic>) {
+      return null;
+    }
+
+    final LatLng? target = LatLng.fromJson(json['target']);
+    if (target == null) {
+      return null;
+    }
+    return CameraPosition(
+      bearing: json['bearing'] as double,
+      target: target,
+      tilt: json['tilt'] as double,
+      zoom: json['zoom'] as double,
+    );
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -88,4 +109,18 @@ class CameraPosition {
   @override
   String toString() =>
       'CameraPosition(bearing: $bearing, target: $target, tilt: $tilt, zoom: $zoom)';
+
+  CameraPosition copyWith({
+    double? bearing,
+    LatLng? target,
+    double? zoom,
+    double? tilt,
+  }) {
+    return CameraPosition(
+      target: target ?? this.target,
+      bearing: bearing ?? this.bearing,
+      zoom: zoom ?? this.zoom,
+      tilt: tilt ?? this.tilt
+    );
+  }
 }

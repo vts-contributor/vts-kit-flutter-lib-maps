@@ -342,7 +342,6 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     });
   }
 
-
   void _onCameraMove(vt.CameraPosition? position) {
     if (position != null) {
       callbacks?.onCameraMove?.call(position.toCore());
@@ -375,5 +374,12 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   @override
   Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate) async {
     return (await _controller.toLatLng(screenCoordinate.toPoint())).toCore();
+  }
+
+  void _defaultMarkerOnTap(Marker marker) {
+    _controller.moveCamera(vt.CameraUpdate.newLatLng(
+      marker.position.toViettel()
+    ));
+    CameraPosition cameraPosition = CameraPosition(target: LatLng(0,0));
   }
 }

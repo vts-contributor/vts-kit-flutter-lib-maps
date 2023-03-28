@@ -12,3 +12,7 @@ see the [add-to-app documentation](https://flutter.dev/docs/development/add-to-a
 
 ## Marker color bug from mapbox
 https://github.com/mapbox/mapbox-gl-native/issues/10829
+
+## Unit tests
+convert extensions
+camera update classes

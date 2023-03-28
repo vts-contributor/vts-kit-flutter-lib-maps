@@ -355,3 +355,18 @@ extension ViettelScreenCoordinateConvert on Point<num> {
     return ScreenCoordinate(x: x.toInt(), y: y.toInt());
   }
 }
+
+extension LatLngBoundsConvert on LatLngBounds {
+  ggmap.LatLngBounds toGoogle() {
+    return ggmap.LatLngBounds(
+      northeast: northeast.toGoogle(),
+      southwest: southwest.toGoogle(),
+    );
+  }
+  vtmap.LatLngBounds toViettel() {
+    return vtmap.LatLngBounds(
+      northeast: northeast.toViettel(),
+      southwest: southwest.toViettel(),
+    );
+  }
+}

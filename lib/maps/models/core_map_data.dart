@@ -1,6 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/models/map_objects/camera_position.dart';
+import 'package:maps_core/maps/models/camera_position.dart';
 import 'package:maps_core/maps/models/map_objects/polygon.dart';
 
 ///State of the map
