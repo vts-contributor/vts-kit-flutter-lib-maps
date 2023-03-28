@@ -175,10 +175,6 @@ class Marker implements MapObject{
   final double alpha;
 
   /// The icon image point that will be placed at the [position] of the marker.
-  ///
-  /// The image point is specified in normalized coordinates: An anchor of
-  /// (0.0, 0.0) means the top left corner of the image. An anchor
-  /// of (1.0, 1.0) means the bottom right corner of the image.
   final Anchor anchor;
 
   /// True if the marker icon consumes tap events. If not, the map will perform

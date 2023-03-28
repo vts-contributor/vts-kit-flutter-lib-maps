@@ -6,6 +6,7 @@ import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
+import 'package:collection/collection.dart';
 
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
@@ -19,7 +20,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
 
   CoreMapData _data;
 
-  //Store vtmap shapes so that we can remove them
+  //Store core map shape id to vtmap shape mapping so that we can remove them later
   final Map<String, ViettelPolygon> _viettelPolygonMap = {};
   final Map<String, vt.Line> _viettelPolylineMap = {};
   final Map<String, vt.Circle> _viettelCircleMap = {};
@@ -275,6 +276,10 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
 
   void _initHandlers() {
     _initCameraMoveHandler();
+    _initMarkerTapHandler();
+    _initPolygonTapHandler();
+    _initCircleTapHandler();
+    _initPolylineTapHandler();
   }
 
   void _initCameraMoveHandler() {
@@ -286,6 +291,57 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
       });
     }
   }
+
+  void _initMarkerTapHandler() {
+    _controller.onSymbolTapped.add((vtSymbol) {
+      String? markerId = _viettelMarkerMap.keyWhere((value) => value.id == vtSymbol.id);
+      final marker = data.markers.firstWhereOrNull((element) => element.id == markerId);
+      marker?.onTap?.call();
+    });
+  }
+
+  void _initCircleTapHandler() {
+    _controller.onCircleTapped.add((vtCircle) {
+      String? circleId = _viettelCircleMap.keyWhere((value) => value.id == vtCircle.id);
+      final circle = data.circles.firstWhereOrNull((element) => element.id == circleId);
+      circle?.onTap?.call();
+    });
+  }
+
+  void _initPolylineTapHandler() {
+    _controller.onLineTapped.add((vtLine) {
+      String? polylineId = _viettelPolylineMap.keyWhere((value) => value.id == vtLine.id);
+      final polyline = data.polylines.firstWhereOrNull((element) => element.id == polylineId);
+      polyline?.onTap?.call();
+    });
+  }
+
+  void _initPolygonTapHandler() {
+
+    void callPolygonOnTapById(String? id) {
+      final polygon = data.polygons.firstWhereOrNull((element) => element.id == id);
+      polygon?.onTap?.call();
+    }
+
+    //check if polygon's outlines are tapped?
+    _controller.onLineTapped.add((vtLine) {
+      String? polygonId = _viettelPolygonMap.keyWhere(
+              (vtPolygon) => vtPolygon.outlines.firstWhereOrNull(
+                      (outline) => outline.id == vtLine.id)
+                  != null
+      );
+
+      callPolygonOnTapById(polygonId);
+    });
+
+    //check if the fill is tapped?
+    _controller.onFillTapped.add((fill) {
+      String? polygonId = _viettelPolygonMap.keyWhere((value) => value.fill.id == fill.id);
+
+      callPolygonOnTapById(polygonId);
+    });
+  }
+
 
   void _onCameraMove(vt.CameraPosition? position) {
     if (position != null) {

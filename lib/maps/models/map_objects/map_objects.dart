@@ -7,3 +7,4 @@ export 'circle.dart';
 export 'marker.dart';
 export 'marker_icon.dart';
 export 'screen_coordinate.dart';
+export 'map_object.dart';

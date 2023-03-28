@@ -1,9 +1,8 @@
 // Copied from flutter_core
 
 import 'dart:math';
-import 'dart:typed_data';
-import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -185,5 +184,16 @@ extension DioImageDownload on Dio {
     } else {
       throw NullThrownError();
     }
+  }
+}
+
+extension MapUtils<K, V> on Map<K, V> {
+  K? keyOf(V value) {
+    return keyWhere((e) => e == value);
+  }
+
+  K? keyWhere(bool Function(V value) test) {
+    final entry = entries.firstWhereOrNull((element) => test(element.value));
+    return entry?.key;
   }
 }

@@ -275,6 +275,8 @@ extension MarkerConvert on Marker {
       iconImage: icon.data.name,
       iconColor: Colors.blue.toHex(),
       iconAnchor: anchor.string,
+      draggable: draggable,
+      zIndex: zIndex.toInt()
       // textField: infoWindow.title,
       // textAnchor: infoWindow.anchor.toString()
     );

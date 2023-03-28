@@ -64,6 +64,12 @@ class _TestMapScreenState extends State<TestMapScreen> {
           },
           onCameraIdle: () => Log.d("onCameraMove", ""),
           onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
+          onTap: (latLng) {
+            Log.d("onTap", latLng.toString());
+          },
+          onLongPress: (latLng) {
+            Log.d("onLongPress", latLng.toString());
+          }
         ),
       ),
     );

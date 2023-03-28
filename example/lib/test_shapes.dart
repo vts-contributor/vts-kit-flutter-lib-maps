@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps/models/models.dart';
 
 Polygon polygon1() {
@@ -27,7 +28,11 @@ Polygon polygon1() {
           LatLng(9.683279273763315, 105.85380206186403)
         ],
       ],
-      strokeColor: Colors.red);
+      strokeColor: Colors.red,
+      onTap: () {
+        Log.d("Polygon", "onTap");
+      }
+  );
 }
 
 Polygon polygon2() {
@@ -55,7 +60,11 @@ Polygon polygon2() {
           LatLng(9.683279273763315, 105.85380206186403)
         ],
       ],
-      strokeColor: Colors.red);
+      strokeColor: Colors.red,
+      onTap: () {
+        Log.d("Polygon", "onTap");
+      }
+  );
 }
 
 Polyline polyline() => Polyline(
@@ -68,7 +77,10 @@ Polyline polyline() => Polyline(
       LatLng(11.447301198223213, 107.27501155457392),
     ],
     jointType: JointType.bevel,
-    color: Colors.blue
+    color: Colors.blue,
+    onTap: () {
+      Log.d("Polyline", "onTap");
+    }
 );
 
 Circle circle() => Circle(
@@ -77,7 +89,10 @@ Circle circle() => Circle(
   radius: 100000,
   strokeColor: Colors.red,
   strokeWidth: 5,
-  fillColor: Colors.black
+  fillColor: Colors.black,
+  onTap: () {
+    Log.d("Circle", "onTap");
+  }
 );
 
 Marker marker() => Marker(
@@ -86,6 +101,9 @@ Marker marker() => Marker(
   infoWindow: InfoWindow(
     title: "Test"
   ),
+  onTap: () {
+    Log.d("Marker", "onTap");
+  },
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
   // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
 );
