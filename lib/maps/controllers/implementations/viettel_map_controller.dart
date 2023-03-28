@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -292,11 +293,31 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     }
   }
 
-  void onCameraMovingStared() {
+  void onCameraMovingStarted() {
     _cameraIsMoving = true;
+    callbacks?.onCameraMoveStarted?.call();
   }
 
   void onCameraIdle() {
     _cameraIsMoving = false;
+    callbacks?.onCameraMoveStarted?.call();
+  }
+
+  void onMapClick(vt.LatLng latLng) {
+    callbacks?.onTap?.call(latLng.toCore());
+  }
+
+  void onMapLongClick(vt.LatLng latLng) {
+    callbacks?.onLongPress?.call(latLng.toCore());
+  }
+
+  @override
+  Future<ScreenCoordinate> getScreenCoordinate(LatLng latLng) async {
+    return (await _controller.toScreenLocation(latLng.toViettel())).toScreenCoordinate();
+  }
+
+  @override
+  Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate) async {
+    return (await _controller.toLatLng(screenCoordinate.toPoint())).toCore();
   }
 }

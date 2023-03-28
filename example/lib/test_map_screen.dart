@@ -60,8 +60,10 @@ class _TestMapScreenState extends State<TestMapScreen> {
             _controllerCompleter.complete(controller);
           },
           onCameraMove: (position) {
-            Log.d("Test Map Screen", "${position.toString()}");
-          }
+            Log.d("onCameraMove", position.toString());
+          },
+          onCameraIdle: () => Log.d("onCameraMove", ""),
+          onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
         ),
       ),
     );
@@ -123,6 +125,17 @@ class TestDialog extends StatelessWidget {
             IconButton(onPressed: () {
               controller.removeMarker(marker().id);
             }, icon: Icon(Icons.delete),)
+          ],
+        ),
+        Row(
+          children: [
+            ElevatedButton(onPressed: () async {
+              Log.d("getScreenCoordinate",
+                  (await controller.getScreenCoordinate(
+                      LatLng(9.75419858085518, 105.59970250115466))
+                  ).toString());
+            }, child: Text("Log screen coordinate")),
+            SizedBox(width: 10,),
           ],
         )
       ],

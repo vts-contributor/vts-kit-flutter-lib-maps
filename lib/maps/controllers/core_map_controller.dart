@@ -23,6 +23,9 @@ abstract class CoreMapController {
   void changeMapType(CoreMapType type);
 
   CameraPosition getCurrentPosition();
+
+  Future<ScreenCoordinate> getScreenCoordinate(LatLng latLng);
+  Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate);
 }
 
 

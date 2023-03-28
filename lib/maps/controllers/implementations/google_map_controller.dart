@@ -10,6 +10,7 @@ import 'package:maps_core/maps/models/core_map_callbacks.dart';
 import 'package:maps_core/maps/models/core_map_type.dart';
 import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
+import '../../../log/log.dart';
 import '../../../maps.dart';
 import '../../models/core_map_data.dart';
 
@@ -161,5 +162,15 @@ class GoogleMapController extends BaseCoreMapController
     _currentCameraPosition = position;
 
     callbacks?.onCameraMove?.call(position.toCore());
+  }
+
+  @override
+  Future<ScreenCoordinate> getScreenCoordinate(LatLng latLng) async {
+    return (await _controller.getScreenCoordinate(latLng.toGoogle())).toCore();
+  }
+
+  @override
+  Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate) async {
+    return (await _controller.getLatLng(screenCoordinate.toGoogle())).toCore();
   }
 }

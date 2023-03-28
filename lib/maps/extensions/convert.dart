@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -325,5 +326,30 @@ extension AnchorConvert on Anchor {
       case Anchor.bottomRight:
         return "bottom-right";
     }
+  }
+}
+
+extension ScreenCoordinateConvert on ScreenCoordinate {
+  ggmap.ScreenCoordinate toGoogle() {
+    return ggmap.ScreenCoordinate(
+      x: x,
+      y: y,
+    );
+  }
+
+  Point<double> toPoint() {
+    return Point(x.toDouble(), y.toDouble());
+  }
+}
+
+extension GoogleScreenCoordinateConvert on ggmap.ScreenCoordinate {
+  ScreenCoordinate toCore() {
+    return ScreenCoordinate(x: x, y: y);
+  }
+}
+
+extension ViettelScreenCoordinateConvert on Point<num> {
+  ScreenCoordinate toScreenCoordinate() {
+    return ScreenCoordinate(x: x.toInt(), y: y.toInt());
   }
 }

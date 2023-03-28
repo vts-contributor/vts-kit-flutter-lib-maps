@@ -50,6 +50,18 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
       onCameraMove: (position) {
         _controller?.onCameraMove(position);
       },
+      onCameraIdle: () {
+        widget.callbacks?.onCameraIdle?.call();
+      },
+      onCameraMoveStarted: () {
+        widget.callbacks?.onCameraMoveStarted?.call();
+      },
+      onTap: (latLng) {
+        widget.callbacks?.onTap?.call(latLng.toCore());
+      },
+      onLongPress: (latLng) {
+        widget.callbacks?.onLongPress?.call(latLng.toCore());
+      },
     );
   }
 
