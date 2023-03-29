@@ -17,7 +17,6 @@ class Polyline implements MapObject {
   /// Creates an immutable object representing a line drawn through geographical locations on the map.
   const Polyline({
     required this.id,
-    this.consumeTapEvents = false,
     this.color = Colors.black,
     this.geodesic = false,
     this.jointType = JointType.mitered,
@@ -31,11 +30,6 @@ class Polyline implements MapObject {
   /// Uniquely identifies a [Polyline].
   @override
   final String id;
-
-  /// True if the [Polyline] consumes tap events.
-  ///
-  /// If this is false, [onTap] callback will not be triggered.
-  final bool consumeTapEvents;
 
   /// Line segment color in ARGB format, the same format used by Color. The default value is black (0xff000000).
   final Color color;
@@ -98,7 +92,6 @@ class Polyline implements MapObject {
     return Polyline(
       id: id,
       color: colorParam ?? color,
-      consumeTapEvents: consumeTapEventsParam ?? consumeTapEvents,
       geodesic: geodesicParam ?? geodesic,
       jointType: jointTypeParam ?? jointType,
       points: pointsParam ?? points,
@@ -130,7 +123,6 @@ class Polyline implements MapObject {
     }
 
     addIfPresent('polylineId', id);
-    addIfPresent('consumeTapEvents', consumeTapEvents);
     addIfPresent('color', color.value);
     addIfPresent('geodesic', geodesic);
     addIfPresent('jointType', jointType.value);
@@ -156,7 +148,6 @@ class Polyline implements MapObject {
     }
     return other is Polyline &&
         id == other.id &&
-        consumeTapEvents == other.consumeTapEvents &&
         color == other.color &&
         geodesic == other.geodesic &&
         jointType == other.jointType &&

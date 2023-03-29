@@ -54,7 +54,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
         initialData: CoreMapData(
           accessToken: "49013166841fe36d7fa7f395fce4a663",
           initialCameraPosition: CameraPosition(
-              target: LatLng(9.85419858085518, 105.49970250115466), zoom: 1),
+              target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
         ),
         callbacks: CoreMapCallbacks(
           onMapCreated: (controller) {

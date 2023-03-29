@@ -293,7 +293,13 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     _controller.onSymbolTapped.add((vtSymbol) {
       String? markerId = _viettelMarkerMap.keyWhere((value) => value.id == vtSymbol.id);
       final marker = data.markers.firstWhereOrNull((element) => element.id == markerId);
-      marker?.onTap?.call();
+      if (marker != null) {
+        if (marker.onTap != null) {
+          marker.onTap?.call();
+        } else {
+          _defaultMarkerOnTap(marker);
+        }
+      }
     });
   }
 

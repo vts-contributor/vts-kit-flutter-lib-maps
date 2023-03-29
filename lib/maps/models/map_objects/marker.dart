@@ -150,7 +150,6 @@ class Marker implements MapObject{
     required this.id,
     this.alpha = 1.0,
     this.anchor = Anchor.bottom,
-    this.consumeTapEvents = false,
     this.draggable = false,
     this.flat = false,
     this.icon = MarkerIcon.defaultIcon,
@@ -177,10 +176,6 @@ class Marker implements MapObject{
   /// The icon image point that will be placed at the [position] of the marker.
   final Anchor anchor;
 
-  /// True if the marker icon consumes tap events. If not, the map will perform
-  /// default tap handling by centering the map on the marker and displaying its
-  /// info window.
-  final bool consumeTapEvents;
 
   /// True if the marker is draggable by user touch events.
   final bool draggable;
@@ -230,7 +225,6 @@ class Marker implements MapObject{
   Marker copyWith({
     double? alphaParam,
     Anchor? anchorParam,
-    bool? consumeTapEventsParam,
     bool? draggableParam,
     bool? flatParam,
     MarkerIcon? iconParam,
@@ -248,7 +242,6 @@ class Marker implements MapObject{
       id: id,
       alpha: alphaParam ?? alpha,
       anchor: anchorParam ?? anchor,
-      consumeTapEvents: consumeTapEventsParam ?? consumeTapEvents,
       draggable: draggableParam ?? draggable,
       flat: flatParam ?? flat,
       icon: iconParam ?? icon,
@@ -282,7 +275,6 @@ class Marker implements MapObject{
     addIfPresent('markerId', id);
     addIfPresent('alpha', alpha);
     addIfPresent('anchor', _offsetToJson(anchor.offset));
-    addIfPresent('consumeTapEvents', consumeTapEvents);
     addIfPresent('draggable', draggable);
     addIfPresent('flat', flat);
     addIfPresent('icon', icon);
@@ -306,7 +298,6 @@ class Marker implements MapObject{
         id == other.id &&
         alpha == other.alpha &&
         anchor == other.anchor &&
-        consumeTapEvents == other.consumeTapEvents &&
         draggable == other.draggable &&
         flat == other.flat &&
         icon == other.icon &&
@@ -323,7 +314,6 @@ class Marker implements MapObject{
   @override
   String toString() {
     return 'Marker{markerId: $id, alpha: $alpha, anchor: $anchor, '
-        'consumeTapEvents: $consumeTapEvents, draggable: $draggable, flat: $flat, '
         'icon: $icon, infoWindow: $infoWindow, position: $position, rotation: $rotation, '
         'visible: $visible, zIndex: $zIndex, onTap: $onTap, onDragStart: $onDragStart, '
         'onDrag: $onDrag, onDragEnd: $onDragEnd}';

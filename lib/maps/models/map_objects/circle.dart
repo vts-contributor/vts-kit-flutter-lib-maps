@@ -15,7 +15,6 @@ class Circle implements MapObject {
   /// Creates an immutable representation of a [Circle] to draw on [GoogleMap].
   const Circle({
     required this.id,
-    this.consumeTapEvents = false,
     this.fillColor = Colors.transparent,
     required this.center,
     this.radius = 0,
@@ -29,11 +28,6 @@ class Circle implements MapObject {
   /// Uniquely identifies a [Circle].
   @override
   final String id;
-
-  /// True if the [Circle] consumes tap events.
-  ///
-  /// If this is false, [onTap] callback will not be triggered.
-  final bool consumeTapEvents;
 
   /// Fill color in ARGB format, the same format used by Color. The default value is transparent (0x00000000).
   final Color fillColor;
@@ -70,7 +64,6 @@ class Circle implements MapObject {
   /// Creates a new [Circle] object whose values are the same as this instance,
   /// unless overwritten by the specified parameters.
   Circle copyWith({
-    bool? consumeTapEventsParam,
     Color? fillColorParam,
     LatLng? centerParam,
     double? radiusParam,
@@ -82,7 +75,6 @@ class Circle implements MapObject {
   }) {
     return Circle(
       id: id,
-      consumeTapEvents: consumeTapEventsParam ?? consumeTapEvents,
       fillColor: fillColorParam ?? fillColor,
       center: centerParam ?? center,
       radius: radiusParam ?? radius,
@@ -110,7 +102,6 @@ class Circle implements MapObject {
     }
 
     addIfPresent('circleId', id);
-    addIfPresent('consumeTapEvents', consumeTapEvents);
     addIfPresent('fillColor', fillColor.value);
     addIfPresent('center', center.toJson());
     addIfPresent('radius', radius);
@@ -132,7 +123,6 @@ class Circle implements MapObject {
     }
     return other is Circle &&
         id == other.id &&
-        consumeTapEvents == other.consumeTapEvents &&
         fillColor == other.fillColor &&
         center == other.center &&
         radius == other.radius &&

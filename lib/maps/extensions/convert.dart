@@ -50,7 +50,7 @@ extension PolygonConvert on Polygon {
   ggmap.Polygon toGoogle() {
     return ggmap.Polygon(
       polygonId: ggmap.PolygonId(id),
-      consumeTapEvents: consumeTapEvents,
+      consumeTapEvents: onTap != null,
       fillColor: fillColor,
       geodesic: geodesic,
       points: points.map((e) => e.toGoogle()).toList(),
@@ -176,7 +176,7 @@ extension PolylineConvert on Polyline {
   ggmap.Polyline toGoogle() {
     return ggmap.Polyline(
       polylineId: ggmap.PolylineId(id),
-      consumeTapEvents: consumeTapEvents,
+      consumeTapEvents: onTap != null,
       color: color,
       geodesic: geodesic,
       jointType: jointType.toGoogle(),
@@ -203,7 +203,7 @@ extension CircleConvert on Circle {
   ggmap.Circle toGoogle() {
     return ggmap.Circle(
       circleId: ggmap.CircleId(id),
-      consumeTapEvents: consumeTapEvents,
+      consumeTapEvents: onTap != null,
       fillColor: fillColor,
       center: center.toGoogle(),
       radius: radius,
@@ -225,6 +225,45 @@ extension CircleConvert on Circle {
       circleOpacity: fillColor.opacity,
       circleStrokeOpacity: strokeColor.opacity
     );
+  }
+
+  vtmap.FillOptions toFillOptions() {
+    return vtmap.FillOptions(
+
+    );
+  }
+
+  ///see https://github.com/flutter-mapbox-gl/maps/issues/355#issuecomment-777289787
+  List<LatLng> toCirclePoints() {
+    final point = center;
+    int dir = 1;
+
+    var d2r = pi / 180; // degrees to radians
+    var r2d = 180 / pi; // radians to degrees
+    var earthsradius = 6371000; // radius of the earth in meters
+
+    var points = 32;
+
+    // find the raidus in lat/lon
+    var rlat = (radius / earthsradius) * r2d;
+    var rlng = rlat / cos(point.lat * d2r);
+
+    List<LatLng> extp = [];
+    int start = 0;
+    int end = points + 1;
+    if (dir == -1) {
+      start = points + 1;
+      end = 0;
+    }
+    for (var i = start; (dir == 1 ? i < end : i > end); i = i + dir) {
+      var theta = pi * (i / (points / 2));
+      double ey = point.lng +
+          (rlng * cos(theta)); // center a + radius x * cos(theta)
+      double ex = point.lat +
+          (rlat * sin(theta)); // center b + radius y * sin(theta)
+      extp.add(LatLng(ex, ey));
+    }
+    return extp;
   }
 }
 
@@ -253,7 +292,7 @@ extension MarkerConvert on Marker {
       markerId: ggmap.MarkerId(id),
       alpha: alpha,
       anchor: anchor.offset,
-      consumeTapEvents: consumeTapEvents,
+      consumeTapEvents: onTap != null,
       draggable: draggable,
       flat: flat,
       icon: markerDescriptor,

@@ -11,7 +11,6 @@ class Polygon implements MapObject {
   /// Creates an immutable representation of a polygon through geographical locations on the map.
   const Polygon({
     required this.id,
-    this.consumeTapEvents = false,
     this.fillColor = Colors.black,
     this.geodesic = false,
     this.points = const <LatLng>[],
@@ -26,11 +25,6 @@ class Polygon implements MapObject {
   /// Uniquely identifies a [Polygon].
   @override
   final String id;
-
-  /// True if the [Polygon] consumes tap events.
-  ///
-  /// If this is false, [onTap] callback will not be triggered.
-  final bool consumeTapEvents;
 
   /// Fill color in ARGB format, the same format used by Color. The default value is black (0xff000000).
   final Color fillColor;
@@ -81,7 +75,6 @@ class Polygon implements MapObject {
   /// Creates a new [Polygon] object whose values are the same as this instance,
   /// unless overwritten by the specified parameters.
   Polygon copyWith({
-    bool? consumeTapEventsParam,
     Color? fillColorParam,
     bool? geodesicParam,
     List<LatLng>? pointsParam,
@@ -94,7 +87,6 @@ class Polygon implements MapObject {
   }) {
     return Polygon(
       id: id,
-      consumeTapEvents: consumeTapEventsParam ?? consumeTapEvents,
       fillColor: fillColorParam ?? fillColor,
       geodesic: geodesicParam ?? geodesic,
       points: pointsParam ?? points,
@@ -125,7 +117,6 @@ class Polygon implements MapObject {
     }
 
     addIfPresent('polygonId', id);
-    addIfPresent('consumeTapEvents', consumeTapEvents);
     addIfPresent('fillColor', fillColor.value);
     addIfPresent('geodesic', geodesic);
     addIfPresent('strokeColor', strokeColor.value);
@@ -154,7 +145,6 @@ class Polygon implements MapObject {
     }
     return other is Polygon &&
         id == other.id &&
-        consumeTapEvents == other.consumeTapEvents &&
         fillColor == other.fillColor &&
         geodesic == other.geodesic &&
         listEquals(points, other.points) &&
