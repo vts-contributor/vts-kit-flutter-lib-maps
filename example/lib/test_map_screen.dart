@@ -63,8 +63,8 @@ class _TestMapScreenState extends State<TestMapScreen> {
           onCameraMove: (position) {
             Log.d("onCameraMove", position.toString());
           },
-          onCameraIdle: () => Log.d("onCameraIdle", ""),
-          onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
+          // onCameraIdle: () => Log.d("onCameraIdle", ""),
+          // onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
           onTap: (latLng) {
             Log.d("onTap", latLng.toString());
           },
@@ -159,18 +159,27 @@ class _TestDialogState extends State<TestDialog> {
         ),
         Row(
           children: [
+            ElevatedButton(onPressed: () async {
+              Log.d("getCurrentPosition",
+                  (widget.controller.getCurrentPosition()).toString());
+            }, child: Text("Log camera position")),
+            SizedBox(width: 10,),
+          ],
+        ),
+        Row(
+          children: [
             Text("zoom in/out"),
             SizedBox(width: 10,),
             IconButton(
               onPressed: () {
-                widget.controller.moveCamera(CameraUpdate.zoomIn());
+                widget.controller.animateCamera(CameraUpdate.zoomIn());
               },
               icon: Icon(Icons.zoom_in),
             ),
             SizedBox(width: 10,),
             IconButton(
               onPressed: () {
-                widget.controller.moveCamera(CameraUpdate.zoomOut());
+                widget.controller.animateCamera(CameraUpdate.zoomOut());
               },
               icon: Icon(Icons.zoom_out),
             )
@@ -194,7 +203,30 @@ class _TestDialogState extends State<TestDialog> {
             IconButton(
               icon: Icon(Icons.skip_next_outlined),
               onPressed: () {
-                widget.controller.moveCamera(CameraUpdate.zoomBy(_zoomBy));
+                widget.controller.animateCamera(CameraUpdate.zoomBy(_zoomBy));
+              },
+            )
+          ],
+        ),
+        Row(
+          children: [
+            Text("zoom to"),
+            SizedBox(width: 10,),
+            Container(
+              height: 40,
+              width: 40,
+              child: TextField(
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  _zoomTo = double.parse(value);
+                },
+              ),
+            ),
+            SizedBox(width: 10,),
+            IconButton(
+              icon: Icon(Icons.skip_next_outlined),
+              onPressed: () {
+                widget.controller.animateCamera(CameraUpdate.zoomTo(_zoomTo));
               },
             )
           ],

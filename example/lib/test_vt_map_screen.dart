@@ -49,7 +49,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
       body: VTMap(
         accessToken: "49013166841fe36d7fa7f395fce4a663",
         initialCameraPosition:
-        const CameraPosition(target: LatLng(9.823077422713277, 105.81830599510204),zoom: 10),
+        const CameraPosition(target: LatLng(9.823077422713277, 105.81830599510204),zoom: 1),
         onMapCreated: (controller) {
           this.controller = controller;
         },

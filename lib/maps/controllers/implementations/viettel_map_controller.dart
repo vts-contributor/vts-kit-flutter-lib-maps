@@ -377,12 +377,15 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
       marker.position.toViettel()
     ));
     CameraPosition cameraPosition = CameraPosition(target: LatLng(0,0));
-
   }
 
   @override
   Future<void> moveCamera(CameraUpdate cameraUpdate) async {
     await _controller.moveCamera(cameraUpdate.toViettel());
+  }
 
+  @override
+  Future<void> animateCamera(CameraUpdate cameraUpdate) async {
+    await _controller.animateCamera(cameraUpdate: cameraUpdate.toViettel());
   }
 }
