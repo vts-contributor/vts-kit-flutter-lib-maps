@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:maps_core/maps/extensions/convert.dart';
+import 'package:maps_core/maps/extensions/utils.dart';
 
 import 'models.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
@@ -8,6 +9,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
 
 /// Defines a camera move, supporting absolute moves as well as moves relative
 /// the current position.
+///
+// Because this is a unify interface for different maps and at this time,
+// zoom level and related CameraUpdate functions don't behave in the same way
+// between GoogleMap and ViettelMap, so we need to check zoom level everytime we need to change it
 abstract class CameraUpdate {
 
   /// Returns a camera update that moves the camera to the specified position.
@@ -72,16 +77,17 @@ abstract class CameraUpdate {
   static CameraUpdate zoomTo(double zoom) {
     return _ZoomToCameraUpdate(zoom);
   }
-  
+
+  //These 2 method sometimes will need currentPosition for zoom level check
   vt.CameraUpdate toViettel();
   gg.CameraUpdate toGoogle();
 }
 
 class _NewPositionCameraUpdate implements CameraUpdate {
   CameraPosition cameraPosition;
-  
+
   _NewPositionCameraUpdate(this.cameraPosition);
-  
+
   @override
   gg.CameraUpdate toGoogle() {
     return gg.CameraUpdate.newCameraPosition(cameraPosition.toGoogle());
@@ -94,11 +100,11 @@ class _NewPositionCameraUpdate implements CameraUpdate {
 }
 
 class _NewLatLngCameraUpdate implements CameraUpdate {
-  
+
   LatLng latLng;
-  
+
   _NewLatLngCameraUpdate(this.latLng);
-  
+
   @override
   gg.CameraUpdate toGoogle() {
     return gg.CameraUpdate.newLatLng(latLng.toGoogle());
@@ -111,12 +117,12 @@ class _NewLatLngCameraUpdate implements CameraUpdate {
 }
 
 class _NewLatLngBoundsCameraUpdate implements CameraUpdate {
-  
+
   LatLngBounds bounds;
   double padding;
-  
+
   _NewLatLngBoundsCameraUpdate(this.bounds, this.padding);
-  
+
   @override
   gg.CameraUpdate toGoogle() {
     return gg.CameraUpdate.newLatLngBounds(bounds.toGoogle(), padding);
@@ -130,30 +136,30 @@ class _NewLatLngBoundsCameraUpdate implements CameraUpdate {
 }
 
 class _NewLatLngZoomCameraUpdate implements CameraUpdate {
-  
+
   LatLng latLng;
   double zoom;
-  
+
   _NewLatLngZoomCameraUpdate(this.latLng, this.zoom);
-  
+
   @override
   gg.CameraUpdate toGoogle() {
-    return gg.CameraUpdate.newLatLngZoom(latLng.toGoogle(), zoom);
+    return gg.CameraUpdate.newLatLngZoom(latLng.toGoogle(), zoom.toZoomGoogle());
   }
 
   @override
   vt.CameraUpdate toViettel() {
-    return vt.CameraUpdate.newLatLngZoom(latLng.toViettel(), zoom);
+    return vt.CameraUpdate.newLatLngZoom(latLng.toViettel(), zoom.toZoomViettel());
   }
 }
 
 class _ScrollByCameraUpdate implements CameraUpdate {
-  
+
   double dx;
   double dy;
-  
+
   _ScrollByCameraUpdate(this.dx, this.dy);
-  
+
   @override
   gg.CameraUpdate toGoogle() {
     return gg.CameraUpdate.scrollBy(dx, dy);
@@ -166,12 +172,12 @@ class _ScrollByCameraUpdate implements CameraUpdate {
 }
 
 class _ZoomByCameraUpdate implements CameraUpdate {
-  
+
   double amount;
   Offset? focus;
 
   _ZoomByCameraUpdate(this.amount, this.focus);
-  
+
   @override
   gg.CameraUpdate toGoogle() {
     return gg.CameraUpdate.zoomBy(amount, focus);
@@ -208,18 +214,18 @@ class _ZoomOutCameraUpdate implements CameraUpdate {
 }
 
 class _ZoomToCameraUpdate implements CameraUpdate {
-  
+
   double zoom;
-  
+
   _ZoomToCameraUpdate(this.zoom);
-  
+
   @override
   gg.CameraUpdate toGoogle() {
-    return gg.CameraUpdate.zoomTo(zoom);
+    return gg.CameraUpdate.zoomTo(zoom.toZoomGoogle());
   }
 
   @override
   vt.CameraUpdate toViettel() {
-    return vt.CameraUpdate.zoomTo(zoom);
+    return vt.CameraUpdate.zoomTo(zoom.toZoomViettel());
   }
 }

@@ -32,6 +32,7 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
       onStyleLoadedCallback: () {
         _controller?.onStyleLoaded();
       },
+      minMaxZoomPreference: const vt.MinMaxZoomPreference(1, null),
       onMapCreated: (vt.MapboxMapController mapboxMapController) {
         final controller = ViettelMapController(mapboxMapController,
             data: widget.data,
@@ -42,7 +43,8 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
 
         //return the controller back to user in onStyleLoaded()
       },
-      trackCameraPosition: widget.callbacks?.onCameraMove != null,
+      trackCameraPosition: true,
+      compassEnabled: true,
       myLocationTrackingMode: vt.MyLocationTrackingMode.None,
       onCameraMovingStarted: () {
         _controller?.onCameraMovingStarted();

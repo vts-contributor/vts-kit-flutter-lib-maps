@@ -53,7 +53,8 @@ class _TestMapScreenState extends State<TestMapScreen> {
         initialType: CoreMapType.viettel,
         initialData: CoreMapData(
           accessToken: "49013166841fe36d7fa7f395fce4a663",
-          initialCameraPosition: CameraPosition(target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
+          initialCameraPosition: CameraPosition(
+              target: LatLng(9.85419858085518, 105.49970250115466), zoom: 1),
         ),
         callbacks: CoreMapCallbacks(
           onMapCreated: (controller) {
@@ -62,7 +63,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           onCameraMove: (position) {
             Log.d("onCameraMove", position.toString());
           },
-          onCameraIdle: () => Log.d("onCameraMove", ""),
+          onCameraIdle: () => Log.d("onCameraIdle", ""),
           onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
           onTap: (latLng) {
             Log.d("onTap", latLng.toString());
@@ -76,7 +77,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
   }
 }
 
-class TestDialog extends StatelessWidget {
+class TestDialog extends StatefulWidget {
   final CoreMapController controller;
 
   const TestDialog({super.key,
@@ -84,52 +85,64 @@ class TestDialog extends StatelessWidget {
   });
 
   @override
+  State<TestDialog> createState() => _TestDialogState();
+}
+
+class _TestDialogState extends State<TestDialog> {
+
+
+  double _zoomBy = 2;
+
+  double _zoomTo = 7;
+
+  @override
   Widget build(BuildContext context) {
     return SimpleDialog(
       title: Text("Test features"),
       alignment: Alignment.center,
+      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       children: [
         Row(
           children: [
             ElevatedButton(onPressed: () {
-              controller.addPolygon(polygon1());
+              widget.controller.addPolygon(polygon1());
             }, child: Text("add a polygon")),
             SizedBox(width: 10,),
             IconButton(onPressed: () {
-              controller.removePolygon(polygon1().id);
+              widget.controller.removePolygon(polygon1().id);
             }, icon: Icon(Icons.delete),)
           ],
         ),
         Row(
           children: [
             ElevatedButton(onPressed: () {
-              controller.addPolyline(polyline());
+              widget.controller.addPolyline(polyline());
             }, child: Text("add a polyline")),
             SizedBox(width: 10,),
             IconButton(onPressed: () {
-              controller.removePolyline(polyline().id);
+              widget.controller.removePolyline(polyline().id);
             }, icon: Icon(Icons.delete),)
           ],
         ),
         Row(
           children: [
             ElevatedButton(onPressed: () {
-              controller.addCircle(circle());
+              widget.controller.addCircle(circle());
             }, child: Text("add a circle")),
             SizedBox(width: 10,),
             IconButton(onPressed: () {
-              controller.removeCircle(circle().id);
+              widget.controller.removeCircle(circle().id);
             }, icon: Icon(Icons.delete),)
           ],
         ),
         Row(
           children: [
             ElevatedButton(onPressed: () {
-              controller.addMarker(marker());
+              widget.controller.addMarker(marker());
             }, child: Text("add a marker")),
             SizedBox(width: 10,),
             IconButton(onPressed: () {
-              controller.removeMarker(marker().id);
+              widget.controller.removeMarker(marker().id);
             }, icon: Icon(Icons.delete),)
           ],
         ),
@@ -137,16 +150,56 @@ class TestDialog extends StatelessWidget {
           children: [
             ElevatedButton(onPressed: () async {
               Log.d("getScreenCoordinate",
-                  (await controller.getScreenCoordinate(
+                  (await widget.controller.getScreenCoordinate(
                       LatLng(9.75419858085518, 105.59970250115466))
                   ).toString());
             }, child: Text("Log screen coordinate")),
             SizedBox(width: 10,),
           ],
+        ),
+        Row(
+          children: [
+            Text("zoom in/out"),
+            SizedBox(width: 10,),
+            IconButton(
+              onPressed: () {
+                widget.controller.moveCamera(CameraUpdate.zoomIn());
+              },
+              icon: Icon(Icons.zoom_in),
+            ),
+            SizedBox(width: 10,),
+            IconButton(
+              onPressed: () {
+                widget.controller.moveCamera(CameraUpdate.zoomOut());
+              },
+              icon: Icon(Icons.zoom_out),
+            )
+          ],
+        ),
+        Row(
+          children: [
+            Text("zoom by"),
+            SizedBox(width: 10,),
+            Container(
+              height: 40,
+              width: 40,
+              child: TextField(
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  _zoomBy = double.parse(value);
+                },
+              ),
+            ),
+            SizedBox(width: 10,),
+            IconButton(
+              icon: Icon(Icons.skip_next_outlined),
+              onPressed: () {
+                widget.controller.moveCamera(CameraUpdate.zoomBy(_zoomBy));
+              },
+            )
+          ],
         )
       ],
     );
   }
-
-
 }

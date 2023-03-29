@@ -107,7 +107,7 @@ extension CameraPositionConvert on CameraPosition {
       target: target.toViettel(),
       bearing: bearing,
       tilt: tilt,
-      zoom: zoom
+      zoom: zoom.toZoomViettel()
     );
   }
 
@@ -117,7 +117,7 @@ extension CameraPositionConvert on CameraPosition {
         bearing: bearing,
         tilt: tilt,
         //persist with vtmap_gl zoom
-        zoom: zoom > 1? zoom + 1: zoom
+        zoom: zoom.toZoomGoogle()
     );
   }
 }
@@ -128,7 +128,7 @@ extension VTCameraPositionConvert on vtmap.CameraPosition {
       target: target.toCore(),
       bearing: bearing,
       tilt: tilt,
-      zoom: zoom
+      zoom: zoom.toZoomCore(CoreMapType.viettel)
     );
   }
 }
@@ -139,7 +139,7 @@ extension GGCameraPositionConvert on ggmap.CameraPosition {
         target: target.toCore(),
         bearing: bearing,
         tilt: tilt,
-        zoom: zoom > 1? zoom - 1: zoom
+        zoom: zoom.toZoomCore(CoreMapType.google)
     );
   }
 }
@@ -368,5 +368,26 @@ extension LatLngBoundsConvert on LatLngBounds {
       northeast: northeast.toViettel(),
       southwest: southwest.toViettel(),
     );
+  }
+}
+
+extension ZoomLevelConvert on double {
+  double toZoomGoogle() {
+    double zoom = validCoreZoomLevel;
+    return zoom > 1? zoom + 1: zoom;
+  }
+
+  double toZoomCore(CoreMapType type) {
+    double zoom = validCoreZoomLevel;
+    switch (type) {
+      case CoreMapType.google:
+        return zoom > 1? zoom - 1: zoom;
+      case CoreMapType.viettel:
+        return zoom;
+    }
+  }
+
+  double toZoomViettel() {
+    return validCoreZoomLevel;
   }
 }

@@ -1,18 +1,11 @@
-import 'dart:typed_data';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/controllers/marker_icon_data_processor.dart';
-import 'package:maps_core/maps/extensions/convert.dart';
-import 'package:maps_core/maps/models/core_map_callbacks.dart';
-import 'package:maps_core/maps/models/core_map_type.dart';
-import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import '../../../log/log.dart';
 import '../../../maps.dart';
-import '../../models/core_map_data.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
 

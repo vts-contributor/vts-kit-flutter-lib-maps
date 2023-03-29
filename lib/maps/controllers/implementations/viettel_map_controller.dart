@@ -29,8 +29,6 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   //used to check if marker icon has been added
   final Set<String> _markerIconNames = {};
 
-  bool _cameraIsMoving = false;
-
   ViettelMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callback,
@@ -285,7 +283,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   void _initCameraMoveHandler() {
     if (callbacks?.onCameraMove != null) {
       _controller.addListener(() {
-        if (_cameraIsMoving) {
+        if (_controller.isCameraMoving) {
           _onCameraMove(_controller.cameraPosition);
         }
       });
@@ -349,12 +347,10 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   }
 
   void onCameraMovingStarted() {
-    _cameraIsMoving = true;
     callbacks?.onCameraMoveStarted?.call();
   }
 
   void onCameraIdle() {
-    _cameraIsMoving = false;
     callbacks?.onCameraMoveStarted?.call();
   }
 

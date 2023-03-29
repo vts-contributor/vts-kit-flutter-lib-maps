@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:maps_core/maps/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/network/language.dart';
@@ -196,4 +197,9 @@ extension MapUtils<K, V> on Map<K, V> {
     final entry = entries.firstWhereOrNull((element) => test(element.value));
     return entry?.key;
   }
+}
+
+extension ConstrictZoomLevel on double {
+  ///must >= 1
+  double get validCoreZoomLevel => max(Constant.zoomLevelLowerBound, this);
 }

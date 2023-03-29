@@ -87,7 +87,7 @@ class _TestGoogleMapScreenState extends State<TestGoogleMapScreen> {
       body: GoogleMap(
         mapType: MapType.normal,
         // polygons: myPolygon(),
-        initialCameraPosition: const CameraPosition(target: LatLng(9.823077422713277, 105.81830599510204),zoom: 8),
+        initialCameraPosition: const CameraPosition(target: LatLng(10, 100),zoom: 0),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },

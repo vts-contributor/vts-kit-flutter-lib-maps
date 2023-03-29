@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:math';
 import 'dart:ui' show Offset;
 
 import 'package:flutter/foundation.dart';
+import 'package:maps_core/maps/constants.dart';
+import 'package:maps_core/maps/extensions/utils.dart';
 
 import 'map_objects/lat_lng.dart';
 
@@ -16,14 +19,13 @@ import 'map_objects/lat_lng.dart';
 class CameraPosition {
   /// Creates a immutable representation of the [GoogleMap] camera.
   ///
-  /// [AssertionError] is thrown if [bearing], [target], [tilt], or [zoom] are
-  /// null.
-  const CameraPosition({
+  /// [zoom] will be fixed to >= 1 if it's < 1
+  CameraPosition({
     this.bearing = 0.0,
     required this.target,
     this.tilt = 0.0,
-    this.zoom = 0.0,
-  });
+    double zoom = Constant.zoomLevelLowerBound,
+  }): zoom = zoom.validCoreZoomLevel;
 
   /// The camera's bearing in degrees, measured clockwise from north.
   ///
