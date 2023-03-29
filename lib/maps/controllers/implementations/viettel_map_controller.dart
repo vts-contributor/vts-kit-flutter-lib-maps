@@ -373,7 +373,6 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
 
   void _defaultMarkerOnTap(Marker marker) {
     animateCamera(CameraUpdate.newLatLng(marker.position));
-    CameraPosition cameraPosition = CameraPosition(target: LatLng(0,0));
   }
 
   @override
