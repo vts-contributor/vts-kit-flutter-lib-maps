@@ -383,5 +383,6 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   @override
   Future<void> moveCamera(CameraUpdate cameraUpdate) async {
     await _controller.moveCamera(cameraUpdate.toViettel());
+
   }
 }

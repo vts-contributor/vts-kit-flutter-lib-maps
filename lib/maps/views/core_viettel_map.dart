@@ -32,7 +32,8 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
       onStyleLoadedCallback: () {
         _controller?.onStyleLoaded();
       },
-      minMaxZoomPreference: const vt.MinMaxZoomPreference(1, null),
+      minMaxZoomPreference: widget.data.minMaxZoomPreference.toViettel(),
+      cameraTargetBounds: widget.data.cameraTargetBounds.toViettel(),
       onMapCreated: (vt.MapboxMapController mapboxMapController) {
         final controller = ViettelMapController(mapboxMapController,
             data: widget.data,

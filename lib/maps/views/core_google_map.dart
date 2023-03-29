@@ -43,7 +43,8 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
         _controller = controller;
         widget.callbacks?.onMapCreated?.call(controller);
       },
-      minMaxZoomPreference: gg.MinMaxZoomPreference(0, null),
+      cameraTargetBounds: widget.data.cameraTargetBounds.toGoogle(),
+      minMaxZoomPreference: widget.data.minMaxZoomPreference.toGoogle(),
       polygons: data.polygons.toGoogle().toSet(),
       polylines: data.polylines.toGoogle().toSet(),
       circles: data.circles.toGoogle().toSet(),

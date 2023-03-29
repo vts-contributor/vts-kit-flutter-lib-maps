@@ -391,3 +391,23 @@ extension ZoomLevelConvert on double {
     return validCoreZoomLevel;
   }
 }
+
+extension MinMaxZoomPreferenceConvert on MinMaxZoomPreference {
+  ggmap.MinMaxZoomPreference toGoogle() {
+    return ggmap.MinMaxZoomPreference(minZoom, maxZoom);
+  }
+
+  vtmap.MinMaxZoomPreference toViettel() {
+    return vtmap.MinMaxZoomPreference(minZoom, maxZoom);
+  }
+}
+
+extension CameraTargetBoundsConvert on CameraTargetBounds {
+  ggmap.CameraTargetBounds toGoogle() {
+    return ggmap.CameraTargetBounds(bounds?.toGoogle());
+  }
+
+  vtmap.CameraTargetBounds toViettel() {
+    return vtmap.CameraTargetBounds(bounds?.toViettel());
+  }
+}

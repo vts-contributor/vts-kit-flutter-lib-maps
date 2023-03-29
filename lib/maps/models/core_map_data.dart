@@ -9,6 +9,8 @@ class CoreMapData {
   CoreMapData({
     this.accessToken,
     required this.initialCameraPosition,
+    this.minMaxZoomPreference = MinMaxZoomPreference.unbounded,
+    this.cameraTargetBounds = CameraTargetBounds.unbounded,
     Set<Polygon>? polygons,
     Set<Polyline>? polylines,
     Set<Marker>? markers,
@@ -22,6 +24,8 @@ class CoreMapData {
   final String? accessToken;
 
   final CameraPosition initialCameraPosition;
+  final MinMaxZoomPreference minMaxZoomPreference;
+  final CameraTargetBounds cameraTargetBounds;
 
   final Set<Polygon> polygons;
   final Set<Polyline> polylines;
@@ -31,6 +35,8 @@ class CoreMapData {
   CoreMapData copyWith({
     String? accessToken,
     CameraPosition? initialCameraPosition,
+    MinMaxZoomPreference? minMaxZoomPreference,
+    CameraTargetBounds? cameraTargetBounds,
     Set<Polygon>? polygons,
     Set<Polyline>? polylines,
     Set<Marker>? markers,
@@ -39,6 +45,8 @@ class CoreMapData {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
       initialCameraPosition: initialCameraPosition ?? this.initialCameraPosition,
+      minMaxZoomPreference: minMaxZoomPreference ?? this.minMaxZoomPreference,
+      cameraTargetBounds: cameraTargetBounds ?? this.cameraTargetBounds,
       polygons: polygons ?? this.polygons,
       polylines: polylines ?? this.polylines,
       markers: markers ?? this.markers,
