@@ -99,7 +99,7 @@ class GoogleMapController extends BaseCoreMapController
   @override
   Future<void> reloadWithData(CoreMapData data) async {
     _data = data;
-    _controller.moveCamera(gg.CameraUpdate.newCameraPosition(
+    _controller.animateCamera(gg.CameraUpdate.newCameraPosition(
         data.initialCameraPosition.toGoogle()));
     notifyListeners();
   }
@@ -165,11 +165,6 @@ class GoogleMapController extends BaseCoreMapController
   @override
   Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate) async {
     return (await _controller.getLatLng(screenCoordinate.toGoogle())).toCore();
-  }
-
-  @override
-  Future<void> moveCamera(CameraUpdate cameraUpdate) async {
-    await _controller.moveCamera(cameraUpdate.toGoogle());
   }
 
   @override

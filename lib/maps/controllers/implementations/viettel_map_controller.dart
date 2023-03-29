@@ -170,8 +170,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   @override
   Future<void> reloadWithData(CoreMapData data) async {
     _data = data;
-    _controller.moveCamera(vt.CameraUpdate.newCameraPosition(
-        data.initialCameraPosition.toViettel()));
+    animateCamera(CameraUpdate.newCameraPosition(data.initialCameraPosition));
 
     _clearShapes();
     _addShapes(data);
@@ -373,15 +372,8 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   }
 
   void _defaultMarkerOnTap(Marker marker) {
-    _controller.moveCamera(vt.CameraUpdate.newLatLng(
-      marker.position.toViettel()
-    ));
+    animateCamera(CameraUpdate.newLatLng(marker.position));
     CameraPosition cameraPosition = CameraPosition(target: LatLng(0,0));
-  }
-
-  @override
-  Future<void> moveCamera(CameraUpdate cameraUpdate) async {
-    await _controller.moveCamera(cameraUpdate.toViettel());
   }
 
   @override

@@ -27,8 +27,6 @@ abstract class CoreMapController {
   Future<ScreenCoordinate> getScreenCoordinate(LatLng latLng);
   Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate);
 
-  Future<void> moveCamera(CameraUpdate cameraUpdate);
-
   Future<void> animateCamera(CameraUpdate cameraUpdate);
 }
 
