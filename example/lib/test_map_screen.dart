@@ -55,6 +55,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           accessToken: "49013166841fe36d7fa7f395fce4a663",
           initialCameraPosition: CameraPosition(
               target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
+          compassEnabled: true,
         ),
         callbacks: CoreMapCallbacks(
           onMapCreated: (controller) {

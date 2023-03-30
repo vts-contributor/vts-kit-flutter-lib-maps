@@ -26,17 +26,29 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
 
   @override
   Widget build(BuildContext context) {
+
+    CoreMapData data = _controller?.data ?? widget.data;
+    
     return vt.VTMap(
-      accessToken: widget.data.accessToken,
-      initialCameraPosition: widget.data.initialCameraPosition.toViettel(),
+      accessToken: data.accessToken,
+      initialCameraPosition: data.initialCameraPosition.toViettel(),
       onStyleLoadedCallback: () {
         _controller?.onStyleLoaded();
       },
-      minMaxZoomPreference: widget.data.minMaxZoomPreference.toViettel(),
-      cameraTargetBounds: widget.data.cameraTargetBounds.toViettel(),
+      minMaxZoomPreference: data.minMaxZoomPreference.toViettel(),
+      cameraTargetBounds: data.cameraTargetBounds.toViettel(),
+      compassEnabled: data.compassEnabled,
+      rotateGesturesEnabled: data.rotateGesturesEnabled,
+      scrollGesturesEnabled: data.scrollGesturesEnabled,
+      zoomGesturesEnabled: data.zoomGesturesEnabled,
+      tiltGesturesEnabled: data.tiltGesturesEnabled,
+      myLocationEnabled: data.myLocationEnabled,
+
+      compassViewPosition: vt.CompassViewPosition.TopLeft,
+
       onMapCreated: (vt.MapboxMapController mapboxMapController) {
         final controller = ViettelMapController(mapboxMapController,
-            data: widget.data,
+            data: data,
             callback: widget.callbacks
         );
 
@@ -45,8 +57,6 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
         //return the controller back to user in onStyleLoaded()
       },
       trackCameraPosition: true,
-      compassEnabled: true,
-      myLocationTrackingMode: vt.MyLocationTrackingMode.None,
       onCameraMovingStarted: () {
         _controller?.onCameraMovingStarted();
       },

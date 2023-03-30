@@ -101,7 +101,10 @@ class _TestGoogleMapScreenState extends State<TestGoogleMapScreen> {
         )},
         onTap: (pos) {
           Log.d("GOOGLEMAP", pos.toString());
-        }
+        },
+        mapToolbarEnabled: false,
+        zoomControlsEnabled: false,
+
       ),
     );
   }

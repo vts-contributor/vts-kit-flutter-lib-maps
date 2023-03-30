@@ -66,6 +66,10 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           Log.d("VTMAP", "onCameraTrackingDismissed: ${controller?.cameraPosition?.target.toString()}");
         },
         trackCameraPosition: true,
+        compassEnabled: true,
+        compassViewMargins: Point(100, 100),
+        compassViewPosition: CompassViewPosition.TopLeft,
+        logoEnabled: false,
       ),
     );
   }

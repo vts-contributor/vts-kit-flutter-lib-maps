@@ -45,6 +45,15 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
       },
       cameraTargetBounds: widget.data.cameraTargetBounds.toGoogle(),
       minMaxZoomPreference: widget.data.minMaxZoomPreference.toGoogle(),
+      compassEnabled: data.compassEnabled,
+      rotateGesturesEnabled: data.rotateGesturesEnabled,
+      scrollGesturesEnabled: data.scrollGesturesEnabled,
+      zoomGesturesEnabled: data.zoomGesturesEnabled,
+      tiltGesturesEnabled: data.tiltGesturesEnabled,
+      myLocationEnabled: data.myLocationEnabled,
+
+      zoomControlsEnabled: false,
+
       polygons: data.polygons.toGoogle().toSet(),
       polylines: data.polylines.toGoogle().toSet(),
       circles: data.circles.toGoogle().toSet(),
