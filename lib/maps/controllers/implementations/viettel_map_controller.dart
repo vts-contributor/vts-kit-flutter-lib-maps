@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
-import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 import 'package:collection/collection.dart';
 
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
@@ -23,7 +22,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   //Store core map shape id to vtmap shape mapping so that we can remove them later
   final Map<String, ViettelPolygon> _viettelPolygonMap = {};
   final Map<String, vt.Line> _viettelPolylineMap = {};
-  final Map<String, vt.Circle> _viettelCircleMap = {};
+  final Map<String, ViettelCircle> _viettelCircleMap = {};
   final Map<String, vt.Symbol> _viettelMarkerMap = {};
 
   //used to check if marker icon has been added
@@ -115,10 +114,15 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     }
 
     //add a dummy object to map
-    _viettelCircleMap.putIfAbsent(circle.id, () => vt.Circle("dummy", const vt.CircleOptions()));
-    final vtCircle = await _controller.addCircle(circle.toCircleOptions());
+    _viettelCircleMap.putIfAbsent(circle.id, () => ViettelCircle(circle.id,
+        vt.Fill("dummy", const vt.FillOptions()), vt.Line("dummy", const vt.LineOptions())));
 
-    _viettelCircleMap.update(circle.id, (_) => vtCircle);
+    List<LatLng> points = circle.toCirclePoints();
+
+    final fill = await _controller.addFill(circle.toFillOptions(points));
+    final outline = await _controller.addLine(circle.toLineOptions(points));
+
+    _viettelCircleMap.update(circle.id, (_) => ViettelCircle(circle.id, fill, outline));
     data.circles.add(circle);
   }
 
@@ -128,7 +132,8 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
       final circle = _viettelCircleMap[circleId];
 
       if (circle != null) {
-        _controller.removeCircle(circle);
+        _controller.removeFill(circle.fill);
+        _controller.removeLine(circle.outline);
 
         data.circles.removeWhere((e) => e.id == circleId);
         _viettelCircleMap.removeWhere((key, value) => key == circleId);

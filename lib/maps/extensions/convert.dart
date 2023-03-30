@@ -3,11 +3,11 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:maps_core/maps/constants.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
-import 'package:maps_core/maps/models/viettel/viettel_polygon.dart';
 
 extension ColorConvert on Color {
   String? toHex() {
@@ -94,9 +94,10 @@ extension PolygonConvert on Polygon {
     }
     return vtmap.LineOptions(
       geometry: points.map((e) => e.toViettel()).toList(),
-      lineWidth: strokeWidth.toDouble(),
+      lineWidth: strokeWidth * Constant.vtStrokeWidthMultiplier,
       lineColor: strokeColor.toHex(),
       lineOpacity: strokeColor.opacity,
+      lineJoin: "round"
     );
   }
 }
@@ -227,13 +228,31 @@ extension CircleConvert on Circle {
     );
   }
 
-  vtmap.FillOptions toFillOptions() {
+  vtmap.FillOptions toFillOptions([List<LatLng>? points]) {
+    points ??= toCirclePoints();
     return vtmap.FillOptions(
+      geometry: [points.toViettel()],
+      fillColor: fillColor.toHex(),
+      fillOpacity: fillColor.opacity,
+    );
+  }
 
+  vtmap.LineOptions toLineOptions([List<LatLng>? points]) {
+    points ??= toCirclePoints();
+    if (points.length > 2) {
+      points.add(points.first);
+    }
+    return vtmap.LineOptions(
+      geometry: points.toViettel(),
+      lineWidth: (strokeWidth * Constant.vtStrokeWidthMultiplier).toDouble(),
+      lineColor: strokeColor.toHex(),
+      lineOpacity: strokeColor.opacity,
+      lineJoin: "round",
     );
   }
 
   ///see https://github.com/flutter-mapbox-gl/maps/issues/355#issuecomment-777289787
+  ///add 320 points
   List<LatLng> toCirclePoints() {
     final point = center;
     int dir = 1;
@@ -242,9 +261,9 @@ extension CircleConvert on Circle {
     var r2d = 180 / pi; // radians to degrees
     var earthsradius = 6371000; // radius of the earth in meters
 
-    var points = 32;
+    var points = 160;
 
-    // find the raidus in lat/lon
+    // find the radius in lat/lon
     var rlat = (radius / earthsradius) * r2d;
     var rlng = rlat / cos(point.lat * d2r);
 
@@ -263,7 +282,7 @@ extension CircleConvert on Circle {
           (rlat * sin(theta)); // center b + radius y * sin(theta)
       extp.add(LatLng(ex, ey));
     }
-    return extp;
+    return extp..remove(extp.last);
   }
 }
 

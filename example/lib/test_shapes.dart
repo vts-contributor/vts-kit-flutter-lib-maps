@@ -86,10 +86,10 @@ Polyline polyline() => Polyline(
 Circle circle() => Circle(
   id: "test1",
   center: LatLng(8.848028919141523, 104.96513564005897),
-  radius: 100000,
-  strokeColor: Colors.red,
+  radius: 10000,
+  strokeColor: Colors.blue,
   strokeWidth: 5,
-  fillColor: Colors.black,
+  fillColor: Colors.greenAccent,
   onTap: () {
     Log.d("Circle", "onTap");
   }
