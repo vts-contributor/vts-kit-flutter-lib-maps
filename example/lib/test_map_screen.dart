@@ -56,6 +56,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           initialCameraPosition: CameraPosition(
               target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
           compassEnabled: true,
+          myLocationEnabled: true,
         ),
         callbacks: CoreMapCallbacks(
           onMapCreated: (controller) {
@@ -71,10 +72,14 @@ class _TestMapScreenState extends State<TestMapScreen> {
           },
           onLongPress: (latLng) {
             Log.d("onLongPress", latLng.toString());
-          }
+          },
         ),
       ),
     );
+  }
+
+  void findRoute() {
+
   }
 }
 

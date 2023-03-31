@@ -32,16 +32,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           IconButton(
               icon: const Icon(Icons.add),
               onPressed: () async {
-                final ByteData bytes = await rootBundle.load(Constant.markerDefaultAssetPath);
-                final Uint8List list = bytes.buffer.asUint8List();
-                await controller?.addImage(Constant.markerDefaultName, list);
-                controller?.addSymbol(SymbolOptions(
-                  iconImage: Constant.markerDefaultName,
-                  geometry: LatLng(9.823077422713277, 105.81830599510204),
-                  iconSize: 0.1,
-                  textField: "ssssssssssssssssssssssssadada",
-                  textSize: 100
-                ));
+                navigate();
               }
           )
         ],
@@ -49,9 +40,11 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
       body: VTMap(
         accessToken: "49013166841fe36d7fa7f395fce4a663",
         initialCameraPosition:
-        const CameraPosition(target: LatLng(9.823077422713277, 105.81830599510204),zoom: 1),
+        const CameraPosition(target: LatLng(16.059761, 108.211771),zoom: 10),
+
         onMapCreated: (controller) {
           this.controller = controller;
+
         },
         onCameraTrackingChanged: (mode) {
           Log.d("VTMAP", "onCameraTrackingChanged: ${mode.toString()}");
@@ -65,6 +58,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
         onCameraTrackingDismissed: () {
           Log.d("VTMAP", "onCameraTrackingDismissed: ${controller?.cameraPosition?.target.toString()}");
         },
+        myLocationTrackingMode: MyLocationTrackingMode.Tracking,
         trackCameraPosition: true,
         compassEnabled: true,
         compassViewMargins: Point(100, 100),
@@ -72,5 +66,29 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
         logoEnabled: false,
       ),
     );
+  }
+
+  void navigate() {
+    List<WayPoint> wayPoints = [];
+    final _stop1 = WayPoint(
+        name: "Way Point 2",
+        latitude: 16.065423,
+        longitude: 108.188714);
+    final _origin = WayPoint(
+        name: "Way Point 1",
+        latitude: 16.059761,
+        longitude: 108.211771);
+
+    wayPoints.add(_origin);
+    wayPoints.add(_stop1);
+
+    controller?.startNavigation(
+        wayPoints: wayPoints,
+        options: VTMapOptions(
+            access_token: '49013166841fe36d7fa7f395fce4a663',
+            mode:
+            VTMapNavigationMode.driving,
+            simulateRoute: true,
+            language: "vi"));
   }
 }

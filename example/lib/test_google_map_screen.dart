@@ -104,7 +104,7 @@ class _TestGoogleMapScreenState extends State<TestGoogleMapScreen> {
         },
         mapToolbarEnabled: false,
         zoomControlsEnabled: false,
-
+        myLocationEnabled: true,
       ),
     );
   }

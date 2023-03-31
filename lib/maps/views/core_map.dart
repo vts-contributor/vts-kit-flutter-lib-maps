@@ -10,9 +10,14 @@ import '../models/core_map_data.dart';
 import '../models/core_map_type.dart';
 
 class CoreMap extends StatefulWidget {
+
   final CoreMapType initialType;
+
+  ///only take effect
   final CoreMapData initialData;
+
   final CoreMapCallbacks? callbacks;
+
   const CoreMap({super.key,
     this.initialType = CoreMapType.viettel,
     this.callbacks,
