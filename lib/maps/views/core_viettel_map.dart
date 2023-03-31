@@ -27,7 +27,7 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
   @override
   Widget build(BuildContext context) {
 
-    CoreMapData data = _controller?.data ?? widget.data;
+    CoreMapData data = widget.data;
     
     return vt.VTMap(
       accessToken: data.accessToken,

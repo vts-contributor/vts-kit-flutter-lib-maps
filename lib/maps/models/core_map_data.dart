@@ -8,9 +8,8 @@ import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/models/camera_position.dart';
 import 'package:maps_core/maps/models/map_objects/polygon.dart';
 
-///State of the map
+///Data the map. Used as object for better transferring between maps and controllers
 class CoreMapData {
-
   CoreMapData({
     this.accessToken,
     required this.initialCameraPosition,
@@ -23,14 +22,7 @@ class CoreMapData {
     this.zoomGesturesEnabled = true,
     this.tiltGesturesEnabled = true,
     this.myLocationEnabled = false,
-    Set<Polygon>? polygons,
-    Set<Polyline>? polylines,
-    Set<Marker>? markers,
-    Set<Circle>? circles,
-  }): polygons = polygons ?? {},
-        polylines = polylines ?? {},
-        circles = circles ?? {},
-        markers = markers ?? {};
+  });
 
   ///should be removed, use file instead
   final String? accessToken;
@@ -57,11 +49,6 @@ class CoreMapData {
 
   /// True if the map view should respond to zoom gestures.
   final bool zoomGesturesEnabled;
-
-  final Set<Polygon> polygons;
-  final Set<Polyline> polylines;
-  final Set<Circle> circles;
-  final Set<Marker> markers;
 
   /// True if the map view should respond to tilt gestures.
   final bool tiltGesturesEnabled;
@@ -102,7 +89,6 @@ class CoreMapData {
   /// when the map tries to turn on the My Location layer.
   final bool myLocationEnabled;
 
-
   CoreMapData copyWith({
     String? accessToken,
     CameraPosition? initialCameraPosition,
@@ -115,10 +101,6 @@ class CoreMapData {
     bool? zoomGesturesEnabled,
     bool? tiltGesturesEnabled,
     bool? myLocationEnabled,
-    Set<Polygon>? polygons,
-    Set<Polyline>? polylines,
-    Set<Marker>? markers,
-    Set<Circle>? circles,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -132,10 +114,6 @@ class CoreMapData {
       zoomGesturesEnabled: zoomGesturesEnabled ?? this.zoomGesturesEnabled,
       tiltGesturesEnabled: tiltGesturesEnabled ?? this.tiltGesturesEnabled,
       myLocationEnabled: myLocationEnabled ?? this.myLocationEnabled,
-      polygons: polygons ?? this.polygons,
-      polylines: polylines ?? this.polylines,
-      markers: markers ?? this.markers,
-      circles: circles ?? this.circles,
     );
   }
 }

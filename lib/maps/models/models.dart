@@ -16,6 +16,7 @@ export 'place_nearby.dart';
 export 'network/response.dart';
 export 'maps_api_const.dart';
 export 'core_map_data.dart';
+export 'core_map_shapes.dart';
 export 'core_map_type.dart';
 export 'map_objects/map_objects.dart';
 export 'core_map_callbacks.dart';

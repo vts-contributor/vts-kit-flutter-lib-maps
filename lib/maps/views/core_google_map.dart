@@ -5,15 +5,20 @@ import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
 
 import '../models/core_map_data.dart';
+import '../models/core_map_shapes.dart';
 
 class CoreGoogleMap extends StatefulWidget {
 
   final CoreMapData data;
+
+  final CoreMapShapes? shapes;
+
   final CoreMapCallbacks? callbacks;
 
   const CoreGoogleMap({Key? key,
     required this.data,
-    this.callbacks
+    this.callbacks,
+    this.shapes,
   }) : super(key: key);
 
   @override
@@ -25,16 +30,20 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
   GoogleMapController? _controller;
 
   @override
+  void didUpdateWidget(covariant CoreGoogleMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+
+  }
+
+  @override
   Widget build(BuildContext context) {
-
-    CoreMapData data = _controller?.data ?? widget.data;
-
     return gg.GoogleMap(
-      initialCameraPosition: data.initialCameraPosition.toGoogle(),
+      initialCameraPosition: widget.data.initialCameraPosition.toGoogle(),
       onMapCreated: (gg.GoogleMapController googleMapController) {
         //reminder: check leak here, may happen because of passing method?
         final controller = GoogleMapController(googleMapController,
-          data: data,
+          data: widget.data,
           callback: widget.callbacks,
         );
 
@@ -45,19 +54,19 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
       },
       cameraTargetBounds: widget.data.cameraTargetBounds.toGoogle(),
       minMaxZoomPreference: widget.data.minMaxZoomPreference.toGoogle(),
-      compassEnabled: data.compassEnabled,
-      rotateGesturesEnabled: data.rotateGesturesEnabled,
-      scrollGesturesEnabled: data.scrollGesturesEnabled,
-      zoomGesturesEnabled: data.zoomGesturesEnabled,
-      tiltGesturesEnabled: data.tiltGesturesEnabled,
-      myLocationEnabled: data.myLocationEnabled,
+      compassEnabled: widget.data.compassEnabled,
+      rotateGesturesEnabled: widget.data.rotateGesturesEnabled,
+      scrollGesturesEnabled: widget.data.scrollGesturesEnabled,
+      zoomGesturesEnabled: widget.data.zoomGesturesEnabled,
+      tiltGesturesEnabled: widget.data.tiltGesturesEnabled,
+      myLocationEnabled: widget.data.myLocationEnabled,
 
       zoomControlsEnabled: false,
 
-      polygons: data.polygons.toGoogle().toSet(),
-      polylines: data.polylines.toGoogle().toSet(),
-      circles: data.circles.toGoogle().toSet(),
-      markers: data.markers.toGoogle(_controller).toSet(),
+      polygons: widget.shapes?.polygons.toGoogle().toSet() ?? {},
+      polylines:  widget.shapes?.polylines.toGoogle().toSet() ?? {},
+      circles:  widget.shapes?.circles.toGoogle().toSet() ?? {},
+      markers:  widget.shapes?.markers.toGoogle().toSet() ?? {},
       onCameraMove: (position) {
         _controller?.onCameraMove(position);
       },

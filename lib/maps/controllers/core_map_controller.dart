@@ -7,26 +7,6 @@ abstract class CoreMapController {
   ///current type of the map
   CoreMapType get coreMapType;
 
-  ///current data of the map
-  CoreMapData get data;
-
-  Future<void> addPolygon(Polygon polygon);
-  Future<void> removePolygon(String polygonId);
-
-  Future<void> addPolyline(Polyline polyline);
-  Future<void> removePolyline(String polylineId);
-
-  Future<void> addCircle(Circle circle);
-  Future<void> removeCircle(String circleId);
-
-  Future<void> addMarker(Marker marker);
-  Future<void> removeMarker(String markerId);
-
-  Future<void> reloadWithData(CoreMapData data);
-
-  ///change current CoreMap type, all data will be reserved
-  void changeMapType(CoreMapType type);
-
   ///get current [CameraPosition]
   CameraPosition getCurrentPosition();
 

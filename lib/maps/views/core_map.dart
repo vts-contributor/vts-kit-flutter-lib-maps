@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
+import 'package:maps_core/maps/models/core_map_shapes.dart';
 import 'package:maps_core/maps/views/core_google_map.dart';
 import 'package:maps_core/maps/views/core_viettel_map.dart';
 
@@ -11,45 +13,51 @@ import '../models/core_map_type.dart';
 
 class CoreMap extends StatefulWidget {
 
-  final CoreMapType initialType;
+  final CoreMapType type;
 
-  ///only take effect
-  final CoreMapData initialData;
+  final CoreMapData data;
+
+  final CoreMapShapes? shapes;
 
   final CoreMapCallbacks? callbacks;
 
   const CoreMap({super.key,
-    this.initialType = CoreMapType.viettel,
+    this.type = CoreMapType.viettel,
     this.callbacks,
-    required this.initialData,
+    required this.data,
+    this.shapes,
   });
 
   @override
-  State<StatefulWidget> createState() => _CoreMapState();
-
+  State<CoreMap> createState() => _CoreMapState();
 }
 
 class _CoreMapState extends State<CoreMap> {
 
-  late CoreMapData _data;
-  late CoreMapType _type;
+  CoreMapController? _controller;
 
   @override
   void initState() {
     super.initState();
-
-    _data = widget.initialData;
-    _type = widget.initialType;
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildMap(_type, _data,
-      callbacks: _internalCallbacks
+    CoreMapCallbacks callbacks = widget.callbacks ?? CoreMapCallbacks();
+    return _buildMap(widget.type,
+      widget.data.copyWith(
+          initialCameraPosition: _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition
+      ),
+      callbacks: callbacks.copyWith(
+        onMapCreated: (controller) {
+          _controller = controller;
+          widget.callbacks?.onMapCreated?.call(controller);
+        },
+      ),
     );
   }
 
-  Widget buildMap(CoreMapType type, CoreMapData data, {
+  Widget _buildMap(CoreMapType type, CoreMapData data, {
     CoreMapCallbacks? callbacks,
   }) {
     switch (type) {
@@ -65,21 +73,4 @@ class _CoreMapState extends State<CoreMap> {
         );
     }
   }
-
-  ///Modify user's callback for internal use
-  CoreMapCallbacks get _internalCallbacks {
-    final callbacks = widget.callbacks ?? CoreMapCallbacks();
-
-    return callbacks.copyWith(
-      onChangeMapType: (data, oldType, newType) {
-        setState(() {
-          _data = data;
-          _type = newType;
-        });
-
-        widget.callbacks?.onChangeMapType?.call(data, oldType, newType);
-      }
-    );
-  }
 }
-

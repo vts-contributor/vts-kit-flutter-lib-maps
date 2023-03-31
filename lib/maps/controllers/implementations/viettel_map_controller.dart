@@ -17,7 +17,9 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
 
   final vt.MapboxMapController _controller;
 
-  CoreMapData _data;
+  final CoreMapShapes _shapes;
+
+  final CameraPosition _initialCameraPosition;
 
   //Store core map shape id to vtmap shape mapping so that we can remove them later
   final Map<String, ViettelPolygon> _viettelPolygonMap = {};
@@ -30,14 +32,16 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
 
   ViettelMapController(this._controller, {
     required CoreMapData data,
+    CoreMapShapes? shapes,
     CoreMapCallbacks? callback,
-  }): _data = data, super(callback) {
+  }): _shapes = shapes ?? CoreMapShapes(),
+        _initialCameraPosition = data.initialCameraPosition,
+        super(callback) {
     _initHandlers();
   }
   @override
   CoreMapType get coreMapType => CoreMapType.viettel;
 
-  @override
   Future<void> addPolygon(Polygon polygon) async {
     if (_viettelPolygonMap.containsKey(polygon.id)) {
       return;
@@ -57,11 +61,9 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
 
     final outlines = await Future.wait(outlineFutures);
     _viettelPolygonMap.update(polygon.id, (_) => ViettelPolygon(polygon.id, fill, outlines));
-    data.polygons.add(polygon);
+    _shapes.polygons.add(polygon);
   }
 
-
-  @override
   Future<void> removePolygon(String polygonId) async {
     if (_viettelPolygonMap.containsKey(polygonId)) {
       final polygon = _viettelPolygonMap[polygonId];
@@ -73,13 +75,12 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
           _controller.removeLine(outline);
         }
 
-        data.polygons.removeWhere((polygon) => polygon.id == polygonId);
+        _shapes.polygons.removeWhere((polygon) => polygon.id == polygonId);
         _viettelPolygonMap.removeWhere((key, value) => key == polygonId);
       }
     }
   }
 
-  @override
   Future<void> addPolyline(Polyline polyline) async {
     if (_viettelPolylineMap.containsKey(polyline.id)) {
       return;
@@ -90,10 +91,9 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     final line = await _controller.addLine(polyline.toLineOptions());
 
     _viettelPolylineMap.update(polyline.id, (_) => line);
-    data.polylines.add(polyline);
+    _shapes.polylines.add(polyline);
   }
 
-  @override
   Future<void> removePolyline(String polylineId) async {
     if (_viettelPolylineMap.containsKey(polylineId)) {
       final line = _viettelPolylineMap[polylineId];
@@ -101,13 +101,12 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
       if (line != null) {
         _controller.removeLine(line);
 
-        data.polylines.removeWhere((e) => e.id == polylineId);
+        _shapes.polylines.removeWhere((e) => e.id == polylineId);
         _viettelPolylineMap.removeWhere((key, value) => key == polylineId);
       }
     }
   }
 
-  @override
   Future<void> addCircle(Circle circle) async {
     if (_viettelCircleMap.containsKey(circle.id)) {
       return;
@@ -123,7 +122,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     final outline = await _controller.addLine(circle.toLineOptions(points));
 
     _viettelCircleMap.update(circle.id, (_) => ViettelCircle(circle.id, fill, outline));
-    data.circles.add(circle);
+    _shapes.circles.add(circle);
   }
 
   @override
@@ -135,7 +134,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
         _controller.removeFill(circle.fill);
         _controller.removeLine(circle.outline);
 
-        data.circles.removeWhere((e) => e.id == circleId);
+        _shapes.circles.removeWhere((e) => e.id == circleId);
         _viettelCircleMap.removeWhere((key, value) => key == circleId);
       }
     }
@@ -155,7 +154,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     final symbol = await _controller.addSymbol(marker.toSymbolOptions());
 
     _viettelMarkerMap.update(marker.id, (_) => symbol);
-    data.markers.add(marker);
+    _shapes.markers.add(marker);
   }
 
   @override
@@ -166,35 +165,24 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
       if (marker != null) {
         _controller.removeSymbol(marker);
 
-        data.markers.removeWhere((e) => e.id == markerId);
+        _shapes.markers.removeWhere((e) => e.id == markerId);
         _viettelMarkerMap.removeWhere((key, value) => key == markerId);
       }
     }
   }
 
   @override
-  Future<void> reloadWithData(CoreMapData data) async {
-    _data = data;
-    animateCamera(CameraUpdate.newCameraPosition(data.initialCameraPosition));
-
-    _clearShapes();
-    _addShapes(data);
-  }
-
-  @override
-  CoreMapData get data => _data;
-
-  @override
   void onDispose() {
     _controller.dispose();
   }
 
-  Future<void> _addShapes(CoreMapData data) async {
-    _addPolygons(data.polygons);
-    _addPolylines(data.polylines);
-    _addCircles(data.circles);
-    _addMarkers(data.markers);
+  Future<void> _addShapes(CoreMapShapes shapes) async {
+    _addPolygons(shapes.polygons);
+    _addPolylines(shapes.polylines);
+    _addCircles(shapes.circles);
+    _addMarkers(shapes.markers);
   }
+
   void _addPolygons(Set<Polygon> polygons) {
     for (var polygon in polygons) {
       addPolygon(polygon);
@@ -232,7 +220,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   }
 
   Future<void> onStyleLoaded() async {
-    _addShapes(_data);
+    _addShapes(_shapes);
 
     callbacks?.onMapCreated?.call(this);
   }
@@ -273,7 +261,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
 
   @override
   CameraPosition getCurrentPosition() {
-    return _controller.cameraPosition?.toCore() ?? data.initialCameraPosition;
+    return _controller.cameraPosition?.toCore() ?? _initialCameraPosition;
   }
 
   void _initHandlers() {
@@ -297,7 +285,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   void _initMarkerTapHandler() {
     _controller.onSymbolTapped.add((vtSymbol) {
       String? markerId = _viettelMarkerMap.keyWhere((value) => value.id == vtSymbol.id);
-      final marker = data.markers.firstWhereOrNull((element) => element.id == markerId);
+      final marker = _shapes.markers.firstWhereOrNull((element) => element.id == markerId);
       if (marker != null) {
         if (marker.onTap != null) {
           marker.onTap?.call();
@@ -311,7 +299,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   void _initCircleTapHandler() {
     _controller.onCircleTapped.add((vtCircle) {
       String? circleId = _viettelCircleMap.keyWhere((value) => value.id == vtCircle.id);
-      final circle = data.circles.firstWhereOrNull((element) => element.id == circleId);
+      final circle = _shapes.circles.firstWhereOrNull((element) => element.id == circleId);
       circle?.onTap?.call();
     });
   }
@@ -319,7 +307,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   void _initPolylineTapHandler() {
     _controller.onLineTapped.add((vtLine) {
       String? polylineId = _viettelPolylineMap.keyWhere((value) => value.id == vtLine.id);
-      final polyline = data.polylines.firstWhereOrNull((element) => element.id == polylineId);
+      final polyline = _shapes.polylines.firstWhereOrNull((element) => element.id == polylineId);
       polyline?.onTap?.call();
     });
   }
@@ -327,7 +315,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   void _initPolygonTapHandler() {
 
     void callPolygonOnTapById(String? id) {
-      final polygon = data.polygons.firstWhereOrNull((element) => element.id == id);
+      final polygon = _shapes.polygons.firstWhereOrNull((element) => element.id == id);
       polygon?.onTap?.call();
     }
 

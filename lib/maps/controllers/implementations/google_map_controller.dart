@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 import 'package:maps_core/maps/controllers/marker_icon_data_processor.dart';
 
-import '../../../log/log.dart';
 import '../../../maps.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
@@ -18,91 +17,14 @@ class GoogleMapController extends BaseCoreMapController
 
   final gg.GoogleMapController _controller;
 
-  CoreMapData _data;
-
   final Map<String, Uint8List> _bitmapMap = {};
 
   gg.CameraPosition _currentCameraPosition;
 
-  @override
-  CoreMapData get data => _data;
-
   GoogleMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callback,
-  }): _data = data,
-        _currentCameraPosition = data.initialCameraPosition.toGoogle(),
-        super(callback)
-  {
-    _initAssets(data);
-  }
-
-  Future<void> _initAssets(CoreMapData data) async {
-    for (final marker in data.markers) {
-      await marker.icon.data.initResource(this);
-    }
-  }
-
-  @override
-  Future<void> addPolygon(Polygon polygon) async {
-   _addMapObject(polygon, data.polygons);
-  }
-
-  @override
-  Future<void> removePolygon(String polygonId) async {
-    _removeMapObject(polygonId, data.polygons);
-  }
-
-  @override
-  Future<void> addPolyline(Polyline polyline) async {
-    _addMapObject(polyline, data.polylines);
-  }
-
-  @override
-  Future<void> removePolyline(String polylineId) async {
-    _removeMapObject(polylineId, data.polylines);
-  }
-
-  @override
-  Future<void> addCircle(Circle circle) async {
-    _addMapObject(circle, data.circles);
-  }
-
-  @override
-  Future<void> removeCircle(String circleId) async {
-    _removeMapObject(circleId, data.circles);
-  }
-
-  @override
-  Future<void> addMarker(Marker marker) async {
-    await marker.icon.data.initResource(this);
-    _addMapObject(marker, data.markers);
-  }
-
-  @override
-  Future<void> removeMarker(String markerId) async {
-    _removeMapObject(markerId, data.markers);
-  }
-
-  void _addMapObject(MapObject object, Set<MapObject> objects) {
-    if (!objects.any((element) => element.id == object.id)) {
-      objects.add(object);
-      notifyListeners();
-    }
-  }
-
-  void _removeMapObject(String objectId, Set<MapObject> objects) {
-    objects.removeWhere((element) => element.id == objectId);
-    notifyListeners();
-  }
-
-  @override
-  Future<void> reloadWithData(CoreMapData data) async {
-    _data = data;
-    _controller.animateCamera(gg.CameraUpdate.newCameraPosition(
-        data.initialCameraPosition.toGoogle()));
-    notifyListeners();
-  }
+  }):_currentCameraPosition = data.initialCameraPosition.toGoogle(), super(callback);
 
   @override
   void onDispose() {
