@@ -11,14 +11,14 @@ class CoreGoogleMap extends StatefulWidget {
 
   final CoreMapData data;
 
-  final CoreMapShapes? shapes;
+  final CoreMapShapes shapes;
 
   final CoreMapCallbacks? callbacks;
 
   const CoreGoogleMap({Key? key,
     required this.data,
     this.callbacks,
-    this.shapes,
+    required this.shapes,
   }) : super(key: key);
 
   @override
@@ -44,7 +44,7 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
         //reminder: check leak here, may happen because of passing method?
         final controller = GoogleMapController(googleMapController,
           data: widget.data,
-          callback: widget.callbacks,
+          callbacks: widget.callbacks,
         );
 
         controller.addListener(() => setState(() {}));
@@ -63,10 +63,10 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
 
       zoomControlsEnabled: false,
 
-      polygons: widget.shapes?.polygons.toGoogle().toSet() ?? {},
-      polylines:  widget.shapes?.polylines.toGoogle().toSet() ?? {},
-      circles:  widget.shapes?.circles.toGoogle().toSet() ?? {},
-      markers:  widget.shapes?.markers.toGoogle().toSet() ?? {},
+      polygons: widget.shapes.polygons.toGoogle().toSet(),
+      polylines:  widget.shapes.polylines.toGoogle().toSet(),
+      circles:  widget.shapes.circles.toGoogle().toSet(),
+      markers:  widget.shapes.markers.toGoogle().toSet(),
       onCameraMove: (position) {
         _controller?.onCameraMove(position);
       },

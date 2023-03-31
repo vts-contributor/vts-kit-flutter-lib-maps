@@ -23,8 +23,8 @@ class GoogleMapController extends BaseCoreMapController
 
   GoogleMapController(this._controller, {
     required CoreMapData data,
-    CoreMapCallbacks? callback,
-  }):_currentCameraPosition = data.initialCameraPosition.toGoogle(), super(callback);
+    CoreMapCallbacks? callbacks,
+  }):_currentCameraPosition = data.initialCameraPosition.toGoogle(), super(callbacks);
 
   @override
   void onDispose() {

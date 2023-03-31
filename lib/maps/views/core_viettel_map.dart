@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/controllers/implementations/viettel_map_controller.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
@@ -11,9 +12,11 @@ import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 class CoreViettelMap extends StatefulWidget {
   final CoreMapData data;
   final CoreMapCallbacks? callbacks;
+  final CoreMapShapes shapes;
   const CoreViettelMap({Key? key,
     required this.data,
-    this.callbacks
+    this.callbacks,
+    required this.shapes,
   }) : super(key: key);
 
   @override
@@ -48,8 +51,9 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
 
       onMapCreated: (vt.MapboxMapController mapboxMapController) {
         final controller = ViettelMapController(mapboxMapController,
-            data: data,
-            callback: widget.callbacks
+          data: data,
+          callbacks: widget.callbacks,
+          shapes: widget.shapes,
         );
 
         _controller = controller;

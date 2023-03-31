@@ -33,10 +33,10 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   ViettelMapController(this._controller, {
     required CoreMapData data,
     CoreMapShapes? shapes,
-    CoreMapCallbacks? callback,
+    CoreMapCallbacks? callbacks,
   }): _shapes = shapes ?? CoreMapShapes(),
         _initialCameraPosition = data.initialCameraPosition,
-        super(callback) {
+        super(callbacks) {
     _initHandlers();
   }
   @override

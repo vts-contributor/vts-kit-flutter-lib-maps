@@ -44,10 +44,12 @@ class _CoreMapState extends State<CoreMap> {
   @override
   Widget build(BuildContext context) {
     CoreMapCallbacks callbacks = widget.callbacks ?? CoreMapCallbacks();
-    return _buildMap(widget.type,
-      widget.data.copyWith(
+    return _buildMap(
+      type: widget.type,
+      data: widget.data.copyWith(
           initialCameraPosition: _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition
       ),
+      shapes: widget.shapes,
       callbacks: callbacks.copyWith(
         onMapCreated: (controller) {
           _controller = controller;
@@ -57,7 +59,10 @@ class _CoreMapState extends State<CoreMap> {
     );
   }
 
-  Widget _buildMap(CoreMapType type, CoreMapData data, {
+  Widget _buildMap({
+    required CoreMapType type,
+    required CoreMapData data,
+    CoreMapShapes? shapes,
     CoreMapCallbacks? callbacks,
   }) {
     switch (type) {
@@ -65,11 +70,13 @@ class _CoreMapState extends State<CoreMap> {
         return CoreGoogleMap(
           data: data,
           callbacks: callbacks,
+          shapes: shapes ?? CoreMapShapes(),
         );
       case CoreMapType.viettel:
         return CoreViettelMap(
           data: data,
           callbacks: callbacks,
+          shapes: shapes ?? CoreMapShapes()
         );
     }
   }
