@@ -34,15 +34,80 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     required CoreMapData data,
     CoreMapShapes? shapes,
     CoreMapCallbacks? callbacks,
-  }): _shapes = shapes ?? CoreMapShapes(),
+  }): _shapes = shapes?.clone() ?? CoreMapShapes(),
         _initialCameraPosition = data.initialCameraPosition,
         super(callbacks) {
     _initHandlers();
   }
+
   @override
   CoreMapType get coreMapType => CoreMapType.viettel;
 
-  Future<void> addPolygon(Polygon polygon) async {
+  Future<void> updatePolygons(Set<Polygon> polygons) async {
+    await _updateMapObjects(_shapes.polygons, polygons,
+      addFunc: (polygons) => _addMapObjects(polygons, _addPolygon),
+      removeFunc: (ids) => _removeMapObject(ids, _removePolygon),
+    );
+  }
+
+  Future<void> updatePolylines(Set<Polyline> polylines) async {
+    await _updateMapObjects(_shapes.polylines, polylines,
+      addFunc: (polylines) => _addMapObjects(polylines, _addPolyline),
+      removeFunc: (ids) => _removeMapObject(ids, _removePolyline),
+    );
+  }
+
+  Future<void> updateCircles(Set<Circle> circles) async {
+    await _updateMapObjects(_shapes.circles, circles,
+      addFunc: (circles) => _addMapObjects(circles, _addCircle),
+      removeFunc: (ids) => _removeMapObject(ids, _removeCircle),
+    );
+  }
+
+  Future<void> updateMarkers(Set<Marker> markers) async {
+    await _updateMapObjects(_shapes.markers, markers,
+      addFunc: (markers) => _addMapObjects(markers, _addMarker),
+      removeFunc: (ids) => _removeMapObject(ids, _removeMarker),
+    );
+  }
+
+  Future<void> _updateMapObjects<T extends MapObject>(Set<T> oldObjects, Set<T> newObjects, {
+    required Future<void> Function(Set<T>) addFunc,
+    required Future<void> Function(Set<String>) removeFunc,
+  }) async {
+    final mapObjectUpdates = MapObjectUpdates.from(oldObjects, newObjects);
+
+    Set<String> allRemoveIds = {
+      ...mapObjectUpdates.removeIds,
+      ...mapObjectUpdates.updateIds
+    };
+
+    Set<String> allAddIds = {
+      ...mapObjectUpdates.updateIds,
+      ...mapObjectUpdates.addIds
+    };
+
+    await removeFunc(allRemoveIds);
+    await addFunc(newObjects.where((element) => allAddIds.contains(element.id)).toSet());
+  }
+
+  Future<void> _addMapObjects<T extends MapObject>(Set<T> mapObjects,
+      Future<void> Function(T) addFunc) async {
+    for (var mapObject in mapObjects) {
+      await addFunc(mapObject);
+    }
+  }
+
+  Future<void> _removeMapObject(Set<String> ids, Future<void> Function(String) removeFunc) async {
+    List<Future> futures = [];
+    for (var id in ids) {
+      futures.add(removeFunc(id));
+    }
+
+    await Future.wait(futures);
+  }
+
+  Future<void> _addPolygon(Polygon polygon) async {
     if (_viettelPolygonMap.containsKey(polygon.id)) {
       return;
     }
@@ -64,7 +129,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     _shapes.polygons.add(polygon);
   }
 
-  Future<void> removePolygon(String polygonId) async {
+  Future<void> _removePolygon(String polygonId) async {
     if (_viettelPolygonMap.containsKey(polygonId)) {
       final polygon = _viettelPolygonMap[polygonId];
 
@@ -81,7 +146,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     }
   }
 
-  Future<void> addPolyline(Polyline polyline) async {
+  Future<void> _addPolyline(Polyline polyline) async {
     if (_viettelPolylineMap.containsKey(polyline.id)) {
       return;
     }
@@ -94,7 +159,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     _shapes.polylines.add(polyline);
   }
 
-  Future<void> removePolyline(String polylineId) async {
+  Future<void> _removePolyline(String polylineId) async {
     if (_viettelPolylineMap.containsKey(polylineId)) {
       final line = _viettelPolylineMap[polylineId];
 
@@ -107,7 +172,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     }
   }
 
-  Future<void> addCircle(Circle circle) async {
+  Future<void> _addCircle(Circle circle) async {
     if (_viettelCircleMap.containsKey(circle.id)) {
       return;
     }
@@ -125,8 +190,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     _shapes.circles.add(circle);
   }
 
-  @override
-  Future<void> removeCircle(String circleId) async {
+  Future<void> _removeCircle(String circleId) async {
     if (_viettelCircleMap.containsKey(circleId)) {
       final circle = _viettelCircleMap[circleId];
 
@@ -140,8 +204,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     }
   }
 
-  @override
-  Future<void> addMarker(Marker marker) async {
+  Future<void> _addMarker(Marker marker) async {
     if (_viettelMarkerMap.containsKey(marker.id)) {
       return;
     }
@@ -157,8 +220,7 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     _shapes.markers.add(marker);
   }
 
-  @override
-  Future<void> removeMarker(String markerId) async {
+  Future<void> _removeMarker(String markerId) async {
     if (_viettelMarkerMap.containsKey(markerId)) {
       final marker = _viettelMarkerMap[markerId];
 
@@ -177,34 +239,10 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   }
 
   Future<void> _addShapes(CoreMapShapes shapes) async {
-    _addPolygons(shapes.polygons);
-    _addPolylines(shapes.polylines);
-    _addCircles(shapes.circles);
-    _addMarkers(shapes.markers);
-  }
-
-  void _addPolygons(Set<Polygon> polygons) {
-    for (var polygon in polygons) {
-      addPolygon(polygon);
-    }
-  }
-
-  void _addPolylines(Set<Polyline> polylines) {
-    for (var polyline in polylines) {
-      addPolyline(polyline);
-    }
-  }
-
-  void _addCircles(Set<Circle> circles) {
-    for (var circle in circles) {
-      addCircle(circle);
-    }
-  }
-
-  void _addMarkers(Set<Marker> markers) {
-    for (var marker in markers) {
-      addMarker(marker);
-    }
+    _addMapObjects(shapes.polygons, _addPolygon);
+    _addMapObjects(shapes.polylines, _addPolyline);
+    _addMapObjects(shapes.circles, _addCircle);
+    _addMapObjects(shapes.markers, _addMarker);
   }
 
   Future<void> _clearShapes() async {

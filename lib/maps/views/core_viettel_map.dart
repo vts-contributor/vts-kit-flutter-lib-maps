@@ -28,6 +28,38 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
   ViettelMapController? _controller;
 
   @override
+  void didUpdateWidget(covariant CoreViettelMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _updateCallbacks();
+
+    _updatePolygons();
+    _updatePolylines();
+    _updateCircles();
+    _updateMarkers();
+  }
+
+  void _updateCallbacks() {
+    _controller?.callbacks = widget.callbacks;
+  }
+
+  void _updatePolygons() {
+    _controller?.updatePolygons(widget.shapes.polygons);
+  }
+
+  void _updatePolylines() {
+    _controller?.updatePolylines(widget.shapes.polylines);
+  }
+
+  void _updateCircles() {
+    _controller?.updateCircles(widget.shapes.circles);
+  }
+
+  void _updateMarkers() {
+    _controller?.updateMarkers(widget.shapes.markers);
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     CoreMapData data = widget.data;

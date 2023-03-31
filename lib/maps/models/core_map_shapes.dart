@@ -24,4 +24,13 @@ class CoreMapShapes {
         polylines = polylines ?? {},
         circles = circles ?? {},
         markers = markers ?? {};
+
+  CoreMapShapes clone() {
+    return CoreMapShapes(
+      polygons: Set.from(polygons),
+      polylines: Set.from(polylines),
+      circles: Set.from(circles),
+      markers: Set.from(markers),
+    );
+  }
 }

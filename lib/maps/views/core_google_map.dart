@@ -33,7 +33,11 @@ class _CoreGoogleMapState extends State<CoreGoogleMap> {
   void didUpdateWidget(covariant CoreGoogleMap oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    _updateCallbacks();
+  }
 
+  void _updateCallbacks() {
+    _controller?.callbacks = widget.callbacks;
   }
 
   @override
