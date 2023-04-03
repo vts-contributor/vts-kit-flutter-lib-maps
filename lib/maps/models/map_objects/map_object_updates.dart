@@ -20,9 +20,10 @@ class MapObjectUpdates {
     Set<String> addIds = newIds.where((id) => !oldIds.contains(id)).toSet();
 
     // ids which are in both oldIds and newIds and newObject != oldObject
-    Set<String> updateIds = oldObjects.where((object) => object
-        != newObjects.firstWhereOrNull((e) => e == object))
-        .map((e) => e.id).toSet();
+    Set<String> updateIds = oldObjects.where((object) {
+      final newObject = newObjects.firstWhereOrNull((e) => e.id == object.id);
+      return object != newObject;
+    }).map((e) => e.id).toSet();
 
     return MapObjectUpdates._(removeIds, updateIds, addIds);
   }

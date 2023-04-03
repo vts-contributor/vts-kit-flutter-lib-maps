@@ -89,6 +89,7 @@ extension PolygonConvert on Polygon {
 
   vtmap.LineOptions _toFillOutline(List<LatLng> points) {
     //to connect first point and last point
+    points = List.from(points);
     if (points.length > 2) {
       points.add(points.first);
     }

@@ -28,7 +28,9 @@ class _TestMapScreenState extends State<TestMapScreen> {
     myLocationEnabled: true,
   );
 
-  CoreMapShapes _shapes = CoreMapShapes();
+  CoreMapShapes _shapes = CoreMapShapes(
+    polygons: {polygon1()}
+  );
 
   CoreMapType _type = CoreMapType.viettel;
 
@@ -41,6 +43,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           IconButton(
             icon: Icon(Icons.abc),
             onPressed: () {
+
             },
           ),
           IconButton(
@@ -91,7 +94,12 @@ class _TestMapScreenState extends State<TestMapScreen> {
             Log.d("onLongPress", latLng.toString());
           },
         ),
-        shapes: _shapes,
+        shapes: CoreMapShapes(
+            polygons: {polygon1()},
+          circles: {circle()},
+          markers: {marker()},
+          polylines: {polyline()},
+        ),
       ),
     );
   }

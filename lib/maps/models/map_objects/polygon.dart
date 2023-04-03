@@ -143,7 +143,8 @@ class Polygon implements MapObject {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is Polygon &&
+    bool comp = other is Polygon && listEquals(points, other.points);
+    return other is Polygon && 
         id == other.id &&
         fillColor == other.fillColor &&
         geodesic == other.geodesic &&

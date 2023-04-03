@@ -79,6 +79,17 @@ class LatLng {
     final List<Object?> list = json as List<Object?>;
     return LatLng(list[0]! as double, list[1]! as double);
   }
+
+
+  @override
+  bool operator ==(Object other) {
+    return other is LatLng &&
+        other.lat == lat &&
+        other.lng == lng;
+  }
+
+  @override
+  int get hashCode => Object.hash(lat, lng);
 }
 
 
