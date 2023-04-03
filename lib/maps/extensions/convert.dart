@@ -298,14 +298,10 @@ extension InfoWindowConvert on InfoWindow {
 }
 
 extension MarkerConvert on Marker {
-  ggmap.Marker toGoogle([Uint8List? markerBitmap]) {
+  ggmap.Marker toGoogle(Uint8List markerBitmap) {
     ggmap.BitmapDescriptor markerDescriptor;
 
-    if (markerBitmap != null) {
-      markerDescriptor = ggmap.BitmapDescriptor.fromBytes(markerBitmap);
-    } else {
-      markerDescriptor = ggmap.BitmapDescriptor.defaultMarker;
-    }
+    markerDescriptor = ggmap.BitmapDescriptor.fromBytes(markerBitmap);
 
     return ggmap.Marker(
       markerId: ggmap.MarkerId(id),

@@ -3,6 +3,7 @@ import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/controllers/implementations/viettel_map_controller.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
+import 'package:maps_core/maps/models/map_objects/marker_icon_data_factory.dart';
 
 import '../../log/log.dart';
 import '../models/core_map_data.dart';
@@ -26,6 +27,8 @@ class CoreViettelMap extends StatefulWidget {
 class _CoreViettelMapState extends State<CoreViettelMap> {
 
   ViettelMapController? _controller;
+
+  final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
 
   @override
   void didUpdateWidget(covariant CoreViettelMap oldWidget) {
@@ -86,6 +89,7 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
           data: data,
           callbacks: widget.callbacks,
           shapes: widget.shapes,
+          markerIconDataProcessor: _markerIconDataFactory
         );
 
         _controller = controller;

@@ -2,70 +2,33 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
-import 'package:maps_core/maps/controllers/marker_icon_data_processor.dart';
+import 'package:maps_core/maps/models/map_objects/marker_icon_data_processor.dart';
 
 import '../../../maps.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
 
 class GoogleMapController extends BaseCoreMapController
-    with ChangeNotifier
-    implements MarkerIconDataProcessor {
+    with ChangeNotifier {
 
   @override
   CoreMapType get coreMapType => CoreMapType.google;
 
   final gg.GoogleMapController _controller;
 
-  final Map<String, Uint8List> _bitmapMap = {};
-
   gg.CameraPosition _currentCameraPosition;
+
+  final MarkerIconDataProcessor markerIconDataProcessor;
 
   GoogleMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callbacks,
+    required this.markerIconDataProcessor,
   }):_currentCameraPosition = data.initialCameraPosition.toGoogle(), super(callbacks);
-
   @override
   void onDispose() {
     dispose();
     _controller.dispose();
-  }
-
-  @override
-  Future<void> processAssetMarkerIcon(MarkerIconData<String> markerIconData) async {
-    if (_checkMarkerIconWasAdded(markerIconData)) return;
-
-    final Uint8List bitmap = await rootBundle.loadImageAsUint8List(markerIconData.data);
-
-    _bitmapMap.putIfAbsent(markerIconData.name, () => bitmap);
-    notifyListeners();
-  }
-
-  @override
-  Future<void> processBitmapMarkerIcon(MarkerIconData<Uint8List> markerIconData) async {
-    if (_checkMarkerIconWasAdded(markerIconData)) return;
-
-    _bitmapMap.putIfAbsent(markerIconData.name, () => markerIconData.data);
-    notifyListeners();
-  }
-
-  @override
-  Future<void> processNetworkMarkerIcon(MarkerIconData<String> markerIconData) async {
-    if (_checkMarkerIconWasAdded(markerIconData)) return;
-
-    Uint8List bitmap = await Dio().downloadImageToBitmap(markerIconData.data);
-
-    _bitmapMap.putIfAbsent(markerIconData.name, () => bitmap);
-    notifyListeners();
-  }
-
-  bool _checkMarkerIconWasAdded(MarkerIconData data) {
-    return _bitmapMap.containsKey(data.name);
-  }
-
-  Uint8List? getBitmapOf(String name) {
-    return _bitmapMap[name];
   }
 
   @override
@@ -92,5 +55,16 @@ class GoogleMapController extends BaseCoreMapController
   @override
   Future<void> animateCamera(CameraUpdate cameraUpdate) async {
     await _controller.animateCamera(cameraUpdate.toGoogle());
+  }
+
+  Future<void> updateMarkers(Set<Marker> newMarkers) async {
+    List<Future> markerFutures = [];
+    for (final marker in newMarkers) {
+      //process all marker data to check if there are new maker icons
+      markerFutures.add(marker.icon.data.initResource(markerIconDataProcessor));
+    }
+    await Future.wait(markerFutures);
+
+    notifyListeners();
   }
 }

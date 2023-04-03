@@ -10,10 +10,10 @@ import 'package:collection/collection.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 import '../../../maps.dart';
-import '../marker_icon_data_processor.dart';
+import '../../models/map_objects/marker_icon_data_processor.dart';
 
 
-class ViettelMapController extends BaseCoreMapController implements MarkerIconDataProcessor {
+class ViettelMapController extends BaseCoreMapController {
 
   final vt.MapboxMapController _controller;
 
@@ -30,10 +30,13 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
   //used to check if marker icon has been added
   final Set<String> _markerIconNames = {};
 
+  final MarkerIconDataProcessor markerIconDataProcessor;
+
   ViettelMapController(this._controller, {
     required CoreMapData data,
     CoreMapShapes? shapes,
     CoreMapCallbacks? callbacks,
+    required this.markerIconDataProcessor,
   }): _shapes = shapes?.clone() ?? CoreMapShapes(),
         _initialCameraPosition = data.initialCameraPosition,
         super(callbacks) {
@@ -213,7 +216,12 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     _viettelMarkerMap.putIfAbsent(marker.id, () => vt.Symbol("dummy", const vt.SymbolOptions()));
 
     //marker resource must has been initialized before being added to the map
-    await marker.icon.data.initResource(this);
+    if (!_markerIconNames.contains(marker.icon.data.name)) {
+      _markerIconNames.add(marker.icon.data.name);
+      Uint8List bitmap = await marker.icon.data.initResource(markerIconDataProcessor);
+      _controller.addImage(marker.icon.data.name, bitmap);
+    }
+
     final symbol = await _controller.addSymbol(marker.toSymbolOptions());
 
     _viettelMarkerMap.update(marker.id, (_) => symbol);
@@ -261,40 +269,6 @@ class ViettelMapController extends BaseCoreMapController implements MarkerIconDa
     _addShapes(_shapes);
 
     callbacks?.onMapCreated?.call(this);
-  }
-
-  @override
-  Future<void> processAssetMarkerIcon(MarkerIconData<String> markerIconData) async {
-    if (_checkMarkerIconDataWasAdded(markerIconData)) return;
-
-    _markerIconNames.add(markerIconData.name);
-
-    if (! await _controller.addImageFromAsset(markerIconData.name, markerIconData.data)) {
-      _markerIconNames.remove(markerIconData.name);
-    }
-  }
-
-  @override
-  Future<void> processBitmapMarkerIcon(MarkerIconData<Uint8List> markerIconData) async {
-    if (_checkMarkerIconDataWasAdded(markerIconData)) return;
-
-    _markerIconNames.add(markerIconData.name);
-
-    await _controller.addImage(markerIconData.name, markerIconData.data);
-  }
-
-  @override
-  Future<void> processNetworkMarkerIcon(MarkerIconData<String> markerIconData) async {
-    if (_checkMarkerIconDataWasAdded(markerIconData)) return;
-
-    _markerIconNames.add(markerIconData.name);
-
-    Uint8List bitmap = await Dio().downloadImageToBitmap(markerIconData.data);
-
-    await _controller.addImage(markerIconData.name,bitmap);
-  }
-  bool _checkMarkerIconDataWasAdded(MarkerIconData data) {
-    return _markerIconNames.contains(data.name);
   }
 
   @override

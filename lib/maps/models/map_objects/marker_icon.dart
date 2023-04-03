@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 
-import '../../controllers/marker_icon_data_processor.dart';
+import 'marker_icon_data_processor.dart';
 
 //used to hide accept() from client
 class MarkerIcon {
@@ -26,23 +26,23 @@ class MarkerIcon {
 
 abstract class MarkerIconData<T> {
   final String _name;
-  final T _data;
+  final T _value;
 
   String get name => _name;
 
-  T get data => _data;
+  T get value => _value;
 
-  const MarkerIconData(this._name, this._data);
+  const MarkerIconData(this._name, this._value);
 
-  Future<void> initResource(MarkerIconDataProcessor controller);
+  Future<Uint8List> initResource(MarkerIconDataProcessor processor);
 }
 
 class AssetMarkerIconData extends MarkerIconData<String> {
   const AssetMarkerIconData(super.name, super.data);
 
   @override
-  Future<void> initResource(MarkerIconDataProcessor controller) async {
-    await controller.processAssetMarkerIcon(this);
+  Future<Uint8List> initResource(MarkerIconDataProcessor processor) async {
+    return await processor.processAssetMarkerIcon(this);
   }
 }
 
@@ -50,8 +50,8 @@ class NetworkMarkerIconData extends MarkerIconData<String> {
   const NetworkMarkerIconData(super.name, super.data);
 
   @override
-  Future<void> initResource(MarkerIconDataProcessor controller) async {
-    await controller.processNetworkMarkerIcon(this);
+  Future<Uint8List> initResource(MarkerIconDataProcessor processor) async {
+    return await processor.processNetworkMarkerIcon(this);
   }
 
 }
@@ -60,8 +60,8 @@ class BitmapMarkerIconData extends MarkerIconData<Uint8List> {
   BitmapMarkerIconData(super.name, super.data);
 
   @override
-  Future<void> initResource(MarkerIconDataProcessor controller) async {
-    await controller.processBitmapMarkerIcon(this);
+  Future<Uint8List> initResource(MarkerIconDataProcessor processor) async {
+    return await processor.processBitmapMarkerIcon(this);
   }
 
 }
