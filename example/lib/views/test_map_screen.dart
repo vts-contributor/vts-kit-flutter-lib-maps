@@ -95,10 +95,10 @@ class _TestMapScreenState extends State<TestMapScreen> {
           },
         ),
         shapes: CoreMapShapes(
-            polygons: {polygon1()},
-          circles: {circle()},
+          // polygons: {polygon1()},
+          // circles: {circle()},
           markers: {marker()},
-          polylines: {polyline()},
+          // polylines: {polyline()},
         ),
       ),
     );

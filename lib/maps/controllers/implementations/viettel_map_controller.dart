@@ -121,13 +121,9 @@ class ViettelMapController extends BaseCoreMapController {
 
     final fill = await _controller.addFill(polygon.toFillOptions());
 
-    final outlineOptions = polygon.getOutlineLineOptions();
-    List<Future<vt.Line>> outlineFutures = [];
-    for (final outlineOption in outlineOptions) {
-      outlineFutures.add(_controller.addLine(outlineOption));
-    }
+    List<vt.Line> outlines = await Future
+        .wait(polygon.getOutlineLineOptions().map((e) => _controller.addLine(e)));
 
-    final outlines = await Future.wait(outlineFutures);
     _viettelPolygonMap.update(polygon.id, (_) => ViettelPolygon(polygon.id, fill, outlines));
     _shapes.polygons.add(polygon);
   }
@@ -147,6 +143,23 @@ class ViettelMapController extends BaseCoreMapController {
         _viettelPolygonMap.removeWhere((key, value) => key == polygonId);
       }
     }
+  }
+
+  Future<void> _updatePolygon(Polygon polygon) async {
+    ViettelPolygon? updatingPolygon = _viettelPolygonMap[polygon.id];
+    if (updatingPolygon == null) {
+      return;
+    }
+
+    _controller.updateFill(updatingPolygon.fill, polygon.toFillOptions());
+
+    List<vt.Line> lines = updatingPolygon.outlines;
+    await Future.wait(lines.map((e) => _controller.removeLine(e)));
+    List<vt.Line> newLines = await Future
+        .wait(polygon.getOutlineLineOptions().map((e) => _controller.addLine(e)));
+
+    _viettelPolygonMap.update(polygon.id, (_) =>
+        ViettelPolygon(polygon.id, updatingPolygon.fill, newLines));
   }
 
   Future<void> _addPolyline(Polyline polyline) async {

@@ -20,7 +20,6 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
         actions: [
           IconButton(onPressed: () async {
             final directions = await Provider.of<RoutingViewModel>(context, listen: false).downloadDirections();
-            debugPrint(directions.toString());
           }, icon: Icon(Icons.download))
         ],
       ),
