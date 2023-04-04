@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:map_core_example/test_google_map_screen.dart';
-import 'package:map_core_example/test_map_screen.dart';
-import 'package:map_core_example/test_vt_map_screen.dart';
+import 'package:map_core_example/view_models/routing_view_model.dart';
+import 'package:map_core_example/views/test_google_map_screen.dart';
+import 'package:map_core_example/views/test_map_screen.dart';
+import 'package:map_core_example/views/test_routing_screen.dart';
+import 'package:map_core_example/views/test_vt_map_screen.dart';
+import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
 
@@ -30,6 +34,10 @@ class MyApp extends StatelessWidget {
         TestMapScreen.routeName: (_) => const TestMapScreen(),
         TestGoogleMapScreen.routeName: (_) => const TestGoogleMapScreen(),
         TestVTMapScreen.routeName: (_) => const TestVTMapScreen(),
+        TestRoutingScreen.routeName: (_) => ChangeNotifierProvider(
+          create: (_) => RoutingViewModel(MapsAPIServiceImpl(key: "49013166841fe36d7fa7f395fce4a663")),
+          child: const TestRoutingScreen(),
+        ),
       },
     );
   }
@@ -112,6 +120,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestVTMapScreen.routeName),
               child: Text("Test vt map"),
+            ),
+            SizedBox(height: 10,),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, TestRoutingScreen.routeName),
+              child: Text("Test routing map"),
             ),
           ],
         ),

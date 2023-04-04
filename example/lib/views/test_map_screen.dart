@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:map_core_example/test_shapes.dart';
+import 'package:map_core_example/views/test_shapes.dart';
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/controllers/core_map_controller_completer.dart';

@@ -3,7 +3,6 @@ import 'package:maps_core/maps/extensions/utils.dart';
 
 import '../models/models.dart';
 import '../models/network/custom_cancel_token.dart';
-import '../models/network/errors.dart';
 import 'maps_api_config.dart';
 import 'maps_api_service.dart';
 import 'maps_api_service_abstract.dart';

@@ -8,7 +8,7 @@ import 'dart:ui' show Offset;
 import 'package:flutter/foundation.dart'
     show immutable, ValueChanged, VoidCallback;
 import 'package:maps_core/maps/constants.dart';
-import 'package:maps_core/maps/extensions/convert.dart';
+import 'package:maps_core/maps/extensions/model_convert.dart';
 import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import 'lat_lng.dart';
