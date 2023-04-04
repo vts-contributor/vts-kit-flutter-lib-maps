@@ -91,7 +91,7 @@ Circle circle() => Circle(
   center: LatLng(8.848028919141523, 104.96513564005897),
   radius: 10000,
   strokeColor: Colors.black,
-  strokeWidth: 2,
+  strokeWidth: 20,
   fillColor: Colors.blue,
   onTap: () {
     Log.d("Circle", "onTap");

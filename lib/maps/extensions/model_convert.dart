@@ -27,7 +27,6 @@ extension ColorConvert on Color {
   }
 }
 
-
 extension LatLngConvert on LatLng {
   ggmap.LatLng toGoogle() {
     return ggmap.LatLng(lat, lng);

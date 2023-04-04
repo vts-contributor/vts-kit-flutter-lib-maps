@@ -374,7 +374,7 @@ class ViettelMapController extends BaseCoreMapController {
 
     //check if the fill is tapped?
     _controller.onFillTapped.add((fill) {
-      String? circleId = _viettelPolygonMap.keyWhere((value) => value.fill.id == fill.id);
+      String? circleId = _viettelCircleMap.keyWhere((value) => value.fill.id == fill.id);
 
       callCircleTapById(circleId);
     });
