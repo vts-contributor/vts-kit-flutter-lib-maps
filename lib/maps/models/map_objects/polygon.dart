@@ -143,7 +143,16 @@ class Polygon implements MapObject {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    bool comp = other is Polygon && listEquals(points, other.points);
+    bool comp = other is Polygon &&
+        id == other.id &&
+        fillColor == other.fillColor &&
+        geodesic == other.geodesic &&
+        listEquals(points, other.points) &&
+        const DeepCollectionEquality().equals(holes, other.holes) &&
+        visible == other.visible &&
+        strokeColor == other.strokeColor &&
+        strokeWidth == other.strokeWidth &&
+        zIndex == other.zIndex;
     return other is Polygon && 
         id == other.id &&
         fillColor == other.fillColor &&

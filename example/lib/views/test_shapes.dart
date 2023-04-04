@@ -29,8 +29,8 @@ Polygon polygon1() {
           LatLng(9.683279273763315, 105.85380206186403)
         ],
       ],
-      fillColor: Colors.yellow,
-      strokeColor: Colors.red,
+      fillColor: Colors.black,
+      strokeColor: Colors.yellow,
       onTap: () {
         Log.d("Polygon", "onTap");
       }
@@ -62,8 +62,8 @@ Polygon polygon2() {
           LatLng(9.683279273763315, 105.85380206186403)
         ],
       ],
-      fillColor: Colors.red,
-      strokeColor: Colors.red,
+      fillColor: Colors.black,
+      strokeColor: Colors.yellow,
       onTap: () {
         Log.d("Polygon", "onTap");
       }
@@ -79,8 +79,8 @@ Polyline polyline() => Polyline(
       LatLng(10.781534156930388, 107.0149202769658),
       LatLng(11.447301198223213, 107.27501155457392),
     ],
-    jointType: JointType.bevel,
-    color: Colors.red,
+    jointType: JointType.round,
+    color: Colors.blue.withOpacity(1),
     onTap: () {
       Log.d("Polyline", "onTap");
     }
@@ -90,9 +90,9 @@ Circle circle() => Circle(
   id: "test1",
   center: LatLng(8.848028919141523, 104.96513564005897),
   radius: 10000,
-  strokeColor: Colors.red,
-  strokeWidth: 5,
-  fillColor: Colors.yellow,
+  strokeColor: Colors.black,
+  strokeWidth: 2,
+  fillColor: Colors.blue,
   onTap: () {
     Log.d("Circle", "onTap");
   }
@@ -100,7 +100,8 @@ Circle circle() => Circle(
 
 Marker marker() => Marker(
   id: "test1",
-  position: LatLng(8.848028919141523, 104.96513564005897),
+  position: LatLng(10.625380787927542, 105.051574201898),
+  alpha: 0.5,
   infoWindow: InfoWindow(
     title: "Test"
   ),

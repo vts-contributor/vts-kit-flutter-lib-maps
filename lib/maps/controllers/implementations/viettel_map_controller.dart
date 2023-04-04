@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
@@ -17,7 +18,8 @@ class ViettelMapController extends BaseCoreMapController {
 
   final vt.MapboxMapController _controller;
 
-  final CoreMapShapes _shapes;
+  //need to update both this and vtmap shape mapping when update new shapes
+  CoreMapShapes _originalShapes;
 
   final CameraPosition _initialCameraPosition;
 
@@ -37,7 +39,7 @@ class ViettelMapController extends BaseCoreMapController {
     CoreMapShapes? shapes,
     CoreMapCallbacks? callbacks,
     required this.markerIconDataProcessor,
-  }): _shapes = shapes?.clone() ?? CoreMapShapes(),
+  }): _originalShapes = shapes?.clone() ?? CoreMapShapes(),
         _initialCameraPosition = data.initialCameraPosition,
         super(callbacks) {
     _initHandlers();
@@ -46,68 +48,79 @@ class ViettelMapController extends BaseCoreMapController {
   @override
   CoreMapType get coreMapType => CoreMapType.viettel;
 
-  Future<void> updatePolygons(Set<Polygon> polygons) async {
-    await _updateMapObjects(_shapes.polygons, polygons,
-      addFunc: (polygons) => _addMapObjects(polygons, _addPolygon),
-      removeFunc: (ids) => _removeMapObject(ids, _removePolygon),
+  Future<void> loadNewShapes(CoreMapShapes shapes) async {
+    await Future.wait([
+      _loadNewPolygons(shapes.polygons),
+      _loadNewPolylines(shapes.polylines),
+      _loadNewCircles(shapes.circles),
+      _loadNewMarkers(shapes.markers),
+    ]);
+
+    _originalShapes = shapes.clone();
+  }
+
+  Future<void> _loadNewPolygons(Set<Polygon> polygons) async {
+    await _loadNewMapObjects(_originalShapes.polygons, polygons,
+      handleAdd: (polygons) => _addMapObjects(polygons, _addPolygon),
+      handleRemove: (ids) => _removeMapObjects(ids, _removePolygon),
+      handleUpdate: (polygons) => _updateMapObjects(polygons, _updatePolygon),
     );
   }
 
-  Future<void> updatePolylines(Set<Polyline> polylines) async {
-    await _updateMapObjects(_shapes.polylines, polylines,
-      addFunc: (polylines) => _addMapObjects(polylines, _addPolyline),
-      removeFunc: (ids) => _removeMapObject(ids, _removePolyline),
+  Future<void> _loadNewPolylines(Set<Polyline> polylines) async {
+    await _loadNewMapObjects(_originalShapes.polylines, polylines,
+      handleAdd: (polylines) => _addMapObjects(polylines, _addPolyline),
+      handleRemove: (ids) => _removeMapObjects(ids, _removePolyline),
+      handleUpdate: (polylines) => _updateMapObjects(polylines, _updatePolyline),
     );
   }
 
-  Future<void> updateCircles(Set<Circle> circles) async {
-    await _updateMapObjects(_shapes.circles, circles,
-      addFunc: (circles) => _addMapObjects(circles, _addCircle),
-      removeFunc: (ids) => _removeMapObject(ids, _removeCircle),
+  Future<void> _loadNewCircles(Set<Circle> circles) async {
+    await _loadNewMapObjects(_originalShapes.circles, circles,
+      handleAdd: (circles) => _addMapObjects(circles, _addCircle),
+      handleRemove: (ids) => _removeMapObjects(ids, _removeCircle),
+      handleUpdate: (circles) => _updateMapObjects(circles, _updateCircle),
     );
   }
 
-  Future<void> updateMarkers(Set<Marker> markers) async {
-    await _updateMapObjects(_shapes.markers, markers,
-      addFunc: (markers) => _addMapObjects(markers, _addMarker),
-      removeFunc: (ids) => _removeMapObject(ids, _removeMarker),
+  Future<void> _loadNewMarkers(Set<Marker> markers) async {
+    await _loadNewMapObjects(_originalShapes.markers, markers,
+      handleAdd: (markers) => _addMapObjects(markers, _addMarker),
+      handleRemove: (ids) => _removeMapObjects(ids, _removeMarker),
+      handleUpdate: (markers) => _updateMapObjects(markers, _updateMarker),
     );
   }
 
-  Future<void> _updateMapObjects<T extends MapObject>(Set<T> oldObjects, Set<T> newObjects, {
-    required Future<void> Function(Set<T>) addFunc,
-    required Future<void> Function(Set<String>) removeFunc,
+  Future<void> _loadNewMapObjects<T extends MapObject>(Set<T> oldObjects, Set<T> newObjects, {
+    required Future<void> Function(Set<T>) handleAdd,
+    required Future<void> Function(Set<String>) handleRemove,
+    required Future<void> Function(Set<T>) handleUpdate,
   }) async {
     final mapObjectUpdates = MapObjectUpdates.from(oldObjects, newObjects);
 
-    Set<String> allRemoveIds = {
-      ...mapObjectUpdates.removeIds,
-      ...mapObjectUpdates.updateIds
-    };
-
-    Set<String> allAddIds = {
-      ...mapObjectUpdates.updateIds,
-      ...mapObjectUpdates.addIds
-    };
-
-    await removeFunc(allRemoveIds);
-    await addFunc(newObjects.where((element) => allAddIds.contains(element.id)).toSet());
+    await Future.wait([
+      handleRemove(mapObjectUpdates.removeIds),
+      handleAdd(newObjects.where((element) =>
+          mapObjectUpdates.addIds.contains(element.id)).toSet()),
+      handleUpdate(newObjects.where((element) =>
+          mapObjectUpdates.updateIds.contains(element.id)).toSet()),
+    ]);
   }
 
   Future<void> _addMapObjects<T extends MapObject>(Set<T> mapObjects,
-      Future<void> Function(T) addFunc) async {
+      Future<void> Function(T) handleAdd) async {
     for (var mapObject in mapObjects) {
-      await addFunc(mapObject);
+      await handleAdd(mapObject);
     }
   }
 
-  Future<void> _removeMapObject(Set<String> ids, Future<void> Function(String) removeFunc) async {
-    List<Future> futures = [];
-    for (var id in ids) {
-      futures.add(removeFunc(id));
-    }
+  Future<void> _removeMapObjects(Set<String> ids, Future<void> Function(String) handleRemove) async {
+    await Future.wait(ids.map((id) => handleRemove(id)));
+  }
 
-    await Future.wait(futures);
+  Future<void> _updateMapObjects<T extends MapObject>(Set<T> mapObjects,
+      Future<void> Function(T) handleUpdate) async {
+    await Future.wait(mapObjects.map((object) => handleUpdate(object)));
   }
 
   Future<void> _addPolygon(Polygon polygon) async {
@@ -125,7 +138,6 @@ class ViettelMapController extends BaseCoreMapController {
         .wait(polygon.getOutlineLineOptions().map((e) => _controller.addLine(e)));
 
     _viettelPolygonMap.update(polygon.id, (_) => ViettelPolygon(polygon.id, fill, outlines));
-    _shapes.polygons.add(polygon);
   }
 
   Future<void> _removePolygon(String polygonId) async {
@@ -139,7 +151,6 @@ class ViettelMapController extends BaseCoreMapController {
           _controller.removeLine(outline);
         }
 
-        _shapes.polygons.removeWhere((polygon) => polygon.id == polygonId);
         _viettelPolygonMap.removeWhere((key, value) => key == polygonId);
       }
     }
@@ -172,7 +183,6 @@ class ViettelMapController extends BaseCoreMapController {
     final line = await _controller.addLine(polyline.toLineOptions());
 
     _viettelPolylineMap.update(polyline.id, (_) => line);
-    _shapes.polylines.add(polyline);
   }
 
   Future<void> _removePolyline(String polylineId) async {
@@ -182,11 +192,20 @@ class ViettelMapController extends BaseCoreMapController {
       if (line != null) {
         _controller.removeLine(line);
 
-        _shapes.polylines.removeWhere((e) => e.id == polylineId);
         _viettelPolylineMap.removeWhere((key, value) => key == polylineId);
       }
     }
   }
+
+  Future<void> _updatePolyline(Polyline polyline) async {
+    vt.Line? updatingPolyline = _viettelPolylineMap[polyline.id];
+    if (updatingPolyline == null) {
+      return;
+    }
+
+    _controller.updateLine(updatingPolyline, polyline.toLineOptions());
+  }
+
 
   Future<void> _addCircle(Circle circle) async {
     if (_viettelCircleMap.containsKey(circle.id)) {
@@ -203,7 +222,6 @@ class ViettelMapController extends BaseCoreMapController {
     final outline = await _controller.addLine(circle.toLineOptions(points));
 
     _viettelCircleMap.update(circle.id, (_) => ViettelCircle(circle.id, fill, outline));
-    _shapes.circles.add(circle);
   }
 
   Future<void> _removeCircle(String circleId) async {
@@ -214,10 +232,21 @@ class ViettelMapController extends BaseCoreMapController {
         _controller.removeFill(circle.fill);
         _controller.removeLine(circle.outline);
 
-        _shapes.circles.removeWhere((e) => e.id == circleId);
         _viettelCircleMap.removeWhere((key, value) => key == circleId);
       }
     }
+  }
+
+  Future<void> _updateCircle(Circle circle) async {
+    ViettelCircle? updatingCircle = _viettelCircleMap[circle.id];
+    if (updatingCircle == null) {
+      return;
+    }
+
+    List<LatLng> points = circle.toCirclePoints();
+
+    _controller.updateFill(updatingCircle.fill, circle.toFillOptions(points));
+    _controller.updateLine(updatingCircle.outline, circle.toLineOptions(points));
   }
 
   Future<void> _addMarker(Marker marker) async {
@@ -238,7 +267,6 @@ class ViettelMapController extends BaseCoreMapController {
     final symbol = await _controller.addSymbol(marker.toSymbolOptions());
 
     _viettelMarkerMap.update(marker.id, (_) => symbol);
-    _shapes.markers.add(marker);
   }
 
   Future<void> _removeMarker(String markerId) async {
@@ -248,10 +276,18 @@ class ViettelMapController extends BaseCoreMapController {
       if (marker != null) {
         _controller.removeSymbol(marker);
 
-        _shapes.markers.removeWhere((e) => e.id == markerId);
         _viettelMarkerMap.removeWhere((key, value) => key == markerId);
       }
     }
+  }
+
+  Future<void> _updateMarker(Marker marker) async {
+    vt.Symbol? updatingMarker = _viettelMarkerMap[marker.id];
+    if (updatingMarker == null) {
+      return;
+    }
+
+    _controller.updateSymbol(updatingMarker, marker.toSymbolOptions());
   }
 
   @override
@@ -279,7 +315,7 @@ class ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> onStyleLoaded() async {
-    _addShapes(_shapes);
+    _addShapes(_originalShapes);
 
     callbacks?.onMapCreated?.call(this);
   }
@@ -310,7 +346,7 @@ class ViettelMapController extends BaseCoreMapController {
   void _initMarkerTapHandler() {
     _controller.onSymbolTapped.add((vtSymbol) {
       String? markerId = _viettelMarkerMap.keyWhere((value) => value.id == vtSymbol.id);
-      final marker = _shapes.markers.firstWhereOrNull((element) => element.id == markerId);
+      final marker = _originalShapes.markers.firstWhereOrNull((element) => element.id == markerId);
       if (marker != null) {
         if (marker.onTap != null) {
           marker.onTap?.call();
@@ -322,17 +358,32 @@ class ViettelMapController extends BaseCoreMapController {
   }
 
   void _initCircleTapHandler() {
-    _controller.onCircleTapped.add((vtCircle) {
-      String? circleId = _viettelCircleMap.keyWhere((value) => value.id == vtCircle.id);
-      final circle = _shapes.circles.firstWhereOrNull((element) => element.id == circleId);
+    void callCircleTapById(String? id) {
+      final circle = _originalShapes.circles.firstWhereOrNull((element) => element.id == id);
       circle?.onTap?.call();
+    }
+
+    //check if polygon's outlines are tapped?
+    _controller.onLineTapped.add((vtLine) {
+      String? circleId = _viettelCircleMap.keyWhere(
+              (vtCircle) => vtCircle.outline.id == vtLine.id
+      );
+
+      callCircleTapById(circleId);
+    });
+
+    //check if the fill is tapped?
+    _controller.onFillTapped.add((fill) {
+      String? circleId = _viettelPolygonMap.keyWhere((value) => value.fill.id == fill.id);
+
+      callCircleTapById(circleId);
     });
   }
 
   void _initPolylineTapHandler() {
     _controller.onLineTapped.add((vtLine) {
       String? polylineId = _viettelPolylineMap.keyWhere((value) => value.id == vtLine.id);
-      final polyline = _shapes.polylines.firstWhereOrNull((element) => element.id == polylineId);
+      final polyline = _originalShapes.polylines.firstWhereOrNull((element) => element.id == polylineId);
       polyline?.onTap?.call();
     });
   }
@@ -340,7 +391,7 @@ class ViettelMapController extends BaseCoreMapController {
   void _initPolygonTapHandler() {
 
     void callPolygonOnTapById(String? id) {
-      final polygon = _shapes.polygons.firstWhereOrNull((element) => element.id == id);
+      final polygon = _originalShapes.polygons.firstWhereOrNull((element) => element.id == id);
       polygon?.onTap?.call();
     }
 

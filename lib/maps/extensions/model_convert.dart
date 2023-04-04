@@ -21,6 +21,10 @@ extension ColorConvert on Color {
   }
 
   double? get opacity => this == Colors.transparent? null: alpha / 255;
+  
+  String toRGBA() {
+    return "rgba($red, $green, $blue, $opacity)";
+  }
 }
 
 
@@ -71,7 +75,7 @@ extension PolygonConvert on Polygon {
       ],
       fillColor: fillColor.toHex(),
       fillOpacity: fillColor.opacity,
-      fillOutlineColor: strokeColor.toHex(),
+      // fillOutlineColor: strokeColor.toRGBA(),
     );
   }
 
@@ -88,15 +92,17 @@ extension PolygonConvert on Polygon {
   }
 
   vtmap.LineOptions _toFillOutline(List<LatLng> points) {
-    //to connect first point and last point
     points = List.from(points);
     if (points.length > 2) {
-      points.add(points.first);
+      //to connect first point and last point
+      points.add(points[0]);
+      //connect second point too to remove the little gap of first and last point
+      points.add(points[1]);
     }
     return vtmap.LineOptions(
       geometry: points.map((e) => e.toViettel()).toList(),
       lineWidth: strokeWidth * Constant.vtStrokeWidthMultiplier,
-      lineColor: strokeColor.toHex(),
+      lineColor: strokeColor.toRGBA(),
       lineOpacity: strokeColor.opacity,
       lineJoin: "round"
     );
@@ -194,7 +200,7 @@ extension PolylineConvert on Polyline {
     return vtmap.LineOptions(
       geometry: points.toViettel(),
       lineWidth: width.toDouble(),
-      lineColor: color.toHex(),
+      lineColor: color.toRGBA(),
       lineJoin: jointType.toViettel(),
       lineOpacity: color.opacity
     );
@@ -222,7 +228,7 @@ extension CircleConvert on Circle {
       geometry: center.toViettel(),
       circleColor: fillColor.toHex(),
       circleRadius: radius / 1000, //kilometer -> meter
-      circleStrokeColor: strokeColor.toHex(),
+      circleStrokeColor: strokeColor.toRGBA(),
       circleStrokeWidth: strokeWidth.toDouble(),
       circleOpacity: fillColor.opacity,
       circleStrokeOpacity: strokeColor.opacity
@@ -230,7 +236,7 @@ extension CircleConvert on Circle {
   }
 
   vtmap.FillOptions toFillOptions([List<LatLng>? points]) {
-    points ??= toCirclePoints();
+    points ??= toCirclePoints(160);
     return vtmap.FillOptions(
       geometry: [points.toViettel()],
       fillColor: fillColor.toHex(),
@@ -239,14 +245,16 @@ extension CircleConvert on Circle {
   }
 
   vtmap.LineOptions toLineOptions([List<LatLng>? points]) {
-    points ??= toCirclePoints();
+    points ??= toCirclePoints(160);
+    points = List.from(points);
     if (points.length > 2) {
-      points.add(points.first);
+      //to remove outline little gap
+      points.addAll(points.getRange(0, points.length ~/ 10));
     }
     return vtmap.LineOptions(
       geometry: points.toViettel(),
       lineWidth: (strokeWidth * Constant.vtStrokeWidthMultiplier).toDouble(),
-      lineColor: strokeColor.toHex(),
+      lineColor: strokeColor.toRGBA(),
       lineOpacity: strokeColor.opacity,
       lineJoin: "round",
     );
@@ -254,7 +262,7 @@ extension CircleConvert on Circle {
 
   ///see https://github.com/flutter-mapbox-gl/maps/issues/355#issuecomment-777289787
   ///add 320 points
-  List<LatLng> toCirclePoints() {
+  List<LatLng> toCirclePoints([int numberOfPoints = 160]) {
     final point = center;
     int dir = 1;
 
@@ -262,7 +270,7 @@ extension CircleConvert on Circle {
     var r2d = 180 / pi; // radians to degrees
     var earthsradius = 6371000; // radius of the earth in meters
 
-    var points = 160;
+    var points = numberOfPoints;
 
     // find the radius in lat/lon
     var rlat = (radius / earthsradius) * r2d;
@@ -328,7 +336,7 @@ extension MarkerConvert on Marker {
     return vtmap.SymbolOptions(
       geometry: position.toViettel(),
       iconImage: icon.data.name,
-      iconColor: Colors.blue.toHex(),
+      iconOpacity: alpha,
       iconAnchor: anchor.string,
       draggable: draggable,
       zIndex: zIndex.toInt()

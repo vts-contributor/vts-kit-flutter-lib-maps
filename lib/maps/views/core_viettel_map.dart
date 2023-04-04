@@ -36,30 +36,15 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
 
     _updateCallbacks();
 
-    _updatePolygons();
-    _updatePolylines();
-    _updateCircles();
-    _updateMarkers();
+    _updateShapes();
   }
 
   void _updateCallbacks() {
     _controller?.callbacks = widget.callbacks;
   }
 
-  void _updatePolygons() {
-    _controller?.updatePolygons(widget.shapes.polygons);
-  }
-
-  void _updatePolylines() {
-    _controller?.updatePolylines(widget.shapes.polylines);
-  }
-
-  void _updateCircles() {
-    _controller?.updateCircles(widget.shapes.circles);
-  }
-
-  void _updateMarkers() {
-    _controller?.updateMarkers(widget.shapes.markers);
+  void _updateShapes() {
+    _controller?.loadNewShapes(widget.shapes);
   }
 
   @override
