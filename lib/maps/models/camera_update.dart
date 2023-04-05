@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:maps_core/maps/extensions/model_convert.dart';
+import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/extensions/utils.dart';
 
 import 'models.dart';

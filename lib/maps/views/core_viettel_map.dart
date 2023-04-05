@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/extensions/model_convert.dart';
+import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/controllers/implementations/viettel_map_controller.dart';
 import 'package:maps_core/maps/models/core_map_callbacks.dart';
 import 'package:maps_core/maps/models/map_objects/marker_icon_data_factory.dart';
