@@ -96,7 +96,7 @@ Polyline polyline2() => Polyline(
       LatLng(10.651704727581484, 106.2319038895347),
       LatLng(11.447301198223213, 107.27501155457392),
     ],
-    zIndex: 2,
+    zIndex: 0,
     jointType: JointType.round,
     color: Colors.green,
     onTap: () {

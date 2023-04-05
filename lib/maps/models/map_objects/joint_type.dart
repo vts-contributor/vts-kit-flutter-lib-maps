@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
+import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 /// Joint types for [Polyline].
 @immutable
@@ -26,4 +28,30 @@ class JointType {
   ///
   /// Constant Value: 2
   static const JointType round = JointType._(2);
+
+  ggmap.JointType toGoogle() {
+    switch (this) {
+      case JointType.bevel:
+        return ggmap.JointType.bevel;
+      case JointType.mitered:
+        return ggmap.JointType.mitered;
+      case JointType.round:
+        return ggmap.JointType.round;
+      default:
+        return ggmap.JointType.bevel;
+    }
+  }
+
+  String toViettel() {
+    switch (this) {
+      case JointType.bevel:
+        return "bevel";
+      case JointType.mitered:
+        return "mitered";
+      case JointType.round:
+        return "round";
+      default:
+        return "bevel";
+    }
+  }
 }

@@ -2,12 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:flutter/foundation.dart' show VoidCallback;
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:flutter/material.dart' show Color, Colors;
-import 'package:maps_core/maps/models/map_objects/map_object.dart';
+import 'package:maps_core/maps.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
+import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
-import 'lat_lng.dart';
+import '../../constants.dart';
 
 /// Draws a circle on the map.
 @immutable
@@ -135,4 +139,90 @@ class Circle implements MapObject {
 
   @override
   int get hashCode => id.hashCode;
+
+  ggmap.Circle toGoogle() {
+    return ggmap.Circle(
+        circleId: ggmap.CircleId(id),
+        consumeTapEvents: onTap != null,
+        fillColor: fillColor,
+        center: center.toGoogle(),
+        radius: radius,
+        strokeColor: strokeColor,
+        strokeWidth: strokeWidth,
+        visible: visible,
+        zIndex: zIndex,
+        onTap: onTap
+    );
+  }
+
+  vtmap.CircleOptions toCircleOptions() {
+    return vtmap.CircleOptions(
+        geometry: center.toViettel(),
+        circleColor: fillColor.toHex(),
+        circleRadius: radius / 1000, //kilometer -> meter
+        circleStrokeColor: strokeColor.toRGBA(),
+        circleStrokeWidth: strokeWidth.toDouble(),
+        circleOpacity: fillColor.opacity,
+        circleStrokeOpacity: strokeColor.opacity
+    );
+  }
+
+  vtmap.FillOptions toFillOptions([List<LatLng>? points]) {
+    points ??= toCirclePoints(160);
+    return vtmap.FillOptions(
+      geometry: [points.toViettel()],
+      fillColor: fillColor.toHex(),
+      fillOpacity: fillColor.opacity,
+    );
+  }
+
+  vtmap.LineOptions toLineOptions([List<LatLng>? points]) {
+    points ??= toCirclePoints(160);
+    points = List.from(points);
+    if (points.length > 2) {
+      //to remove outline little gap
+      points.addAll(points.getRange(0, points.length ~/ 10));
+    }
+    return vtmap.LineOptions(
+      geometry: points.toViettel(),
+      lineWidth: (strokeWidth * Constant.vtStrokeWidthMultiplier).toDouble(),
+      lineColor: strokeColor.toRGBA(),
+      lineOpacity: strokeColor.opacity,
+      lineJoin: "round",
+    );
+  }
+
+  ///see https://github.com/flutter-mapbox-gl/maps/issues/355#issuecomment-777289787
+  ///add 320 points
+  List<LatLng> toCirclePoints([int numberOfPoints = 160]) {
+    final point = center;
+    int dir = 1;
+
+    var d2r = pi / 180; // degrees to radians
+    var r2d = 180 / pi; // radians to degrees
+    var earthsradius = 6371000; // radius of the earth in meters
+
+    var points = numberOfPoints;
+
+    // find the radius in lat/lon
+    var rlat = (radius / earthsradius) * r2d;
+    var rlng = rlat / cos(point.lat * d2r);
+
+    List<LatLng> extp = [];
+    int start = 0;
+    int end = points + 1;
+    if (dir == -1) {
+      start = points + 1;
+      end = 0;
+    }
+    for (var i = start; (dir == 1 ? i < end : i > end); i = i + dir) {
+      var theta = pi * (i / (points / 2));
+      double ey = point.lng +
+          (rlng * cos(theta)); // center a + radius x * cos(theta)
+      double ex = point.lat +
+          (rlat * sin(theta)); // center b + radius y * sin(theta)
+      extp.add(LatLng(ex, ey));
+    }
+    return extp..remove(extp.last);
+  }
 }

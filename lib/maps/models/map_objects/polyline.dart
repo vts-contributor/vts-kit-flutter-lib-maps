@@ -5,10 +5,13 @@
 import 'package:flutter/foundation.dart'
     show immutable, listEquals, VoidCallback;
 import 'package:flutter/material.dart' show Color, Colors;
+import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import 'joint_type.dart';
 import 'lat_lng.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
+import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 
 /// Draws a line through geographical locations on the map.
@@ -166,5 +169,30 @@ class Polyline implements MapObject {
       result.add(point.toJson());
     }
     return result;
+  }
+
+  ggmap.Polyline toGoogle() {
+    return ggmap.Polyline(
+      polylineId: ggmap.PolylineId(id),
+      consumeTapEvents: onTap != null,
+      color: color,
+      geodesic: geodesic,
+      jointType: jointType.toGoogle(),
+      points: points.toGoogle(),
+      visible: visible,
+      onTap: onTap,
+      width: width,
+      zIndex: zIndex,
+    );
+  }
+
+  vtmap.LineOptions toLineOptions() {
+    return vtmap.LineOptions(
+        geometry: points.toViettel(),
+        lineWidth: width.toDouble(),
+        lineColor: color.toRGBA(),
+        lineJoin: jointType.toViettel(),
+        lineOpacity: color.opacity
+    );
   }
 }

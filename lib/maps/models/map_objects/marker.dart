@@ -13,6 +13,8 @@ import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
 import 'lat_lng.dart';
 import 'marker_icon.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
+import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 Object _offsetToJson(Offset offset) {
   return <Object>[offset.dx, offset.dy];
@@ -106,6 +108,15 @@ class InfoWindow {
   String toString() {
     return 'InfoWindow{title: $title, snippet: $snippet, anchor: $anchor}';
   }
+
+  ggmap.InfoWindow toGoogle() {
+    return ggmap.InfoWindow(
+        title: title,
+        snippet: snippet,
+        anchor: anchor.offset,
+        onTap: onTap
+    );
+  }
 }
 
 enum Anchor {
@@ -117,7 +128,53 @@ enum Anchor {
   topLeft,
   topRight,
   bottomLeft,
-  bottomRight
+  bottomRight;
+
+  Offset get offset {
+    switch(this) {
+      case Anchor.center:
+        return const Offset(0.5, 0.5);
+      case Anchor.top:
+        return const Offset(0.5, 0);
+      case Anchor.bottom:
+        return const Offset(0.5, 1);
+      case Anchor.left:
+        return const Offset(0, 0.5);
+      case Anchor.right:
+        return const Offset(1, 0.5);
+      case Anchor.topLeft:
+        return const Offset(0, 0);
+      case Anchor.topRight:
+        return const Offset(1, 0);
+      case Anchor.bottomLeft:
+        return const Offset(0, 1);
+      case Anchor.bottomRight:
+        return const Offset(1, 1);
+    }
+  }
+
+  String get string {
+    switch(this) {
+      case Anchor.center:
+        return "center";
+      case Anchor.top:
+        return "top";
+      case Anchor.bottom:
+        return "bottom";
+      case Anchor.left:
+        return "left";
+      case Anchor.right:
+        return "right";
+      case Anchor.topLeft:
+        return "top-left";
+      case Anchor.topRight:
+        return "top-right";
+      case Anchor.bottomLeft:
+        return "bottom-left";
+      case Anchor.bottomRight:
+        return "bottom-right";
+    }
+  }
 }
 
 /// Marks a geographical location on the map.
@@ -318,5 +375,43 @@ class Marker implements MapObject{
         'icon: $icon, infoWindow: $infoWindow, position: $position, rotation: $rotation, '
         'visible: $visible, zIndex: $zIndex, onTap: $onTap, onDragStart: $onDragStart, '
         'onDrag: $onDrag, onDragEnd: $onDragEnd}';
+  }
+
+  ggmap.Marker toGoogle(Uint8List markerBitmap) {
+    ggmap.BitmapDescriptor markerDescriptor;
+
+    markerDescriptor = ggmap.BitmapDescriptor.fromBytes(markerBitmap);
+
+    return ggmap.Marker(
+      markerId: ggmap.MarkerId(id),
+      alpha: alpha,
+      anchor: anchor.offset,
+      consumeTapEvents: onTap != null,
+      draggable: draggable,
+      flat: flat,
+      icon: markerDescriptor,
+      infoWindow: infoWindow.toGoogle(),
+      position: position.toGoogle(),
+      rotation: rotation,
+      visible: visible,
+      zIndex: zIndex.toDouble(),
+      onTap: onTap,
+      onDrag: (ggmap.LatLng value) => onDrag?.call(value.toCore()),
+      onDragStart: (ggmap.LatLng value) => onDragStart?.call(value.toCore()),
+      onDragEnd: (ggmap.LatLng value) => onDragEnd?.call(value.toCore()),
+    );
+  }
+
+  vtmap.SymbolOptions toSymbolOptions() {
+    return vtmap.SymbolOptions(
+        geometry: position.toViettel(),
+        iconImage: icon.data.name,
+        iconOpacity: alpha,
+        iconAnchor: anchor.string,
+        draggable: draggable,
+        zIndex: zIndex.toInt()
+      // textField: infoWindow.title,
+      // textAnchor: infoWindow.anchor.toString()
+    );
   }
 }

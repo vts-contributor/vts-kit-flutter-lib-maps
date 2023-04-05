@@ -2,7 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:flutter/foundation.dart' show immutable, objectRuntimeType;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
+import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 /// Represents a point coordinate in the [CoreMap]'s view.
 ///
@@ -41,4 +45,15 @@ class ScreenCoordinate {
 
   @override
   int get hashCode => Object.hash(x, y);
+
+  ggmap.ScreenCoordinate toGoogle() {
+    return ggmap.ScreenCoordinate(
+      x: x,
+      y: y,
+    );
+  }
+
+  Point<double> toPoint() {
+    return Point(x.toDouble(), y.toDouble());
+  }
 }

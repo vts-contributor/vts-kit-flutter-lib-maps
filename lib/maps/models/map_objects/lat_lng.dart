@@ -2,6 +2,8 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../log/log.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
+import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 class LatLng {
   late final double lat;
@@ -89,6 +91,14 @@ class LatLng {
 
   @override
   int get hashCode => Object.hash(lat, lng);
+
+  ggmap.LatLng toGoogle() {
+    return ggmap.LatLng(lat, lng);
+  }
+
+  vtmap.LatLng toViettel() {
+    return vtmap.LatLng(lat, lng);
+  }
 }
 
 
@@ -154,5 +164,18 @@ class LatLngBounds {
 
   @override
   int get hashCode => Object.hash(southwest, northeast);
+
+  ggmap.LatLngBounds toGoogle() {
+    return ggmap.LatLngBounds(
+      northeast: northeast.toGoogle(),
+      southwest: southwest.toGoogle(),
+    );
+  }
+  vtmap.LatLngBounds toViettel() {
+    return vtmap.LatLngBounds(
+      northeast: northeast.toViettel(),
+      southwest: southwest.toViettel(),
+    );
+  }
 }
 
