@@ -17,6 +17,7 @@ Polygon polygon1() {
       id: 'test1',
       points: polygonCoords,
       strokeWidth: 10,
+      zIndex: 2,
       holes: [
         [
           LatLng(9.749998867791605, 105.59033970201901),
@@ -79,33 +80,53 @@ Polyline polyline() => Polyline(
       LatLng(10.781534156930388, 107.0149202769658),
       LatLng(11.447301198223213, 107.27501155457392),
     ],
+    zIndex: 20,
     jointType: JointType.round,
-    color: Colors.blue.withOpacity(1),
+    color: Colors.blue,
     onTap: () {
       Log.d("Polyline", "onTap");
     }
 );
 
+Polyline polyline2() => Polyline(
+    id: "test2",
+    points: [
+      LatLng(10.015567019306467, 105.74686134987519),
+      LatLng(10.19612670788822, 105.97871325750828),
+      LatLng(10.651704727581484, 106.2319038895347),
+    ],
+    zIndex: 30,
+    jointType: JointType.round,
+    color: Colors.red.withOpacity(0.6),
+    onTap: () {
+      Log.d("Polyline", "onTap");
+    }
+);
+
+
 Circle circle() => Circle(
   id: "test1",
   center: LatLng(8.848028919141523, 104.96513564005897),
   radius: 10000,
-  strokeColor: Colors.black,
-  strokeWidth: 20,
+  strokeColor: Colors.yellow,
+  strokeWidth: 10,
+  zIndex: 20,
   fillColor: Colors.blue,
   onTap: () {
     Log.d("Circle", "onTap");
-  }
+  },
 );
 
 Marker marker() => Marker(
   id: "test1",
-  position: LatLng(10.625380787927542, 105.051574201898),
-  alpha: 0.5,
+  // position: LatLng(10.625380787927542, 105.051574201898),
+  position: LatLng(8.848028919141523, 104.96513564005897),
+  alpha: 1,
+  zIndex: 10,
   infoWindow: InfoWindow(
     title: "Test"
   ),
-  icon: MarkerIcon.fromAsset("marker icon", "assets/marker_red.png")
+  icon: MarkerIcon.fromAsset("marker icon", "assets/marker_red.png"),
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
   // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
 );

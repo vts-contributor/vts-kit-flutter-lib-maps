@@ -56,7 +56,7 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
       accessToken: data.accessToken,
       initialCameraPosition: data.initialCameraPosition.toViettel(),
       onStyleLoadedCallback: () {
-        _controller?.onStyleLoaded();
+        _controller?.onStyleLoaded(widget.shapes);
       },
       minMaxZoomPreference: data.minMaxZoomPreference.toViettel(),
       cameraTargetBounds: data.cameraTargetBounds.toViettel(),
@@ -73,7 +73,6 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
         final controller = ViettelMapController(mapboxMapController,
           data: data,
           callbacks: widget.callbacks,
-          shapes: widget.shapes,
           markerIconDataProcessor: _markerIconDataFactory
         );
 

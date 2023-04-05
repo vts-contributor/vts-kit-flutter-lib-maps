@@ -5,6 +5,6 @@ class Constant {
   static const double zoomLevelLowerBound = 1.0;
 
   ///sometime we draw outlines of vtmap shapes with Line
-  ///and Line.width * 2 = Ggshape.strokeWidth
+  ///and Google map stroke is 2 times thicker than viettel map line
   static const double vtStrokeWidthMultiplier = 2.0;
 }

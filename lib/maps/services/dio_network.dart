@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import '../models/network/custom_cancel_token.dart';
 import '../models/network/json_response.dart';
 import 'api_service.dart';
-import 'caches/profiles.dart';
+import 'cache/cache.dart';
 part 'dio_interceptors.dart';
 
 const int sendTimeout = 60000;

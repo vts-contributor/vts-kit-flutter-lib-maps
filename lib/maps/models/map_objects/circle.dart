@@ -56,6 +56,7 @@ class Circle implements MapObject {
   ///
   /// Overlays are drawn in order of z-index, so that lower values means drawn
   /// earlier, and thus appearing to be closer to the surface of the Earth.
+  @override
   final int zIndex;
 
   /// Callbacks to receive tap events for circle placed on this map.

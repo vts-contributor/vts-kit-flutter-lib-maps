@@ -157,7 +157,7 @@ class Marker implements MapObject{
     required this.position,
     this.rotation = 0.0,
     this.visible = true,
-    this.zIndex = 0.0,
+    this.zIndex = 0,
     this.onTap,
     this.onDrag,
     this.onDragStart,
@@ -206,7 +206,8 @@ class Marker implements MapObject{
   ///
   /// Overlays are drawn in order of z-index, so that lower values means drawn
   /// earlier, and thus appearing to be closer to the surface of the Earth.
-  final double zIndex;
+  @override
+  final int zIndex;
 
   /// Callbacks to receive tap events for markers placed on this map.
   final VoidCallback? onTap;
@@ -232,7 +233,7 @@ class Marker implements MapObject{
     LatLng? positionParam,
     double? rotationParam,
     bool? visibleParam,
-    double? zIndexParam,
+    int? zIndexParam,
     VoidCallback? onTapParam,
     ValueChanged<LatLng>? onDragStartParam,
     ValueChanged<LatLng>? onDragParam,

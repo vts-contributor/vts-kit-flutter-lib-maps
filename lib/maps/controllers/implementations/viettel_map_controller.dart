@@ -19,7 +19,7 @@ class ViettelMapController extends BaseCoreMapController {
   final vt.MapboxMapController _controller;
 
   //need to update both this and vtmap shape mapping when update new shapes
-  CoreMapShapes _originalShapes;
+  CoreMapShapes _originalShapes = CoreMapShapes();
 
   final CameraPosition _initialCameraPosition;
 
@@ -36,11 +36,9 @@ class ViettelMapController extends BaseCoreMapController {
 
   ViettelMapController(this._controller, {
     required CoreMapData data,
-    CoreMapShapes? shapes,
     CoreMapCallbacks? callbacks,
     required this.markerIconDataProcessor,
-  }): _originalShapes = shapes?.clone() ?? CoreMapShapes(),
-        _initialCameraPosition = data.initialCameraPosition,
+  }):_initialCameraPosition = data.initialCameraPosition,
         super(callbacks) {
     _initHandlers();
   }
@@ -99,11 +97,9 @@ class ViettelMapController extends BaseCoreMapController {
     final mapObjectUpdates = MapObjectUpdates.from(oldObjects, newObjects);
 
     await Future.wait([
-      handleRemove(mapObjectUpdates.removeIds),
-      handleAdd(newObjects.where((element) =>
-          mapObjectUpdates.addIds.contains(element.id)).toSet()),
-      handleUpdate(newObjects.where((element) =>
-          mapObjectUpdates.updateIds.contains(element.id)).toSet()),
+      handleRemove(mapObjectUpdates.removeObjects.map((e) => e.id).toSet()),
+      handleUpdate(mapObjectUpdates.updateObjects as Set<T>),
+      handleAdd(mapObjectUpdates.orderedAddObjects as Set<T>),
     ]);
   }
 
@@ -295,27 +291,8 @@ class ViettelMapController extends BaseCoreMapController {
     _controller.dispose();
   }
 
-  Future<void> _addShapes(CoreMapShapes shapes) async {
-    _addMapObjects(shapes.polygons, _addPolygon);
-    _addMapObjects(shapes.polylines, _addPolyline);
-    _addMapObjects(shapes.circles, _addCircle);
-    _addMapObjects(shapes.markers, _addMarker);
-  }
-
-  Future<void> _clearShapes() async {
-    _controller.clearCircles();
-    _controller.clearLines();
-    _controller.clearSymbols();
-    _controller.clearRoute();
-
-    _viettelPolygonMap.clear();
-    _viettelPolylineMap.clear();
-    _viettelCircleMap.clear();
-    _viettelMarkerMap.clear();
-  }
-
-  Future<void> onStyleLoaded() async {
-    _addShapes(_originalShapes);
+  Future<void> onStyleLoaded(CoreMapShapes shapes) async {
+    loadNewShapes(shapes);
 
     callbacks?.onMapCreated?.call(this);
   }

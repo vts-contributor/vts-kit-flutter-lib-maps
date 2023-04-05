@@ -98,7 +98,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           polygons: {polygon1()},
           circles: {circle()},
           markers: {marker()},
-          polylines: {polyline()},
+          polylines: {polyline(), polyline2()},
         ),
       ),
     );

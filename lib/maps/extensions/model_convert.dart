@@ -103,7 +103,7 @@ extension PolygonConvert on Polygon {
       lineWidth: strokeWidth * Constant.vtStrokeWidthMultiplier,
       lineColor: strokeColor.toRGBA(),
       lineOpacity: strokeColor.opacity,
-      lineJoin: "round"
+      lineJoin: "round",
     );
   }
 }
@@ -323,7 +323,7 @@ extension MarkerConvert on Marker {
       position: position.toGoogle(),
       rotation: rotation,
       visible: visible,
-      zIndex: zIndex,
+      zIndex: zIndex.toDouble(),
       onTap: onTap,
       onDrag: (ggmap.LatLng value) => onDrag?.call(value.toCore()),
       onDragStart: (ggmap.LatLng value) => onDragStart?.call(value.toCore()),
