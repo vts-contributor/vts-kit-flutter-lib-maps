@@ -16,8 +16,8 @@ Polygon polygon1() {
   return Polygon(
       id: 'test1',
       points: polygonCoords,
-      strokeWidth: 10,
-      zIndex: 2,
+      strokeWidth: 20,
+      zIndex: 0,
       holes: [
         [
           LatLng(9.749998867791605, 105.59033970201901),
@@ -80,7 +80,7 @@ Polyline polyline() => Polyline(
       LatLng(10.781534156930388, 107.0149202769658),
       LatLng(11.447301198223213, 107.27501155457392),
     ],
-    zIndex: 20,
+    zIndex: 1,
     jointType: JointType.round,
     color: Colors.blue,
     onTap: () {
@@ -94,10 +94,11 @@ Polyline polyline2() => Polyline(
       LatLng(10.015567019306467, 105.74686134987519),
       LatLng(10.19612670788822, 105.97871325750828),
       LatLng(10.651704727581484, 106.2319038895347),
+      LatLng(11.447301198223213, 107.27501155457392),
     ],
-    zIndex: 30,
+    zIndex: 2,
     jointType: JointType.round,
-    color: Colors.red.withOpacity(0.6),
+    color: Colors.green,
     onTap: () {
       Log.d("Polyline", "onTap");
     }
@@ -110,7 +111,7 @@ Circle circle() => Circle(
   radius: 10000,
   strokeColor: Colors.yellow,
   strokeWidth: 10,
-  zIndex: 20,
+  zIndex: 0,
   fillColor: Colors.blue,
   onTap: () {
     Log.d("Circle", "onTap");
@@ -122,7 +123,7 @@ Marker marker() => Marker(
   // position: LatLng(10.625380787927542, 105.051574201898),
   position: LatLng(8.848028919141523, 104.96513564005897),
   alpha: 1,
-  zIndex: 10,
+  zIndex: 0,
   infoWindow: InfoWindow(
     title: "Test"
   ),

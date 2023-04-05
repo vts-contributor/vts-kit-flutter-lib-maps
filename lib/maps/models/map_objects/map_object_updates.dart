@@ -9,11 +9,11 @@ class MapObjectUpdates {
   late final Set<MapObject> updateObjects;
 
   ///ordered by zIndex ASC
-  late final Set<MapObject> orderedAddObjects;
+  late final Set<MapObject> addObjects;
 
-  MapObjectUpdates._(this.removeObjects, this.updateObjects, this.orderedAddObjects);
+  MapObjectUpdates._(this.removeObjects, this.updateObjects, this.addObjects);
 
-  ///zIndex order is be respected
+  ///zIndex order is expected be respected
   ///so when you use addObjects, you have to add in zIndex from low to high
   factory MapObjectUpdates.from(
       Set<MapObject> oldObjects, Set<MapObject> newObjects) {
@@ -33,7 +33,7 @@ class MapObjectUpdates {
 
     // ids which are in both oldIds and newIds and newObject != oldObject
     Set<MapObject> updateObjects = newObjects.where((object) {
-      final oldObject = oldObjects.firstWhereOrNull((e) => e.id == object.id);
+      final oldObject = oldObjects.firstWhereOrNull((e) => _sameIdTypeMapObject(e, object));
       if (oldObject != null) {
         return object != oldObject;
       } else {
@@ -44,7 +44,8 @@ class MapObjectUpdates {
     //----This section is for checking zIndex to ensure order of objects--------
 
     Set<MapObject> changedZIndexUpdateObjects = updateObjects.where((object) {
-      final oldObject = oldObjects.firstWhereOrNull((e) => e.id == object.id);
+      final oldObject = oldObjects.firstWhereOrNull((e) =>
+          _sameIdTypeMapObject(e, object));
       if (oldObject != null) {
         return oldObject.zIndex != object.zIndex;
       } else {
@@ -71,13 +72,15 @@ class MapObjectUpdates {
     if (lowerBoundZIndex != null) {
       //objects that will stay the same after changes
       Set<MapObject> remainObjects = newObjects.where((object) {
-        final oldObject = oldObjects.firstWhereOrNull((e) => e.id == object.id);
+        final oldObject = oldObjects.firstWhereOrNull((e) =>
+            _sameIdTypeMapObject(e, object));
         return object == oldObject;
       }).toSet();
 
       //add unchanged zIndex updateObjects to remain objects
       Set<MapObject> unChangedZIndexUpdateObjects = updateObjects.where((object) {
-        final oldObject = oldObjects.firstWhereOrNull((e) => e.id == object.id);
+        final oldObject = oldObjects.firstWhereOrNull((e) =>
+            _sameIdTypeMapObject(e, object));
         return oldObject == object;
       }).toSet();
 
@@ -97,7 +100,10 @@ class MapObjectUpdates {
     //remove redrawing objects HERE to make sure check zIndex code run correctly
     updateObjects.removeAll(changedZIndexUpdateObjects);
 
-    return MapObjectUpdates._(removeObjects, updateObjects,
-        addObjects.sorted((a, b) => a.zIndex.compareTo(b.zIndex)).toSet());
+    return MapObjectUpdates._(removeObjects, updateObjects, addObjects);
+  }
+
+  static bool _sameIdTypeMapObject(MapObject o1, MapObject o2) {
+    return o1.id == o2.id && o1.runtimeType == o2.runtimeType;
   }
 }

@@ -47,76 +47,83 @@ class ViettelMapController extends BaseCoreMapController {
   CoreMapType get coreMapType => CoreMapType.viettel;
 
   Future<void> loadNewShapes(CoreMapShapes shapes) async {
-    await Future.wait([
-      _loadNewPolygons(shapes.polygons),
-      _loadNewPolylines(shapes.polylines),
-      _loadNewCircles(shapes.circles),
-      _loadNewMarkers(shapes.markers),
-    ]);
-
+    await _loadNewMapObjects(_originalShapes.toSet(), shapes.toSet());
     _originalShapes = shapes.clone();
   }
 
-  Future<void> _loadNewPolygons(Set<Polygon> polygons) async {
-    await _loadNewMapObjects(_originalShapes.polygons, polygons,
-      handleAdd: (polygons) => _addMapObjects(polygons, _addPolygon),
-      handleRemove: (ids) => _removeMapObjects(ids, _removePolygon),
-      handleUpdate: (polygons) => _updateMapObjects(polygons, _updatePolygon),
-    );
-  }
-
-  Future<void> _loadNewPolylines(Set<Polyline> polylines) async {
-    await _loadNewMapObjects(_originalShapes.polylines, polylines,
-      handleAdd: (polylines) => _addMapObjects(polylines, _addPolyline),
-      handleRemove: (ids) => _removeMapObjects(ids, _removePolyline),
-      handleUpdate: (polylines) => _updateMapObjects(polylines, _updatePolyline),
-    );
-  }
-
-  Future<void> _loadNewCircles(Set<Circle> circles) async {
-    await _loadNewMapObjects(_originalShapes.circles, circles,
-      handleAdd: (circles) => _addMapObjects(circles, _addCircle),
-      handleRemove: (ids) => _removeMapObjects(ids, _removeCircle),
-      handleUpdate: (circles) => _updateMapObjects(circles, _updateCircle),
-    );
-  }
-
-  Future<void> _loadNewMarkers(Set<Marker> markers) async {
-    await _loadNewMapObjects(_originalShapes.markers, markers,
-      handleAdd: (markers) => _addMapObjects(markers, _addMarker),
-      handleRemove: (ids) => _removeMapObjects(ids, _removeMarker),
-      handleUpdate: (markers) => _updateMapObjects(markers, _updateMarker),
-    );
-  }
-
-  Future<void> _loadNewMapObjects<T extends MapObject>(Set<T> oldObjects, Set<T> newObjects, {
-    required Future<void> Function(Set<T>) handleAdd,
-    required Future<void> Function(Set<String>) handleRemove,
-    required Future<void> Function(Set<T>) handleUpdate,
-  }) async {
+  ///return addObjects
+  Future<void> _loadNewMapObjects(Set<MapObject> oldObjects,
+      Set<MapObject> newObjects) async {
     final mapObjectUpdates = MapObjectUpdates.from(oldObjects, newObjects);
-
-    await Future.wait([
-      handleRemove(mapObjectUpdates.removeObjects.map((e) => e.id).toSet()),
-      handleUpdate(mapObjectUpdates.updateObjects as Set<T>),
-      handleAdd(mapObjectUpdates.orderedAddObjects as Set<T>),
-    ]);
+    
+    _updateMapObjects(mapObjectUpdates.updateObjects);
+    await _removeMapObjects(mapObjectUpdates.removeObjects);
+    await _addMapObjectsInZIndexOrder(mapObjectUpdates.addObjects);
   }
 
-  Future<void> _addMapObjects<T extends MapObject>(Set<T> mapObjects,
-      Future<void> Function(T) handleAdd) async {
-    for (var mapObject in mapObjects) {
-      await handleAdd(mapObject);
+  ///add objects by zIndex ASC order
+  Future<void> _addMapObjectsInZIndexOrder(Set<MapObject> mapObjects) async {
+    final sortedObjectMap = mapObjects
+        .sorted((a, b) => a.zIndex.compareTo(b.zIndex))
+        .groupSetsBy((element) => element.zIndex);
+
+    final sortedKeys = sortedObjectMap.keys.sorted((a, b) => a.compareTo(b));
+
+    for (final key in sortedKeys) {
+      final sameZIndexObjectSet = sortedObjectMap[key];
+      if (sameZIndexObjectSet != null) {
+        await _addMapObjects(sameZIndexObjectSet);
+      }
     }
   }
 
-  Future<void> _removeMapObjects(Set<String> ids, Future<void> Function(String) handleRemove) async {
-    await Future.wait(ids.map((id) => handleRemove(id)));
+  ///don't use this, use [_addMapObjectsInZIndexOrder] instead
+  Future<void> _addMapObjects(Set<MapObject> mapObjects) async {
+    await Future.wait(mapObjects.map((e) => _addMapObject(e)));
   }
 
-  Future<void> _updateMapObjects<T extends MapObject>(Set<T> mapObjects,
-      Future<void> Function(T) handleUpdate) async {
-    await Future.wait(mapObjects.map((object) => handleUpdate(object)));
+  Future<void> _removeMapObjects(Set<MapObject> mapObjects) async {
+    await Future.wait(mapObjects.map((object) => _removeMapObject(object)));
+  }
+
+  Future<void> _updateMapObjects(Set<MapObject> mapObjects) async {
+    await Future.wait(mapObjects.map((object) => _updateMapObject(object)));
+  }
+
+  Future<void> _addMapObject(MapObject mapObject) async {
+    if (mapObject is Polygon) {
+      await _addPolygon(mapObject);
+    } else if (mapObject is Polyline) {
+      await _addPolyline(mapObject);
+    } else if (mapObject is Circle) {
+      await _addCircle(mapObject);
+    } else if (mapObject is Marker) {
+      await _addMarker(mapObject);
+    }
+  }
+
+  Future<void> _updateMapObject(MapObject mapObject) async {
+    if (mapObject is Polygon) {
+      await _updatePolygon(mapObject);
+    } else if (mapObject is Polyline) {
+      await _updatePolyline(mapObject);
+    } else if (mapObject is Circle) {
+      await _updateCircle(mapObject);
+    } else if (mapObject is Marker) {
+      await _updateMarker(mapObject);
+    }
+  }
+
+  Future<void> _removeMapObject(MapObject mapObject) async {
+    if (mapObject is Polygon) {
+      await _removePolygon(mapObject.id);
+    } else if (mapObject is Polyline) {
+      await _removePolyline(mapObject.id);
+    } else if (mapObject is Circle) {
+      await _removeCircle(mapObject.id);
+    } else if (mapObject is Marker) {
+      await _removeMarker(mapObject.id);
+    }
   }
 
   Future<void> _addPolygon(Polygon polygon) async {

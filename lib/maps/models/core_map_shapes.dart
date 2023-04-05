@@ -33,4 +33,8 @@ class CoreMapShapes {
       markers: Set.from(markers),
     );
   }
+
+  Set<MapObject> toSet() {
+    return {...polygons, ...polylines, ...circles, ...markers};
+  }
 }

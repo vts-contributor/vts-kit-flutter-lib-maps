@@ -49,7 +49,6 @@ class _TestMapScreenState extends State<TestMapScreen> {
           IconButton(
             icon: Icon(Icons.swap_horiz),
             onPressed: () async {
-              final controller = await _controllerCompleter.controller;
               setState(() {
                 _type = _type == CoreMapType.viettel? CoreMapType.google: CoreMapType.viettel;
               });
@@ -96,8 +95,8 @@ class _TestMapScreenState extends State<TestMapScreen> {
         ),
         shapes: CoreMapShapes(
           polygons: {polygon1()},
-          circles: {circle()},
-          markers: {marker()},
+          // circles: {circle()},
+          // markers: {marker()},
           polylines: {polyline(), polyline2()},
         ),
       ),
