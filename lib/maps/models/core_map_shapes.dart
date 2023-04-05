@@ -1,3 +1,5 @@
+import 'package:maps_core/maps.dart';
+
 import 'map_objects/map_objects.dart';
 
 ///Data object for map shapes. Just for convenient
@@ -31,6 +33,20 @@ class CoreMapShapes {
       polylines: Set.from(polylines),
       circles: Set.from(circles),
       markers: Set.from(markers),
+    );
+  }
+
+  CoreMapShapes copyWith({
+    Set<Polygon>? polygons,
+    Set<Polyline>? polylines,
+    Set<Circle>? circles,
+    Set<Marker>? markers,
+  }) {
+    return CoreMapShapes(
+      polygons: polygons ?? this.polygons,
+      polylines: polylines ?? this.polylines,
+      circles: circles ?? this.circles,
+      markers: markers ?? this.markers,
     );
   }
 

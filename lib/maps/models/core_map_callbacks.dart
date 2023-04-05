@@ -12,6 +12,7 @@ class CoreMapCallbacks {
     this.onCameraIdle,
     this.onTap,
     this.onLongPress,
+    this.onUserPositionChanged,
   });
 
   ///Map is ready to be used
@@ -27,6 +28,8 @@ class CoreMapCallbacks {
 
   final void Function(LatLng latLng)? onLongPress;
 
+  final void Function(Position position)? onUserPositionChanged;
+
   CoreMapCallbacks copyWith({
     final void Function(CoreMapController controller)? onMapCreated,
     final void Function(CameraPosition position)? onCameraMove,
@@ -34,6 +37,7 @@ class CoreMapCallbacks {
     final VoidCallback? onCameraIdle,
     final void Function(LatLng latLng)? onTap,
     final void Function(LatLng latLng)? onLongPress,
+    final void Function(Position position)? onUserPositionChanged,
   }) {
     return CoreMapCallbacks(
       onMapCreated: onMapCreated ?? this.onMapCreated,
@@ -42,6 +46,7 @@ class CoreMapCallbacks {
       onCameraIdle: onCameraIdle ?? this.onCameraIdle,
       onTap: onTap ?? this.onTap,
       onLongPress: onLongPress ?? this.onLongPress,
+      onUserPositionChanged: onUserPositionChanged ?? this.onUserPositionChanged,
     );
   }
 }
