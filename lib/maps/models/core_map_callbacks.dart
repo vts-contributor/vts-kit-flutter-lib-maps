@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:location/location.dart';
 import 'package:maps_core/maps.dart';
 
 import '../controllers/core_map_controller.dart';
@@ -28,7 +29,7 @@ class CoreMapCallbacks {
 
   final void Function(LatLng latLng)? onLongPress;
 
-  final void Function(Position position)? onUserPositionChanged;
+  final void Function(LocationData position)? onUserPositionChanged;
 
   CoreMapCallbacks copyWith({
     final void Function(CoreMapController controller)? onMapCreated,
@@ -37,7 +38,7 @@ class CoreMapCallbacks {
     final VoidCallback? onCameraIdle,
     final void Function(LatLng latLng)? onTap,
     final void Function(LatLng latLng)? onLongPress,
-    final void Function(Position position)? onUserPositionChanged,
+    final void Function(LocationData position)? onUserPositionChanged,
   }) {
     return CoreMapCallbacks(
       onMapCreated: onMapCreated ?? this.onMapCreated,
