@@ -65,10 +65,16 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
       scrollGesturesEnabled: data.scrollGesturesEnabled,
       zoomGesturesEnabled: data.zoomGesturesEnabled,
       tiltGesturesEnabled: data.tiltGesturesEnabled,
-      myLocationEnabled: data.myLocationEnabled,
+
+      //WARNING: DON'T TURN ON MY LOCATION OPTIONS HERE. MAP WILL CRASH IN CURRENT VTMAP VERSION
+      //DATE: 11/4/2023 - vtmap_gl: ^2.0.4
+      myLocationEnabled: false,
+      myLocationRenderMode: vt.MyLocationRenderMode.NORMAL,
+      myLocationTrackingMode: vt.MyLocationTrackingMode.None,
+      gpsControlEnable: false,
+      // --------------------------------------------------------
 
       compassViewPosition: vt.CompassViewPosition.TopLeft,
-
       onMapCreated: (vt.MapboxMapController mapboxMapController) {
         final controller = ViettelMapController(mapboxMapController,
           data: data,

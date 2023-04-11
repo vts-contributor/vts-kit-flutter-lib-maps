@@ -40,7 +40,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
       body: VTMap(
         accessToken: "49013166841fe36d7fa7f395fce4a663",
         initialCameraPosition:
-        const CameraPosition(target: LatLng(16.059761, 108.211771),zoom: 10),
+        const CameraPosition(target: LatLng(11.3726, 108.9519),zoom: 7),
 
         onMapCreated: (controller) {
           this.controller = controller;
@@ -58,7 +58,9 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
         onCameraTrackingDismissed: () {
           Log.d("VTMAP", "onCameraTrackingDismissed: ${controller?.cameraPosition?.target.toString()}");
         },
-        myLocationTrackingMode: MyLocationTrackingMode.Tracking,
+        myLocationEnabled: true,
+        myLocationRenderMode: MyLocationRenderMode.COMPASS,
+        myLocationTrackingMode: MyLocationTrackingMode.TrackingCompass,
         trackCameraPosition: true,
         compassEnabled: true,
         compassViewMargins: Point(100, 100),
