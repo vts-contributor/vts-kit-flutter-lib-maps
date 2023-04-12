@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:location/location.dart';
 import 'package:maps_core/log/log.dart';
+
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/views/core_google_map.dart';
 import 'package:maps_core/maps/views/core_viettel_map.dart';
+import 'package:rxdart/rxdart.dart';
+
+part 'location_manager.dart';
 
 class CoreMap extends StatefulWidget {
 
@@ -29,17 +33,48 @@ class CoreMap extends StatefulWidget {
   State<CoreMap> createState() => _CoreMapState();
 }
 
-class _CoreMapState extends State<CoreMap> {
+class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   CoreMapController? _controller;
 
-  // StreamSubscription<Position>? _locationStreamSubscription;
+  late final _LocationManager _locationManager = _LocationManager(widget.callbacks);
 
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addObserver(this);
+    _initLocationManager();
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _initLocationManager() {
+    _locationManager.addListener(() {
+      setState(() {});
+    });
+
+    _locationManager.enabled = widget.data.myLocationEnabled;
+  }
+
+  @override
+  void didUpdateWidget(covariant CoreMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _locationManager.updateCallbacks(widget.callbacks);
+    _locationManager.enabled = widget.data.myLocationEnabled;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _locationManager.updateOnWidgetResumed();
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -80,56 +115,4 @@ class _CoreMapState extends State<CoreMap> {
         );
     }
   }
-
-  // void _initUserLocationListener() {
-  //   late LocationSettings locationSettings;
-  //
-  //   if (defaultTargetPlatform == TargetPlatform.android) {
-  //     locationSettings = AndroidSettings(
-  //         accuracy: LocationAccuracy.high,
-  //         distanceFilter: 100,
-  //         forceLocationManager: true,
-  //         intervalDuration: const Duration(seconds: 10),
-  //         //(Optional) Set foreground notification config to keep the app alive
-  //         //when going to the background
-  //         foregroundNotificationConfig: const ForegroundNotificationConfig(
-  //           notificationText:
-  //           "Example app will continue to receive your location even when you aren't using it",
-  //           notificationTitle: "Running in Background",
-  //           enableWakeLock: true,
-  //         )
-  //     );
-  //   } else if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS) {
-  //     locationSettings = AppleSettings(
-  //       accuracy: LocationAccuracy.high,
-  //       activityType: ActivityType.fitness,
-  //       distanceFilter: 100,
-  //       pauseLocationUpdatesAutomatically: true,
-  //       // Only set to true if our app will be started up in the background.
-  //       showBackgroundLocationIndicator: false,
-  //     );
-  //   } else {
-  //     locationSettings = LocationSettings(
-  //       accuracy: LocationAccuracy.high,
-  //       distanceFilter: 100,
-  //     );
-  //   }
-  //
-  //   _locationStreamSubscription = Geolocator
-  //       .getPositionStream(locationSettings: locationSettings)
-  //       .listen((Position? position) {
-  //         Log.d("CORELOCATION", position == null ? 'Unknown' : '${position.latitude.toString()}, ${position.longitude.toString()}');
-  //       },
-  //     onError: (error, stackTrace) {
-  //         Log.e("CORELOCATION", error.toString(), stackTrace: stackTrace);
-  //         Geolocator.openAppSettings();
-  //     }
-  //   );
-  // }
-  //
-  // @override
-  // void dispose() {
-  //   _locationStreamSubscription?.cancel();
-  //   super.dispose();
-  // }
 }

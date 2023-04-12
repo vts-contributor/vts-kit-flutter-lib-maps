@@ -13,7 +13,10 @@ class CoreMapCallbacks {
     this.onCameraIdle,
     this.onTap,
     this.onLongPress,
-    this.onUserPositionChanged,
+    this.onUserLocationUpdated,
+    this.onServiceDisabled,
+    this.onPermissionDenied,
+    this.onPermissionDeniedForever,
   });
 
   ///Map is ready to be used
@@ -29,7 +32,13 @@ class CoreMapCallbacks {
 
   final void Function(LatLng latLng)? onLongPress;
 
-  final void Function(LocationData position)? onUserPositionChanged;
+  final void Function(LocationData userLocation)? onUserLocationUpdated;
+
+  final Future<bool> Function()? onServiceDisabled;
+
+  final Future<bool> Function()? onPermissionDenied;
+
+  final Future<bool> Function()? onPermissionDeniedForever;
 
   CoreMapCallbacks copyWith({
     final void Function(CoreMapController controller)? onMapCreated,
@@ -38,7 +47,10 @@ class CoreMapCallbacks {
     final VoidCallback? onCameraIdle,
     final void Function(LatLng latLng)? onTap,
     final void Function(LatLng latLng)? onLongPress,
-    final void Function(LocationData position)? onUserPositionChanged,
+    final void Function(LocationData userLocation)? onUserLocationUpdated,
+    final Future<bool> Function()? onServiceDisabled,
+    final Future<bool> Function()? onPermissionDenied,
+    final Future<bool> Function()? onPermissionDeniedForever,
   }) {
     return CoreMapCallbacks(
       onMapCreated: onMapCreated ?? this.onMapCreated,
@@ -47,7 +59,10 @@ class CoreMapCallbacks {
       onCameraIdle: onCameraIdle ?? this.onCameraIdle,
       onTap: onTap ?? this.onTap,
       onLongPress: onLongPress ?? this.onLongPress,
-      onUserPositionChanged: onUserPositionChanged ?? this.onUserPositionChanged,
+      onUserLocationUpdated: onUserLocationUpdated ?? this.onUserLocationUpdated,
+      onServiceDisabled: onServiceDisabled ?? this.onServiceDisabled,
+      onPermissionDenied: onPermissionDenied ?? this.onPermissionDenied,
+      onPermissionDeniedForever: onPermissionDeniedForever ?? this.onPermissionDeniedForever,
     );
   }
 }
