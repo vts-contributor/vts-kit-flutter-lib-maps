@@ -1,20 +1,6 @@
-import 'dart:math';
-import 'dart:typed_data';
+part of core_map;
 
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:maps_core/log/log.dart';
-import 'package:maps_core/maps/constants.dart';
-import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
-import 'package:collection/collection.dart';
-
-import 'package:vtmap_gl/vtmap_gl.dart' as vt;
-
-import '../../../maps.dart';
-import '../../models/map_objects/marker_icon_data_processor.dart';
-
-
-class ViettelMapController extends BaseCoreMapController {
+class _ViettelMapController extends BaseCoreMapController {
 
   final vt.MapboxMapController _controller;
 
@@ -36,7 +22,7 @@ class ViettelMapController extends BaseCoreMapController {
 
   final MarkerIconDataProcessor markerIconDataProcessor;
 
-  ViettelMapController(this._controller, {
+  _ViettelMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callbacks,
     required this.markerIconDataProcessor,

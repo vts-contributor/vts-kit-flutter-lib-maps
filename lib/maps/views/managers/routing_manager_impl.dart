@@ -1,4 +1,4 @@
-part of '../core_map.dart';
+part of core_map;
 
 class _RoutingManagerImpl implements RoutingManager {
 

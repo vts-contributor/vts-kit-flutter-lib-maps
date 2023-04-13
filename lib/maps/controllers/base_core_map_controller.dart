@@ -1,7 +1,4 @@
-import 'dart:typed_data';
-
-import 'package:maps_core/log/log.dart';
-import 'package:maps_core/maps.dart';
+part of core_map;
 
 abstract class BaseCoreMapController implements CoreMapController {
   CoreMapCallbacks? callbacks;

@@ -1,4 +1,4 @@
-part of 'core_map.dart';
+part of core_map;
 
 class _CoreViettelMap extends StatefulWidget {
   final CoreMapData data;
@@ -18,7 +18,7 @@ class _CoreViettelMap extends StatefulWidget {
 
 class _CoreViettelMapState extends State<_CoreViettelMap> {
 
-  ViettelMapController? _controller;
+  _ViettelMapController? _controller;
 
   final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
 
@@ -74,7 +74,7 @@ class _CoreViettelMapState extends State<_CoreViettelMap> {
 
       compassViewPosition: vt.CompassViewPosition.TopLeft,
       onMapCreated: (vt.MapboxMapController mapboxMapController) {
-        final controller = ViettelMapController(mapboxMapController,
+        final controller = _ViettelMapController(mapboxMapController,
           data: data,
           callbacks: widget.callbacks,
           markerIconDataProcessor: _markerIconDataFactory

@@ -1,4 +1,4 @@
-part of 'core_map.dart';
+part of core_map;
 
 class _CoreGoogleMap extends StatefulWidget {
 
@@ -20,7 +20,7 @@ class _CoreGoogleMap extends StatefulWidget {
 
 class _CoreGoogleMapState extends State<_CoreGoogleMap> {
 
-  GoogleMapController? _controller;
+  _GoogleMapController? _controller;
 
   final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
 
@@ -47,7 +47,7 @@ class _CoreGoogleMapState extends State<_CoreGoogleMap> {
       initialCameraPosition: widget.data.initialCameraPosition.toGoogle(),
       onMapCreated: (gg.GoogleMapController googleMapController) {
         //reminder: check leak here, may happen because of passing method?
-        final controller = GoogleMapController(googleMapController,
+        final controller = _GoogleMapController(googleMapController,
           data: widget.data,
           callbacks: widget.callbacks,
           markerIconDataProcessor: _markerIconDataFactory,

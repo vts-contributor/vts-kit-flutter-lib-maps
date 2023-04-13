@@ -1,14 +1,6 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
-import 'package:maps_core/maps/models/map_objects/marker_icon_data_processor.dart';
+part of core_map;
 
-import '../../../maps.dart';
-
-import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
-
-class GoogleMapController extends BaseCoreMapController
+class _GoogleMapController extends BaseCoreMapController
     with ChangeNotifier {
 
   @override
@@ -20,7 +12,7 @@ class GoogleMapController extends BaseCoreMapController
 
   final MarkerIconDataProcessor markerIconDataProcessor;
 
-  GoogleMapController(this._controller, {
+  _GoogleMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callbacks,
     required this.markerIconDataProcessor,

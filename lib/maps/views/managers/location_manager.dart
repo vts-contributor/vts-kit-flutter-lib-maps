@@ -1,4 +1,4 @@
-part of '../core_map.dart';
+part of core_map;
 
 ///Handle CoreMap Location feature
 class _LocationManager extends ChangeNotifier {

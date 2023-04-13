@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:maps_core/maps/constants.dart';
-import 'package:maps_core/maps/controllers/base_core_map_controller.dart';
 
 import 'marker_icon_data_processor.dart';
 
