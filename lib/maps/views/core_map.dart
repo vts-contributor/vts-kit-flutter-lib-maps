@@ -1,7 +1,6 @@
 part of core_map;
 
 class CoreMap extends StatefulWidget {
-
   final CoreMapType type;
 
   final CoreMapData data;
@@ -10,7 +9,8 @@ class CoreMap extends StatefulWidget {
 
   final CoreMapCallbacks? callbacks;
 
-  const CoreMap({super.key,
+  const CoreMap({
+    super.key,
     this.type = CoreMapType.viettel,
     this.callbacks,
     required this.data,
@@ -22,10 +22,10 @@ class CoreMap extends StatefulWidget {
 }
 
 class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
-
   CoreMapController? _controller;
 
-  late final _LocationManager _locationManager = _LocationManager(widget.callbacks);
+  late final _LocationManager _locationManager =
+      _LocationManager(widget.callbacks);
 
   @override
   void initState() {
@@ -36,12 +36,14 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _locationManager.dispose();
   }
 
   void _initLocationManager() {
     _locationManager.addListener(() {
+      Log.d("CoreMap location manager", "rebuilding");
       setState(() {});
     });
 
@@ -63,20 +65,20 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     CoreMapCallbacks callbacks = widget.callbacks ?? CoreMapCallbacks();
     return _buildMap(
       type: widget.type,
       data: widget.data.copyWith(
-          initialCameraPosition: _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition
-      ),
+          initialCameraPosition: _controller?.getCurrentPosition() ??
+              widget.data.initialCameraPosition),
       shapes: widget.shapes,
       callbacks: callbacks.copyWith(
         onMapCreated: (controller) {
           _controller = controller;
           widget.callbacks?.onMapCreated?.call(controller);
+          _locationManager.notifyRebuildUserLocationMapObject();
         },
       ),
     );
@@ -97,11 +99,31 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         );
       case CoreMapType.viettel:
         return _CoreViettelMap(
-          data: data,
-          callbacks: callbacks,
-          userLocationDrawOptions: _locationManager.getViettelUserLocationDrawOptions(),
-          shapes: shapes ?? CoreMapShapes()
-        );
+            data: data,
+            callbacks: callbacks,
+            userLocationDrawOptions: getViettelUserLocationDrawOptions(
+                _locationManager._userLocation),
+            shapes: shapes ?? CoreMapShapes());
+    }
+  }
+
+  ///for pseudo user location icon on the vt map because currently, vt map's
+  ///location feature is broken
+  vt.CircleOptions? getViettelUserLocationDrawOptions(
+      LocationData? userLocation) {
+    double? lat = userLocation?.latitude;
+    double? lng = userLocation?.longitude;
+
+    if (lat != null && lng != null) {
+      return vt.CircleOptions(
+        geometry: LatLng(lat, lng).toViettel(),
+        circleRadius: 5,
+        circleColor: Colors.blue.toHex(),
+        circleStrokeColor: Colors.white.toHex(),
+        circleStrokeWidth: 1,
+      );
+    } else {
+      return null;
     }
   }
 }

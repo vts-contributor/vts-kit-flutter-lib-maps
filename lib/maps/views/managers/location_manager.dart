@@ -8,8 +8,6 @@ class _LocationManager extends ChangeNotifier {
 
   StreamSubscription<LocationData>? _locationStreamSubscription;
 
-  String userLocationShapeId = "3aa88b2a-d908-11ed-afa1-0242ac120002-user-location-object";
-
   //customize handle errors
   late Future<bool> Function() _onServiceDisabled;
   late Future<bool> Function() _onPermissionDenied;
@@ -18,6 +16,21 @@ class _LocationManager extends ChangeNotifier {
   final Location _location = Location();
 
   LocationData? _userLocation;
+
+  bool _enabled = false;
+
+  int _updatePrecision = 5;
+
+  ///0 <= value <= 20
+  ///
+  ///Ex: value == 5:
+  ///
+  ///9.804382294501336, 105.7186954572177 => 9.80438, 105.71869
+  set updatePrecision(int value) {
+    if (value >= 0 && value <= 20) {
+      _updatePrecision = value;
+    }
+  }
 
   _LocationManager(CoreMapCallbacks? callbacks) {
     updateCallbacks(callbacks);
@@ -37,8 +50,6 @@ class _LocationManager extends ChangeNotifier {
   set onPermissionDenied(Future<bool> Function()? onPermissionDenied) {
     _onPermissionDenied = onPermissionDenied ?? _defaultRequestPermission;
   }
-
-  bool _enabled = false;
 
   set enabled(bool value) {
     if (_enabled == value) {
@@ -96,17 +107,45 @@ class _LocationManager extends ChangeNotifier {
 
   void _startLocationListener() {
     _locationStreamSubscription ??= _location.onLocationChanged.listen((event) {
-        Log.d(logTag, "onLocationChanged ${event.latitude} ${event.longitude}");
-        updateUserLocation(event);
+        // Log.d(logTag, "onLocationChanged ${event.latitude} ${event.longitude}");
+        _updateUserLocation(event);
         _onUserLocationUpdated?.call(event);
       })..onError((object, stack) {
-        Log.e(logTag, "onError");
+        Log.e(logTag, "listen to stream error");
       });
   }
 
-  void updateUserLocation(LocationData data) {
+  void _updateUserLocation(LocationData data) {
+    _checkRedrawUserLocationOnMap(_userLocation, data);
     _userLocation = data;
-    // notifyListeners();
+  }
+
+  void _checkRedrawUserLocationOnMap(LocationData? oldData, LocationData newData) {
+    if (oldData == null) {
+      notifyListeners();
+      return;
+    }
+
+    double? oldLat = oldData.latitude;
+    double? oldLng = oldData.longitude;
+    double? newLat = newData.latitude;
+    double? newLng = newData.longitude;
+
+    if (newLat != null && newLng != null) {
+      bool latChanged = false, lngChanged = false;
+      if (oldLat != null) {
+        latChanged = oldLat.compareAsFixed(newLat, _updatePrecision) != 0;
+      }
+      if (oldLng != null) {
+        lngChanged = oldLng.compareAsFixed(oldLng, _updatePrecision) != 0;
+      }
+
+      if (latChanged || lngChanged) {
+        notifyListeners();
+      }
+    } else {
+      return;
+    }
   }
 
   void _stopLocationListener() {
@@ -137,23 +176,14 @@ class _LocationManager extends ChangeNotifier {
     _stopLocationListener();
   }
 
-  ///for pseudo user location icon on the map (maps which user location feature
-  ///is not provided or broken)
-  vt.CircleOptions? getViettelUserLocationDrawOptions() {
-    LocationData? userLocation = _userLocation;
-    double? lat = userLocation?.latitude;
-    double? lng = userLocation?.longitude;
+  void notifyRebuildUserLocationMapObject() {
+    notifyListeners();
+  }
 
-    if (lat != null && lng != null) {
-      return vt.CircleOptions(
-        geometry: LatLng(lat, lng).toViettel(),
-        circleRadius: 5,
-        circleColor: Colors.blue.toHex(),
-        circleStrokeColor: Colors.white.toHex(),
-        circleStrokeWidth: 1,
-      );
-    } else {
-      return null;
-    }
+  @override
+  void dispose() {
+    super.dispose();
+
+    _locationStreamSubscription?.cancel();
   }
 }

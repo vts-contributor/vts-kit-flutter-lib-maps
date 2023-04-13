@@ -1,7 +1,7 @@
 import 'package:maps_core/maps/models/models.dart';
 import 'package:maps_core/maps/extensions/extensions.dart';
 
-class Route {
+class MapRoute {
   final ViewPort? bounds;
   final String? copyrights;
   final List<LatLng>? points;
@@ -14,7 +14,7 @@ class Route {
     return points?.whereIndexed((point, i) => i % step == 0).toList();
   }
 
-  Route({
+  MapRoute({
     this.bounds,
     this.copyrights,
     this.points,
@@ -24,7 +24,7 @@ class Route {
     this.legs
   });
 
-  factory Route.fromJson(Map<String, dynamic>? json, {int? pointsSkipStep}) {
+  factory MapRoute.fromJson(Map<String, dynamic>? json, {int? pointsSkipStep}) {
     final ViewPort bounds = ViewPort.fromJson(json?['bounds']);
     final String? copyrights = json?['copyrights'];
     final String? encodedPoints = json?['overview_polyline']?['points'];
@@ -32,7 +32,7 @@ class Route {
     final String? summary = json?['summary'];
     final List<RouteLeg>? legs = (json?['legs'] as List<dynamic>?)
         ?.map((json) => RouteLeg.fromJson(json)).toList();
-    return Route(
+    return MapRoute(
       bounds: bounds,
       copyrights: copyrights,
       points: points,

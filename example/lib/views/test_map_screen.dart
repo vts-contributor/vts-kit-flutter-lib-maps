@@ -91,12 +91,12 @@ class _TestMapScreenState extends State<TestMapScreen> {
             Log.d("onLongPress", latLng.toString());
           },
         ),
-        shapes: CoreMapShapes(
-          polygons: {polygon1()},
-          circles: {circle()},
-          markers: {marker()},
-          polylines: {polyline(), polyline2()},
-        ),
+        // shapes: CoreMapShapes(
+        //   polygons: {polygon1()},
+        //   circles: {circle()},
+        //   markers: {marker()},
+        //   polylines: {polyline(), polyline2()},
+        // ),
       ),
     );
   }

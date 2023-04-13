@@ -30,6 +30,7 @@ class CoreMapCallbacks {
 
   final void Function(LatLng latLng)? onLongPress;
 
+  ///This will be called periodically even if [userLocation] doesn't change.
   final void Function(LocationData userLocation)? onUserLocationUpdated;
 
   final Future<bool> Function()? onServiceDisabled;

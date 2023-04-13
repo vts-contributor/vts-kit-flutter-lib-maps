@@ -203,3 +203,25 @@ extension ConstrictZoomLevel on double {
   ///must >= 1
   double get validCoreZoomLevel => max(Constant.zoomLevelLowerBound, this);
 }
+
+extension CompareDouble on double {
+
+  /// The parameter [precision] must be an integer satisfying:
+  /// `0 <= fractionDigits <= 20`. If this is not satisfied, it will just return
+  /// double.compareTo
+  int compareAsFixed(double other, [int? precision]) {
+    if (precision == null || precision < 0 || precision > 20) {
+      return compareTo(other);
+    }
+
+    try {
+      final thisFixed = double.parse(toStringAsFixed(precision));
+      final otherFixed = double.parse(other.toStringAsFixed(precision));
+
+      return thisFixed.compareTo(otherFixed);
+    } catch (e, s) {
+      debugPrintStack(stackTrace: s);
+      return compareTo(other);
+    }
+  }
+}
