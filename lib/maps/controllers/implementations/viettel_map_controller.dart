@@ -1,7 +1,6 @@
 part of core_map;
 
 class _ViettelMapController extends BaseCoreMapController {
-
   final vt.MapboxMapController _controller;
 
   //need to update both this and vtmap shape mapping when update new shapes
@@ -22,11 +21,12 @@ class _ViettelMapController extends BaseCoreMapController {
 
   final MarkerIconDataProcessor markerIconDataProcessor;
 
-  _ViettelMapController(this._controller, {
+  _ViettelMapController(
+    this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callbacks,
     required this.markerIconDataProcessor,
-  }):_initialCameraPosition = data.initialCameraPosition,
+  })  : _initialCameraPosition = data.initialCameraPosition,
         super(callbacks) {
     _initHandlers();
   }
@@ -55,10 +55,10 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   ///return addObjects
-  Future<void> _loadNewMapObjects(Set<MapObject> oldObjects,
-      Set<MapObject> newObjects) async {
+  Future<void> _loadNewMapObjects(
+      Set<MapObject> oldObjects, Set<MapObject> newObjects) async {
     final mapObjectUpdates = MapObjectUpdates.from(oldObjects, newObjects);
-    
+
     _updateMapObjects(mapObjectUpdates.updateObjects);
     await _removeMapObjects(mapObjectUpdates.removeObjects);
     await _addMapObjectsInZIndexOrder(mapObjectUpdates.addObjects);
@@ -119,13 +119,13 @@ class _ViettelMapController extends BaseCoreMapController {
 
   Future<void> _removeMapObject(MapObject mapObject) async {
     if (mapObject is Polygon) {
-      await _removePolygon(mapObject.id);
+      await _removePolygon(mapObject.id.value);
     } else if (mapObject is Polyline) {
-      await _removePolyline(mapObject.id);
+      await _removePolyline(mapObject.id.value);
     } else if (mapObject is Circle) {
-      await _removeCircle(mapObject.id);
+      await _removeCircle(mapObject.id.value);
     } else if (mapObject is Marker) {
-      await _removeMarker(mapObject.id);
+      await _removeMarker(mapObject.id.value);
     }
   }
 
@@ -135,15 +135,18 @@ class _ViettelMapController extends BaseCoreMapController {
     }
 
     //add a dummy object to map
-    _viettelPolygonMap.putIfAbsent(polygon.id, () =>
-        ViettelPolygon(polygon.id, vt.Fill("dummy", const vt.FillOptions()), []));
+    _viettelPolygonMap.putIfAbsent(
+        polygon.id.value,
+        () => ViettelPolygon(
+            polygon.id.value, vt.Fill("dummy", const vt.FillOptions()), []));
 
     final fill = await _controller.addFill(polygon.toFillOptions());
 
-    List<vt.Line> outlines = await Future
-        .wait(polygon.getOutlineLineOptions().map((e) => _controller.addLine(e)));
+    List<vt.Line> outlines = await Future.wait(
+        polygon.getOutlineLineOptions().map((e) => _controller.addLine(e)));
 
-    _viettelPolygonMap.update(polygon.id, (_) => ViettelPolygon(polygon.id, fill, outlines));
+    _viettelPolygonMap.update(polygon.id.value,
+        (_) => ViettelPolygon(polygon.id.value, fill, outlines));
   }
 
   Future<void> _removePolygon(String polygonId) async {
@@ -172,11 +175,13 @@ class _ViettelMapController extends BaseCoreMapController {
 
     List<vt.Line> lines = updatingPolygon.outlines;
     await Future.wait(lines.map((e) => _controller.removeLine(e)));
-    List<vt.Line> newLines = await Future
-        .wait(polygon.getOutlineLineOptions().map((e) => _controller.addLine(e)));
+    List<vt.Line> newLines = await Future.wait(
+        polygon.getOutlineLineOptions().map((e) => _controller.addLine(e)));
 
-    _viettelPolygonMap.update(polygon.id, (_) =>
-        ViettelPolygon(polygon.id, updatingPolygon.fill, newLines));
+    _viettelPolygonMap.update(
+        polygon.id.value,
+        (_) =>
+            ViettelPolygon(polygon.id.value, updatingPolygon.fill, newLines));
   }
 
   Future<void> _addPolyline(Polyline polyline) async {
@@ -185,10 +190,11 @@ class _ViettelMapController extends BaseCoreMapController {
     }
 
     //add a dummy object to map
-    _viettelPolylineMap.putIfAbsent(polyline.id, () => vt.Line("dummy", const vt.LineOptions()));
+    _viettelPolylineMap.putIfAbsent(
+        polyline.id.value, () => vt.Line("dummy", const vt.LineOptions()));
     final line = await _controller.addLine(polyline.toLineOptions());
 
-    _viettelPolylineMap.update(polyline.id, (_) => line);
+    _viettelPolylineMap.update(polyline.id.value, (_) => line);
   }
 
   Future<void> _removePolyline(String polylineId) async {
@@ -212,22 +218,26 @@ class _ViettelMapController extends BaseCoreMapController {
     _controller.updateLine(updatingPolyline, polyline.toLineOptions());
   }
 
-
   Future<void> _addCircle(Circle circle) async {
     if (_viettelCircleMap.containsKey(circle.id)) {
       return;
     }
 
     //add a dummy object to map
-    _viettelCircleMap.putIfAbsent(circle.id, () => ViettelCircle(circle.id,
-        vt.Fill("dummy", const vt.FillOptions()), vt.Line("dummy", const vt.LineOptions())));
+    _viettelCircleMap.putIfAbsent(
+        circle.id.value,
+        () => ViettelCircle(
+            circle.id.value,
+            vt.Fill("dummy", const vt.FillOptions()),
+            vt.Line("dummy", const vt.LineOptions())));
 
     List<LatLng> points = circle.toCirclePoints();
 
     final fill = await _controller.addFill(circle.toFillOptions(points));
     final outline = await _controller.addLine(circle.toLineOptions(points));
 
-    _viettelCircleMap.update(circle.id, (_) => ViettelCircle(circle.id, fill, outline));
+    _viettelCircleMap.update(
+        circle.id.value, (_) => ViettelCircle(circle.id.value, fill, outline));
   }
 
   Future<void> _removeCircle(String circleId) async {
@@ -252,7 +262,8 @@ class _ViettelMapController extends BaseCoreMapController {
     List<LatLng> points = circle.toCirclePoints();
 
     _controller.updateFill(updatingCircle.fill, circle.toFillOptions(points));
-    _controller.updateLine(updatingCircle.outline, circle.toLineOptions(points));
+    _controller.updateLine(
+        updatingCircle.outline, circle.toLineOptions(points));
   }
 
   Future<void> _addMarker(Marker marker) async {
@@ -261,18 +272,20 @@ class _ViettelMapController extends BaseCoreMapController {
     }
 
     //add a dummy object to map
-    _viettelMarkerMap.putIfAbsent(marker.id, () => vt.Symbol("dummy", const vt.SymbolOptions()));
+    _viettelMarkerMap.putIfAbsent(
+        marker.id.value, () => vt.Symbol("dummy", const vt.SymbolOptions()));
 
     //marker resource must has been initialized before being added to the map
     if (!_markerIconNames.contains(marker.icon.data.name)) {
       _markerIconNames.add(marker.icon.data.name);
-      Uint8List bitmap = await marker.icon.data.initResource(markerIconDataProcessor);
+      Uint8List bitmap =
+          await marker.icon.data.initResource(markerIconDataProcessor);
       _controller.addImage(marker.icon.data.name, bitmap);
     }
 
     final symbol = await _controller.addSymbol(marker.toSymbolOptions());
 
-    _viettelMarkerMap.update(marker.id, (_) => symbol);
+    _viettelMarkerMap.update(marker.id.value, (_) => symbol);
   }
 
   Future<void> _removeMarker(String markerId) async {
@@ -332,8 +345,10 @@ class _ViettelMapController extends BaseCoreMapController {
 
   void _initMarkerTapHandler() {
     _controller.onSymbolTapped.add((vtSymbol) {
-      String? markerId = _viettelMarkerMap.keyWhere((value) => value.id == vtSymbol.id);
-      final marker = _originalShapes.markers.firstWhereOrNull((element) => element.id == markerId);
+      String? markerId =
+          _viettelMarkerMap.keyWhere((value) => value.id == vtSymbol.id);
+      final marker = _originalShapes.markers
+          .firstWhereOrNull((element) => element.id.value == markerId);
       if (marker != null) {
         if (marker.onTap != null) {
           marker.onTap?.call();
@@ -346,22 +361,23 @@ class _ViettelMapController extends BaseCoreMapController {
 
   void _initCircleTapHandler() {
     void callCircleTapById(String? id) {
-      final circle = _originalShapes.circles.firstWhereOrNull((element) => element.id == id);
+      final circle = _originalShapes.circles
+          .firstWhereOrNull((element) => element.id.value == id);
       circle?.onTap?.call();
     }
 
     //check if polygon's outlines are tapped?
     _controller.onLineTapped.add((vtLine) {
-      String? circleId = _viettelCircleMap.keyWhere(
-              (vtCircle) => vtCircle.outline.id == vtLine.id
-      );
+      String? circleId = _viettelCircleMap
+          .keyWhere((vtCircle) => vtCircle.outline.id == vtLine.id);
 
       callCircleTapById(circleId);
     });
 
     //check if the fill is tapped?
     _controller.onFillTapped.add((fill) {
-      String? circleId = _viettelCircleMap.keyWhere((value) => value.fill.id == fill.id);
+      String? circleId =
+          _viettelCircleMap.keyWhere((value) => value.fill.id == fill.id);
 
       callCircleTapById(circleId);
     });
@@ -369,33 +385,35 @@ class _ViettelMapController extends BaseCoreMapController {
 
   void _initPolylineTapHandler() {
     _controller.onLineTapped.add((vtLine) {
-      String? polylineId = _viettelPolylineMap.keyWhere((value) => value.id == vtLine.id);
-      final polyline = _originalShapes.polylines.firstWhereOrNull((element) => element.id == polylineId);
+      String? polylineId =
+          _viettelPolylineMap.keyWhere((value) => value.id == vtLine.id);
+      final polyline = _originalShapes.polylines
+          .firstWhereOrNull((element) => element.id.value == polylineId);
       polyline?.onTap?.call();
     });
   }
 
   void _initPolygonTapHandler() {
-
     void callPolygonOnTapById(String? id) {
-      final polygon = _originalShapes.polygons.firstWhereOrNull((element) => element.id == id);
+      final polygon = _originalShapes.polygons
+          .firstWhereOrNull((element) => element.id.value == id);
       polygon?.onTap?.call();
     }
 
     //check if polygon's outlines are tapped?
     _controller.onLineTapped.add((vtLine) {
-      String? polygonId = _viettelPolygonMap.keyWhere(
-              (vtPolygon) => vtPolygon.outlines.firstWhereOrNull(
-                      (outline) => outline.id == vtLine.id)
-                  != null
-      );
+      String? polygonId = _viettelPolygonMap.keyWhere((vtPolygon) =>
+          vtPolygon.outlines
+              .firstWhereOrNull((outline) => outline.id == vtLine.id) !=
+          null);
 
       callPolygonOnTapById(polygonId);
     });
 
     //check if the fill is tapped?
     _controller.onFillTapped.add((fill) {
-      String? polygonId = _viettelPolygonMap.keyWhere((value) => value.fill.id == fill.id);
+      String? polygonId =
+          _viettelPolygonMap.keyWhere((value) => value.fill.id == fill.id);
 
       callPolygonOnTapById(polygonId);
     });
@@ -425,7 +443,8 @@ class _ViettelMapController extends BaseCoreMapController {
 
   @override
   Future<ScreenCoordinate> getScreenCoordinate(LatLng latLng) async {
-    return (await _controller.toScreenLocation(latLng.toViettel())).toScreenCoordinate();
+    return (await _controller.toScreenLocation(latLng.toViettel()))
+        .toScreenCoordinate();
   }
 
   @override

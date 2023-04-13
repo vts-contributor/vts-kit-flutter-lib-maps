@@ -177,13 +177,22 @@ enum Anchor {
   }
 }
 
+/// Uniquely identifies a [Marker] among [CoreMap] markers.
+///
+/// This does not have to be globally unique, only unique among the list.
+@immutable
+class MarkerId extends MapObjectId<Marker> {
+  /// Creates an immutable identifier for a [Marker].
+  const MarkerId(String value) : super(value);
+}
+
 /// Marks a geographical location on the map.
 ///
 /// A marker icon is drawn oriented against the device's screen rather than
 /// the map's surface; that is, it will not necessarily change orientation
 /// due to map rotations, tilting, or zooming.
 @immutable
-class Marker implements MapObject{
+class Marker implements MapObject<Marker> {
   /// Creates a set of marker configuration options.
   ///
   /// Default marker options.
@@ -223,7 +232,7 @@ class Marker implements MapObject{
 
   /// Uniquely identifies a [Marker].
   @override
-  final String id;
+  final MarkerId id;
 
   /// The opacity of the marker, between 0.0 and 1.0 inclusive.
   ///
@@ -383,7 +392,7 @@ class Marker implements MapObject{
     markerDescriptor = ggmap.BitmapDescriptor.fromBytes(markerBitmap);
 
     return ggmap.Marker(
-      markerId: ggmap.MarkerId(id),
+      markerId: ggmap.MarkerId(id.value),
       alpha: alpha,
       anchor: anchor.offset,
       consumeTapEvents: onTap != null,

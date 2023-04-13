@@ -22,8 +22,6 @@ export 'maps/extensions/extensions.dart';
 export 'maps/services/services.dart';
 export 'maps/views/managers/routing_manager.dart';
 
-//LIB
-
 part 'maps/views/core_map.dart';
 part 'maps/views/core_viettel_map.dart';
 part 'maps/views/core_google_map.dart';

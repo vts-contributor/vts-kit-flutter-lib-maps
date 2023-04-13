@@ -13,10 +13,18 @@ import 'lat_lng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
+/// Uniquely identifies a [Polyline] among [CoreMap] markers.
+///
+/// This does not have to be globally unique, only unique among the list.
+@immutable
+class PolylineId extends MapObjectId<Polyline> {
+  /// Creates an immutable identifier for a [Polyline].
+  const PolylineId(String value) : super(value);
+}
 
 /// Draws a line through geographical locations on the map.
 @immutable
-class Polyline implements MapObject {
+class Polyline implements MapObject<Polyline> {
   /// Creates an immutable object representing a line drawn through geographical locations on the map.
   const Polyline({
     required this.id,
@@ -32,7 +40,7 @@ class Polyline implements MapObject {
 
   /// Uniquely identifies a [Polyline].
   @override
-  final String id;
+  final PolylineId id;
 
   /// Line segment color in ARGB format, the same format used by Color. The default value is black (0xff000000).
   final Color color;
@@ -173,7 +181,7 @@ class Polyline implements MapObject {
 
   ggmap.Polyline toGoogle() {
     return ggmap.Polyline(
-      polylineId: ggmap.PolylineId(id),
+      polylineId: ggmap.PolylineId(id.value),
       consumeTapEvents: onTap != null,
       color: color,
       geodesic: geodesic,

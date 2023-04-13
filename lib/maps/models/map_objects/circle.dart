@@ -13,9 +13,18 @@ import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 import '../../constants.dart';
 
+/// Uniquely identifies a [Circle] among [CoreMap] markers.
+///
+/// This does not have to be globally unique, only unique among the list.
+@immutable
+class CircleId extends MapObjectId<Circle> {
+  /// Creates an immutable identifier for a [Circle].
+  const CircleId(String value) : super(value);
+}
+
 /// Draws a circle on the map.
 @immutable
-class Circle implements MapObject {
+class Circle implements MapObject<Circle> {
   /// Creates an immutable representation of a [Circle] to draw on [GoogleMap].
   const Circle({
     required this.id,
@@ -31,7 +40,7 @@ class Circle implements MapObject {
 
   /// Uniquely identifies a [Circle].
   @override
-  final String id;
+  final CircleId id;
 
   /// Fill color in ARGB format, the same format used by Color. The default value is transparent (0x00000000).
   final Color fillColor;
@@ -142,7 +151,7 @@ class Circle implements MapObject {
 
   ggmap.Circle toGoogle() {
     return ggmap.Circle(
-        circleId: ggmap.CircleId(id),
+        circleId: ggmap.CircleId(id.value),
         consumeTapEvents: onTap != null,
         fillColor: fillColor,
         center: center.toGoogle(),

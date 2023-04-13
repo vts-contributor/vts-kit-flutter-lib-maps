@@ -18,22 +18,22 @@ class MapObjectUpdates {
   factory MapObjectUpdates.from(
       Set<MapObject> oldObjects, Set<MapObject> newObjects) {
     //to minimize some == operations on map objects.
-    Set<String> oldIds = oldObjects.map((e) => e.id).toSet();
-    Set<String> newIds = newObjects.map((e) => e.id).toSet();
+    Set<MapObjectId> oldIds = oldObjects.map((e) => e.id).toSet();
+    Set<MapObjectId> newIds = newObjects.map((e) => e.id).toSet();
 
     // ids which are in oldIds but not in newIds
-    Set<String> removeIds = oldIds.where((id) => !newIds.contains(id)).toSet();
+    Set<MapObjectId> removeIds = oldIds.where((id) => !newIds.contains(id)).toSet();
     Set<MapObject> removeObjects =
         oldObjects.where((element) => removeIds.contains(element.id)).toSet();
 
     // ids which are not in oldIds but in newIds
-    Set<String> addIds = newIds.where((id) => !oldIds.contains(id)).toSet();
+    Set<MapObjectId> addIds = newIds.where((id) => !oldIds.contains(id)).toSet();
     Set<MapObject> addObjects =
         newObjects.where((element) => addIds.contains(element.id)).toSet();
 
     // ids which are in both oldIds and newIds and newObject != oldObject
     Set<MapObject> updateObjects = newObjects.where((object) {
-      final oldObject = oldObjects.firstWhereOrNull((e) => _sameIdTypeMapObject(e, object));
+      final oldObject = oldObjects.firstWhereOrNull((e) => e.id == object.id);
       if (oldObject != null) {
         return object != oldObject;
       } else {
@@ -44,8 +44,7 @@ class MapObjectUpdates {
     //----This section is for checking zIndex to ensure order of objects--------
 
     Set<MapObject> changedZIndexUpdateObjects = updateObjects.where((object) {
-      final oldObject = oldObjects.firstWhereOrNull((e) =>
-          _sameIdTypeMapObject(e, object));
+      final oldObject = oldObjects.firstWhereOrNull((e) => e.id == object.id);
       if (oldObject != null) {
         return oldObject.zIndex != object.zIndex;
       } else {
@@ -72,15 +71,13 @@ class MapObjectUpdates {
     if (lowerBoundZIndex != null) {
       //objects that will stay the same after changes
       Set<MapObject> remainObjects = newObjects.where((object) {
-        final oldObject = oldObjects.firstWhereOrNull((e) =>
-            _sameIdTypeMapObject(e, object));
+        final oldObject = oldObjects.firstWhereOrNull((e) => e.id == object.id);
         return object == oldObject;
       }).toSet();
 
       //add unchanged zIndex updateObjects to remain objects
       Set<MapObject> unChangedZIndexUpdateObjects = updateObjects.where((object) {
-        final oldObject = oldObjects.firstWhereOrNull((e) =>
-            _sameIdTypeMapObject(e, object));
+        final oldObject = oldObjects.firstWhereOrNull((e) => e.id == object.id);
         return oldObject == object;
       }).toSet();
 
@@ -101,9 +98,5 @@ class MapObjectUpdates {
     updateObjects.removeAll(changedZIndexUpdateObjects);
 
     return MapObjectUpdates._(removeObjects, updateObjects, addObjects);
-  }
-
-  static bool _sameIdTypeMapObject(MapObject o1, MapObject o2) {
-    return o1.id == o2.id && o1.runtimeType == o2.runtimeType;
   }
 }

@@ -14,7 +14,7 @@ Polygon polygon1() {
   ]);
 
   return Polygon(
-      id: 'test1',
+      id: const PolygonId('test1'),
       points: polygonCoords,
       strokeWidth: 20,
       zIndex: 0,
@@ -49,7 +49,7 @@ Polygon polygon2() {
   ]);
 
   return Polygon(
-      id: 'test2',
+      id: const PolygonId('test2'),
       points: polygonCoords,
       holes: [
         [
@@ -72,7 +72,7 @@ Polygon polygon2() {
 }
 
 Polyline polyline() => Polyline(
-    id: "test1",
+    id: const PolylineId("test1"),
     points: [
       LatLng(10.015567019306467, 105.74686134987519),
       LatLng(10.19612670788822, 105.97871325750828),
@@ -89,7 +89,7 @@ Polyline polyline() => Polyline(
 );
 
 Polyline polyline2() => Polyline(
-    id: "test2",
+    id: const PolylineId("test2"),
     points: [
       LatLng(10.015567019306467, 105.74686134987519),
       LatLng(10.19612670788822, 105.97871325750828),
@@ -106,7 +106,7 @@ Polyline polyline2() => Polyline(
 
 
 Circle circle() => Circle(
-  id: "test1",
+  id: const CircleId("123"),
   center: LatLng(8.848028919141523, 104.96513564005897),
   radius: 10000,
   strokeColor: Colors.yellow,
@@ -119,7 +119,7 @@ Circle circle() => Circle(
 );
 
 Marker marker() => Marker(
-  id: "test1",
+  id: const MarkerId("test1"),
   // position: LatLng(10.625380787927542, 105.051574201898),
   position: LatLng(8.848028919141523, 104.96513564005897),
   alpha: 1,

@@ -4,14 +4,20 @@ import 'package:flutter/foundation.dart'
 import 'package:flutter/material.dart' show Color, Colors;
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
-import 'package:maps_core/maps/models/map_objects/map_object.dart';
-
-import 'lat_lng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
+/// Uniquely identifies a [Polygon] among [CoreMap] markers.
+///
+/// This does not have to be globally unique, only unique among the list.
+@immutable
+class PolygonId extends MapObjectId<Polygon> {
+  /// Creates an immutable identifier for a [Polygon].
+  const PolygonId(String value) : super(value);
+}
+
 /// Draws a polygon through geographical locations on the map.
-class Polygon implements MapObject {
+class Polygon implements MapObject<Polygon> {
   /// Creates an immutable representation of a polygon through geographical locations on the map.
   const Polygon({
     required this.id,
@@ -28,7 +34,7 @@ class Polygon implements MapObject {
 
   /// Uniquely identifies a [Polygon].
   @override
-  final String id;
+  final PolygonId id;
 
   /// Fill color in ARGB format, the same format used by Color. The default value is black (0xff000000).
   final Color fillColor;
@@ -194,7 +200,7 @@ class Polygon implements MapObject {
 
   ggmap.Polygon toGoogle() {
     return ggmap.Polygon(
-        polygonId: ggmap.PolygonId(id),
+        polygonId: ggmap.PolygonId(id.value),
         consumeTapEvents: onTap != null,
         fillColor: fillColor,
         geodesic: geodesic,
