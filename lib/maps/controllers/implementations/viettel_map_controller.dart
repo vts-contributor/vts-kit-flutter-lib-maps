@@ -29,6 +29,8 @@ class ViettelMapController extends BaseCoreMapController {
   final Map<String, ViettelCircle> _viettelCircleMap = {};
   final Map<String, vt.Symbol> _viettelMarkerMap = {};
 
+  vt.Circle? _userLocationShape;
+
   //used to check if marker icon has been added
   final Set<String> _markerIconNames = {};
 
@@ -45,6 +47,21 @@ class ViettelMapController extends BaseCoreMapController {
 
   @override
   CoreMapType get coreMapType => CoreMapType.viettel;
+
+  Future<void> updateUserLocationShape(vt.CircleOptions? options) async {
+    vt.Circle? currentUserLocationShape = _userLocationShape;
+    if (options == null) {
+      if (currentUserLocationShape != null) {
+        _controller.removeCircle(currentUserLocationShape);
+      }
+    } else {
+      if (currentUserLocationShape == null) {
+        _userLocationShape = await _controller.addCircle(options);
+      } else {
+        await _controller.updateCircle(currentUserLocationShape, options);
+      }
+    }
+  }
 
   Future<void> loadNewShapes(CoreMapShapes shapes) async {
     await _loadNewMapObjects(_originalShapes.toSet(), shapes.toSet());

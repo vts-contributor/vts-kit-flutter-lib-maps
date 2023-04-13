@@ -1,4 +1,4 @@
-part of 'core_map.dart';
+part of '../core_map.dart';
 
 ///Handle CoreMap Location feature
 class _LocationManager extends ChangeNotifier {
@@ -8,12 +8,16 @@ class _LocationManager extends ChangeNotifier {
 
   StreamSubscription<LocationData>? _locationStreamSubscription;
 
+  String userLocationShapeId = "3aa88b2a-d908-11ed-afa1-0242ac120002-user-location-object";
+
   //customize handle errors
   late Future<bool> Function() _onServiceDisabled;
   late Future<bool> Function() _onPermissionDenied;
   Future<bool> Function()? _onPermissionDeniedForever;
 
   final Location _location = Location();
+
+  LocationData? _userLocation;
 
   _LocationManager(CoreMapCallbacks? callbacks) {
     updateCallbacks(callbacks);
@@ -93,10 +97,16 @@ class _LocationManager extends ChangeNotifier {
   void _startLocationListener() {
     _locationStreamSubscription ??= _location.onLocationChanged.listen((event) {
         Log.d(logTag, "onLocationChanged ${event.latitude} ${event.longitude}");
+        updateUserLocation(event);
         _onUserLocationUpdated?.call(event);
       })..onError((object, stack) {
         Log.e(logTag, "onError");
       });
+  }
+
+  void updateUserLocation(LocationData data) {
+    _userLocation = data;
+    // notifyListeners();
   }
 
   void _stopLocationListener() {
@@ -125,5 +135,25 @@ class _LocationManager extends ChangeNotifier {
 
   void _disable() {
     _stopLocationListener();
+  }
+
+  ///for pseudo user location icon on the map (maps which user location feature
+  ///is not provided or broken)
+  vt.CircleOptions? getViettelUserLocationDrawOptions() {
+    LocationData? userLocation = _userLocation;
+    double? lat = userLocation?.latitude;
+    double? lng = userLocation?.longitude;
+
+    if (lat != null && lng != null) {
+      return vt.CircleOptions(
+        geometry: LatLng(lat, lng).toViettel(),
+        circleRadius: 5,
+        circleColor: Colors.blue.toHex(),
+        circleStrokeColor: Colors.white.toHex(),
+        circleStrokeWidth: 1,
+      );
+    } else {
+      return null;
+    }
   }
 }

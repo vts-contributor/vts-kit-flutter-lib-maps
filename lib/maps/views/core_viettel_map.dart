@@ -1,38 +1,32 @@
-import 'package:flutter/cupertino.dart';
-import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/extensions/convert.dart';
-import 'package:maps_core/maps/controllers/implementations/viettel_map_controller.dart';
-import 'package:maps_core/maps/models/core_map_callbacks.dart';
-import 'package:maps_core/maps/models/map_objects/marker_icon_data_factory.dart';
+part of 'core_map.dart';
 
-import '../../log/log.dart';
-import '../models/core_map_data.dart';
-
-import 'package:vtmap_gl/vtmap_gl.dart' as vt;
-
-class CoreViettelMap extends StatefulWidget {
+class _CoreViettelMap extends StatefulWidget {
   final CoreMapData data;
   final CoreMapCallbacks? callbacks;
   final CoreMapShapes shapes;
-  const CoreViettelMap({Key? key,
+  final vt.CircleOptions? userLocationDrawOptions;
+  const _CoreViettelMap({Key? key,
     required this.data,
     this.callbacks,
     required this.shapes,
+    this.userLocationDrawOptions,
   }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _CoreViettelMapState();
 }
 
-class _CoreViettelMapState extends State<CoreViettelMap> {
+class _CoreViettelMapState extends State<_CoreViettelMap> {
 
   ViettelMapController? _controller;
 
   final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
 
   @override
-  void didUpdateWidget(covariant CoreViettelMap oldWidget) {
+  void didUpdateWidget(covariant _CoreViettelMap oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    _updateUserLocationDrawOptions();
 
     _updateCallbacks();
 
@@ -45,6 +39,10 @@ class _CoreViettelMapState extends State<CoreViettelMap> {
 
   void _updateShapes() {
     _controller?.loadNewShapes(widget.shapes);
+  }
+
+  void _updateUserLocationDrawOptions() {
+    _controller?.updateUserLocationShape(widget.userLocationDrawOptions);
   }
 
   @override

@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'package:location/location.dart';
 import 'package:maps_core/maps.dart';
 
-import '../controllers/core_map_controller.dart';
-
 class CoreMapCallbacks {
   CoreMapCallbacks({
     this.onMapCreated,

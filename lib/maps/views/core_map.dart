@@ -2,15 +2,24 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:maps_core/log/log.dart';
 
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/views/core_google_map.dart';
-import 'package:maps_core/maps/views/core_viettel_map.dart';
+import 'package:maps_core/maps/views/managers/routing_manager.dart';
+import 'package:vtmap_gl/vtmap_gl.dart' as vt;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
 import 'package:rxdart/rxdart.dart';
 
-part 'location_manager.dart';
+import '../controllers/implementations/google_map_controller.dart';
+import '../controllers/implementations/viettel_map_controller.dart';
+import '../models/map_objects/marker_icon_data_factory.dart';
+
+part 'managers/location_manager.dart';
+part 'managers/routing_manager_impl.dart';
+part 'core_viettel_map.dart';
+part 'core_google_map.dart';
 
 class CoreMap extends StatefulWidget {
 
@@ -102,15 +111,16 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   }) {
     switch (type) {
       case CoreMapType.google:
-        return CoreGoogleMap(
+        return _CoreGoogleMap(
           data: data,
           callbacks: callbacks,
           shapes: shapes ?? CoreMapShapes(),
         );
       case CoreMapType.viettel:
-        return CoreViettelMap(
+        return _CoreViettelMap(
           data: data,
           callbacks: callbacks,
+          userLocationDrawOptions: _locationManager.getViettelUserLocationDrawOptions(),
           shapes: shapes ?? CoreMapShapes()
         );
     }

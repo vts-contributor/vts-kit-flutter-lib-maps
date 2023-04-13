@@ -1,14 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
-import 'package:maps_core/maps/controllers/implementations/google_map_controller.dart';
-import 'package:maps_core/maps/extensions/extensions.dart';
-import 'package:maps_core/maps/models/core_map_callbacks.dart';
-import 'package:maps_core/maps/models/map_objects/marker_icon_data_factory.dart';
+part of 'core_map.dart';
 
-import '../models/core_map_data.dart';
-import '../models/core_map_shapes.dart';
-
-class CoreGoogleMap extends StatefulWidget {
+class _CoreGoogleMap extends StatefulWidget {
 
   final CoreMapData data;
 
@@ -16,7 +8,7 @@ class CoreGoogleMap extends StatefulWidget {
 
   final CoreMapCallbacks? callbacks;
 
-  const CoreGoogleMap({Key? key,
+  const _CoreGoogleMap({Key? key,
     required this.data,
     this.callbacks,
     required this.shapes,
@@ -26,14 +18,14 @@ class CoreGoogleMap extends StatefulWidget {
   State<StatefulWidget> createState() => _CoreGoogleMapState();
 }
 
-class _CoreGoogleMapState extends State<CoreGoogleMap> {
+class _CoreGoogleMapState extends State<_CoreGoogleMap> {
 
   GoogleMapController? _controller;
 
   final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
 
   @override
-  void didUpdateWidget(covariant CoreGoogleMap oldWidget) {
+  void didUpdateWidget(covariant _CoreGoogleMap oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     _updateCallbacks();
