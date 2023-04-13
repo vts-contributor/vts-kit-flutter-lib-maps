@@ -40,11 +40,10 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
       body: VTMap(
         accessToken: "49013166841fe36d7fa7f395fce4a663",
         initialCameraPosition:
-        const CameraPosition(target: LatLng(11.3726, 108.9519),zoom: 7),
+        const CameraPosition(target: LatLng( 16.065423, 108.188714),zoom: 11),
 
         onMapCreated: (controller) {
           this.controller = controller;
-
         },
         onCameraTrackingChanged: (mode) {
           Log.d("VTMAP", "onCameraTrackingChanged: ${mode.toString()}");
@@ -58,9 +57,9 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
         onCameraTrackingDismissed: () {
           Log.d("VTMAP", "onCameraTrackingDismissed: ${controller?.cameraPosition?.target.toString()}");
         },
-        myLocationEnabled: true,
-        myLocationRenderMode: MyLocationRenderMode.COMPASS,
-        myLocationTrackingMode: MyLocationTrackingMode.TrackingCompass,
+        myLocationEnabled: false,
+        myLocationRenderMode: MyLocationRenderMode.NORMAL,
+        myLocationTrackingMode: MyLocationTrackingMode.None,
         trackCameraPosition: true,
         compassEnabled: true,
         compassViewMargins: Point(100, 100),
@@ -84,7 +83,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
     wayPoints.add(_origin);
     wayPoints.add(_stop1);
 
-    controller?.startNavigation(
+    controller?.buildRoute(
         wayPoints: wayPoints,
         options: VTMapOptions(
             access_token: '49013166841fe36d7fa7f395fce4a663',

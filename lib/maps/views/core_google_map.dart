@@ -68,6 +68,7 @@ class _CoreGoogleMapState extends State<_CoreGoogleMap> {
       zoomGesturesEnabled: widget.data.zoomGesturesEnabled,
       tiltGesturesEnabled: widget.data.tiltGesturesEnabled,
       myLocationEnabled: widget.data.myLocationEnabled,
+      myLocationButtonEnabled: false,
 
       zoomControlsEnabled: false,
 

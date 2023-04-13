@@ -74,6 +74,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
               target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
           compassEnabled: true,
           myLocationEnabled: true,
+          myLocationButtonEnabled: false,
         ),
         callbacks: CoreMapCallbacks(
           onMapCreated: (controller) {

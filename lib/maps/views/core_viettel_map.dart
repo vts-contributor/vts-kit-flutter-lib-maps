@@ -47,7 +47,6 @@ class _CoreViettelMapState extends State<_CoreViettelMap> {
 
   @override
   Widget build(BuildContext context) {
-
     CoreMapData data = widget.data;
     
     return vt.VTMap(

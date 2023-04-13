@@ -68,19 +68,27 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     CoreMapCallbacks callbacks = widget.callbacks ?? CoreMapCallbacks();
-    return _buildMap(
-      type: widget.type,
-      data: widget.data.copyWith(
-          initialCameraPosition: _controller?.getCurrentPosition() ??
-              widget.data.initialCameraPosition),
-      shapes: widget.shapes,
-      callbacks: callbacks.copyWith(
-        onMapCreated: (controller) {
-          _controller = controller;
-          widget.callbacks?.onMapCreated?.call(controller);
-          _locationManager.notifyRebuildUserLocationMapObject();
-        },
-      ),
+
+    return Stack(
+      fit: StackFit.loose,
+      children: [
+        _buildMap(
+          type: widget.type,
+          data: widget.data.copyWith(
+              initialCameraPosition: _controller?.getCurrentPosition() ??
+                  widget.data.initialCameraPosition),
+          shapes: widget.shapes,
+          callbacks: callbacks.copyWith(
+            onMapCreated: (controller) {
+              _controller = controller;
+              widget.callbacks?.onMapCreated?.call(controller);
+              _locationManager.notifyRebuildUserLocationMapObject();
+            },
+          ),
+        ),
+        if (widget.data.myLocationButtonEnabled && widget.data.myLocationEnabled)
+          _buildUserLocationButton(context),
+      ],
     );
   }
 
@@ -125,5 +133,39 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     } else {
       return null;
     }
+  }
+
+  Widget _buildUserLocationButton(BuildContext context) {
+    return Align(
+      alignment: widget.data.myLocationButtonAlignment,
+      child: SizedBox(
+        height: 52,
+        width: 52,
+        child: Center(
+          child: Material(
+            color: Colors.white.withOpacity(0.5),
+            child: InkWell(
+              onTap: () {
+                double? lat = _locationManager._userLocation?.latitude;
+                double? lng = _locationManager._userLocation?.longitude;
+                if (lat != null && lng != null) {
+                  _controller?.animateCamera(
+                      CameraUpdate.newLatLng(LatLng(lat, lng))
+                  );
+                }
+              },
+              child: Ink(
+                height: 36,
+                width: 36,
+                child: Icon(
+                  Icons.my_location_outlined,
+                  color: Colors.black.withOpacity(0.6),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

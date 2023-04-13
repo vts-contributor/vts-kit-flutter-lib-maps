@@ -22,6 +22,8 @@ class CoreMapData {
     this.zoomGesturesEnabled = true,
     this.tiltGesturesEnabled = true,
     this.myLocationEnabled = false,
+    this.myLocationButtonEnabled = true,
+    this.myLocationButtonAlignment = Alignment.topRight,
   });
 
   ///should be removed, use file instead
@@ -89,6 +91,22 @@ class CoreMapData {
   /// when the map tries to turn on the My Location layer.
   final bool myLocationEnabled;
 
+  /// Enables or disables the my-location button.
+  ///
+  /// The my-location button causes the camera to move such that the user's
+  /// location is in the center of the map. If the button is enabled, it is
+  /// only shown when the my-location layer is enabled.
+  ///
+  /// By default, the my-location button is enabled (and hence shown when the
+  /// my-location layer is enabled).
+  ///
+  /// See also:
+  ///   * [myLocationEnabled] parameter.
+  final bool myLocationButtonEnabled;
+
+  ///alignment of the location button if it exists
+  final Alignment myLocationButtonAlignment;
+
   CoreMapData copyWith({
     String? accessToken,
     CameraPosition? initialCameraPosition,
@@ -101,6 +119,8 @@ class CoreMapData {
     bool? zoomGesturesEnabled,
     bool? tiltGesturesEnabled,
     bool? myLocationEnabled,
+    bool? myLocationButtonEnabled,
+    Alignment? myLocationButtonAlignment,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -114,6 +134,8 @@ class CoreMapData {
       zoomGesturesEnabled: zoomGesturesEnabled ?? this.zoomGesturesEnabled,
       tiltGesturesEnabled: tiltGesturesEnabled ?? this.tiltGesturesEnabled,
       myLocationEnabled: myLocationEnabled ?? this.myLocationEnabled,
+      myLocationButtonEnabled: myLocationButtonEnabled ?? this.myLocationButtonEnabled,
+      myLocationButtonAlignment: myLocationButtonAlignment ?? this.myLocationButtonAlignment,
     );
   }
 }
