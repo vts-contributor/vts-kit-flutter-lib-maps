@@ -13,4 +13,10 @@ abstract class RoutingManager {
   ///
   /// if no route is selected, this will has no effect
   Future<void> startNavigation();
+
+  ///listener will be notified when selected route has changed
+  void addRouteSelectedListener(void Function(String id) listener);
+
+  ///remove listener
+  void removeRouteSelectedListener(void Function(String id) listener);
 }

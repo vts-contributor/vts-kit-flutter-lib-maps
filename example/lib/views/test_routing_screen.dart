@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:map_core_example/view_models/routing_view_model.dart';
+import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
 import 'package:provider/provider.dart';
 
@@ -63,6 +64,9 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
         callbacks: CoreMapCallbacks(
           onRoutingManagerReady: (manager) {
             _routingManager = manager;
+            _routingManager?.addRouteSelectedListener((id) {
+              Log.d("TEST ROUTING SCREEN", "new route selected $id");
+            });
           }
         ),
       ),

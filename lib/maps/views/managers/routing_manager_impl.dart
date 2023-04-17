@@ -16,8 +16,10 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   Color _unselectedColor = Colors.grey;
 
-  String? _getSelectedId(Directions directions) {
-    _currentSelectedId ??= directions.routes?.firstOrNull?.id;
+  final List<void Function(String id)> _routeSelectedListeners = [];
+
+  String? _getSelectedId([Directions? directions]) {
+    _currentSelectedId ??= directions?.routes?.firstOrNull?.id;
     return _currentSelectedId;
   }
 
@@ -93,6 +95,34 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       color: isSelected? _selectedColor: _unselectedColor,
       zIndex: isSelected? 6: 5,
       jointType: JointType.round,
+      onTap: () {
+        Log.d("ROUTING", "ontap");
+        _setSelectedId(route.id);
+      }
     );
+  }
+
+  void _setSelectedId(String id) {
+    if (id != _getSelectedId()) {
+      _currentSelectedId = id;
+      notifyListeners();
+      notifyRouteSelectedListener(id);
+    }
+  }
+
+  @override
+  void addRouteSelectedListener(void Function(String id) listener) {
+    _routeSelectedListeners.add(listener);
+  }
+
+  @override
+  void removeRouteSelectedListener(void Function(String id) listener) {
+    _routeSelectedListeners.remove(listener);
+  }
+
+  void notifyRouteSelectedListener(String id) {
+    for (final listener in _routeSelectedListeners) {
+      listener(id);
+    }
   }
 }
