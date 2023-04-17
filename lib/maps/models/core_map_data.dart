@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/models/camera_position.dart';
@@ -24,6 +25,8 @@ class CoreMapData {
     this.myLocationEnabled = false,
     this.myLocationButtonEnabled = true,
     this.myLocationButtonAlignment = Alignment.topRight,
+    this.selectedRouteColor = Colors.blue,
+    this.unselectedRouteColor = Colors.grey,
   });
 
   ///should be removed, use file instead
@@ -107,6 +110,12 @@ class CoreMapData {
   ///alignment of the location button if it exists
   final Alignment myLocationButtonAlignment;
 
+  ///Color for the selected route
+  final Color selectedRouteColor;
+
+  ///Color for unselected routes
+  final Color unselectedRouteColor;
+
   CoreMapData copyWith({
     String? accessToken,
     CameraPosition? initialCameraPosition,
@@ -121,6 +130,8 @@ class CoreMapData {
     bool? myLocationEnabled,
     bool? myLocationButtonEnabled,
     Alignment? myLocationButtonAlignment,
+    Color? selectedRouteColor,
+    Color? unselectedRouteColor,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -136,6 +147,8 @@ class CoreMapData {
       myLocationEnabled: myLocationEnabled ?? this.myLocationEnabled,
       myLocationButtonEnabled: myLocationButtonEnabled ?? this.myLocationButtonEnabled,
       myLocationButtonAlignment: myLocationButtonAlignment ?? this.myLocationButtonAlignment,
+      selectedRouteColor: selectedRouteColor ?? this.selectedRouteColor,
+      unselectedRouteColor: unselectedRouteColor ?? this.unselectedRouteColor,
     );
   }
 }

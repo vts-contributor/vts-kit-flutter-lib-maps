@@ -34,8 +34,11 @@ class _TestMapScreenState extends State<TestMapScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.abc),
-            onPressed: () {
-
+            onPressed: () async {
+              final controller = await _controllerCompleter.controller;
+              controller.animateCamera(CameraUpdate.newLatLngBounds(
+                  LatLngBounds(northeast: LatLng(10.844472, 106.673261),
+                      southwest: LatLng(10.83571439676659, 106.67236659058827)), 0));
             },
           ),
           IconButton(
@@ -93,12 +96,12 @@ class _TestMapScreenState extends State<TestMapScreen> {
             Log.d("onLongPress", latLng.toString());
           },
         ),
-        // shapes: CoreMapShapes(
-        //   polygons: {polygon1()},
-        //   circles: {circle()},
-        //   markers: {marker()},
-        //   polylines: {polyline(), polyline2()},
-        // ),
+        shapes: CoreMapShapes(
+          // polygons: {polygon1()},
+          circles: {circle()},
+          // markers: {marker()},
+          polylines: {polyline(), polyline2()},
+        ),
       ),
     );
   }

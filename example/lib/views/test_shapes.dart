@@ -98,7 +98,7 @@ Polyline polyline2() => Polyline(
     ],
     zIndex: 0,
     jointType: JointType.round,
-    color: Colors.green,
+    color: Colors.red,
     onTap: () {
       Log.d("Polyline", "onTap");
     }
@@ -109,10 +109,10 @@ Circle circle() => Circle(
   id: const CircleId("123"),
   center: LatLng(8.848028919141523, 104.96513564005897),
   radius: 10000,
-  strokeColor: Colors.yellow,
+  strokeColor: Colors.blue,
   strokeWidth: 10,
   zIndex: 0,
-  fillColor: Colors.blue,
+  fillColor: Colors.red,
   onTap: () {
     Log.d("Circle", "onTap");
   },

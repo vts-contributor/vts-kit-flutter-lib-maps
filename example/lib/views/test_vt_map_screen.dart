@@ -24,8 +24,8 @@ class TestVTMapScreen extends StatefulWidget {
 
 class _TestVTMapScreenState extends State<TestVTMapScreen> {
   MapboxMapController? controller;
-  LatLng firstPoint = LatLng(10.838872, 106.682448);
-  LatLng secondPoint = LatLng(10.840771708418337, 106.68043930473854);
+  LatLng firstPoint = LatLng(10.83581439676659, 106.67246659058827);
+  LatLng secondPoint = LatLng(10.844372, 106.673161);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +75,9 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
 
   void navigate() {
     List<WayPoint> wayPoints = [];
+    LatLng firstPoint = LatLng(10.836879731223707, 106.68931830464587);
+    LatLng secondPoint = LatLng(10.875063025053082, 106.62863270883156);
+
     final _stop1 = WayPoint(
         name: "Way Point 2",
         latitude: secondPoint.latitude,
@@ -91,8 +94,9 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
         wayPoints: wayPoints,
         options: VTMapOptions(
             access_token: '49013166841fe36d7fa7f395fce4a663',
+            alternatives: true,
             mode:
-            VTMapNavigationMode.driving,
+            VTMapNavigationMode.cycling,
             simulateRoute: true,
             language: "vi"));
   }

@@ -13,7 +13,7 @@ class RoutingViewModel extends ChangeNotifier {
       originLng: origin.lng,
       destLat: dest.lat,
       destLng: dest.lng,
-      alternatives: true
+      alternatives: true,
     );
   }
 }

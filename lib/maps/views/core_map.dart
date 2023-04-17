@@ -33,7 +33,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initLocationManager();
-    _routingManager.addListener(() => setState((){}));
+    _initRoutingManager();
   }
 
   @override
@@ -53,12 +53,28 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     _locationManager.enabled = widget.data.myLocationEnabled;
   }
 
+  void _initRoutingManager() {
+    _routingManager.addListener(() => setState((){}));
+    _routingManager.updateColor(widget.data.selectedRouteColor,
+        widget.data.unselectedRouteColor);
+  }
+
   @override
   void didUpdateWidget(covariant CoreMap oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    _updateLocationManager();
+    _updateRoutingManager();
+  }
+
+  void _updateLocationManager() {
     _locationManager.updateCallbacks(widget.callbacks);
     _locationManager.enabled = widget.data.myLocationEnabled;
+  }
+
+  void _updateRoutingManager() {
+    _routingManager.updateColor(widget.data.selectedRouteColor,
+        widget.data.unselectedRouteColor);
   }
 
   @override
@@ -85,7 +101,10 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
             onMapCreated: (controller) {
               _controller = controller;
               widget.callbacks?.onMapCreated?.call(controller);
+
               _locationManager.notifyRebuildUserLocationMapObject();
+
+              _routingManager.mapController = controller;
               widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
             },
           ),

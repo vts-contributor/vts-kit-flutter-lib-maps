@@ -47,6 +47,7 @@ abstract class MapsAPIService extends MapsAPIAbstractService {
     required double destLat,
     required double destLng,
     bool alternatives = false,
+    String? mode,
     Map<String, String>? paramsKeyMapper,
     int? routePointsSkipStep,
     CustomCancelToken? cancelToken,

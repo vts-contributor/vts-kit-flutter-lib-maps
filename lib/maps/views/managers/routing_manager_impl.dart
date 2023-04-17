@@ -4,6 +4,8 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   final _LocationManager _locationManager;
 
+  CoreMapController? mapController;
+
   _RoutingManagerImpl(this._locationManager);
 
   Directions? _directions;
@@ -19,9 +21,17 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     return _currentSelectedId;
   }
 
+  void updateColor(Color selected, Color unselected) {
+    _selectedColor = selected;
+    _unselectedColor = unselected;
+    //don't need to call notify listener here.
+  }
+
   @override
   Future<void> buildDirections(Directions directions) async {
+    _clearOldDirections();
     _directions = directions;
+    await _moveCameraToSelectedBounds(directions);
     notifyListeners();
   }
 
@@ -29,6 +39,29 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   Future<void> startNavigation() {
     // TODO: implement startNavigation
     throw UnimplementedError();
+  }
+
+  void _clearOldDirections() {
+    _directions = null;
+    _currentSelectedId = null;
+  }
+
+  Future<void> _moveCameraToSelectedBounds(Directions directions) async {
+    if (mapController == null) return;
+
+    String? selectedId = _getSelectedId(directions);
+
+    ViewPort? bounds = directions.routes?.firstWhereOrNull(
+            (e) => e.id == selectedId)?.bounds;
+
+    LatLng? northeast = bounds?.northeast;
+    LatLng? southwest = bounds?.southwest;
+
+    if (northeast != null && southwest != null) {
+      await mapController?.animateCamera(CameraUpdate.newLatLngBounds(
+          LatLngBounds(southwest: southwest, northeast: northeast),
+          40));
+    }
   }
 
   ///combine [originalShape] with routing shapes
@@ -50,30 +83,16 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
     String? selectedId = _getSelectedId(directions);
 
-    return routes.map((e) => _buildPolylineFromRoute(e, selectedId)).toSet();
+    return routes.map((e) => _buildPolylineFromRoute(e, e.id == selectedId)).toSet();
   }
 
-  Polyline _buildPolylineFromRoute(MapRoute route, String? selectedId) {
-    bool isSelected = route.id == selectedId;
+  Polyline _buildPolylineFromRoute(MapRoute route, bool isSelected) {
     return Polyline(
       id: PolylineId(route.id),
       points: route.points ?? [],
       color: isSelected? _selectedColor: _unselectedColor,
       zIndex: isSelected? 6: 5,
-      jointType: JointType.round
+      jointType: JointType.round,
     );
   }
-
-  @override
-  set selectedRouteColor(Color color) {
-    _selectedColor = color;
-    notifyListeners();
-  }
-
-  @override
-  set unselectedRouteColor(Color color) {
-    _unselectedColor = color;
-    notifyListeners();
-  }
-
 }

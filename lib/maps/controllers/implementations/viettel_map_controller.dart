@@ -166,7 +166,7 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _updatePolygon(Polygon polygon) async {
-    ViettelPolygon? updatingPolygon = _viettelPolygonMap[polygon.id];
+    ViettelPolygon? updatingPolygon = _viettelPolygonMap[polygon.id.value];
     if (updatingPolygon == null) {
       return;
     }
@@ -210,7 +210,7 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _updatePolyline(Polyline polyline) async {
-    vt.Line? updatingPolyline = _viettelPolylineMap[polyline.id];
+    vt.Line? updatingPolyline = _viettelPolylineMap[polyline.id.value];
     if (updatingPolyline == null) {
       return;
     }
@@ -254,7 +254,7 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _updateCircle(Circle circle) async {
-    ViettelCircle? updatingCircle = _viettelCircleMap[circle.id];
+    ViettelCircle? updatingCircle = _viettelCircleMap[circle.id.value];
     if (updatingCircle == null) {
       return;
     }
@@ -301,7 +301,7 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _updateMarker(Marker marker) async {
-    vt.Symbol? updatingMarker = _viettelMarkerMap[marker.id];
+    vt.Symbol? updatingMarker = _viettelMarkerMap[marker.id.value];
     if (updatingMarker == null) {
       return;
     }

@@ -29,7 +29,6 @@ class Polyline implements MapObject<Polyline> {
   const Polyline({
     required this.id,
     this.color = Colors.black,
-    this.geodesic = false,
     this.jointType = JointType.mitered,
     this.points = const <LatLng>[],
     this.visible = true,
@@ -44,13 +43,6 @@ class Polyline implements MapObject<Polyline> {
 
   /// Line segment color in ARGB format, the same format used by Color. The default value is black (0xff000000).
   final Color color;
-
-  /// Indicates whether the segments of the polyline should be drawn as geodesics, as opposed to straight lines
-  /// on the Mercator projection.
-  ///
-  /// A geodesic is the shortest path between two points on the Earth's surface.
-  /// The geodesic curve is constructed assuming the Earth is a sphere
-  final bool geodesic;
 
   /// Joint type of the polyline line segments.
   ///
@@ -91,8 +83,6 @@ class Polyline implements MapObject<Polyline> {
   Polyline copyWith({
     Color? colorParam,
     bool? consumeTapEventsParam,
-
-    bool? geodesicParam,
     JointType? jointTypeParam,
     List<LatLng>? pointsParam,
     bool? visibleParam,
@@ -103,7 +93,6 @@ class Polyline implements MapObject<Polyline> {
     return Polyline(
       id: id,
       color: colorParam ?? color,
-      geodesic: geodesicParam ?? geodesic,
       jointType: jointTypeParam ?? jointType,
       points: pointsParam ?? points,
       visible: visibleParam ?? visible,
@@ -135,7 +124,6 @@ class Polyline implements MapObject<Polyline> {
 
     addIfPresent('polylineId', id);
     addIfPresent('color', color.value);
-    addIfPresent('geodesic', geodesic);
     addIfPresent('jointType', jointType.value);
     addIfPresent('visible', visible);
     addIfPresent('width', width);
@@ -160,7 +148,6 @@ class Polyline implements MapObject<Polyline> {
     return other is Polyline &&
         id == other.id &&
         color == other.color &&
-        geodesic == other.geodesic &&
         jointType == other.jointType &&
         listEquals(points, other.points) &&
         visible == other.visible &&
@@ -184,13 +171,13 @@ class Polyline implements MapObject<Polyline> {
       polylineId: ggmap.PolylineId(id.value),
       consumeTapEvents: onTap != null,
       color: color,
-      geodesic: geodesic,
       jointType: jointType.toGoogle(),
       points: points.toGoogle(),
       visible: visible,
       onTap: onTap,
       width: width,
       zIndex: zIndex,
+      startCap: ggmap.Cap.roundCap
     );
   }
 

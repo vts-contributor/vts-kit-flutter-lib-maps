@@ -14,7 +14,7 @@ class TestRoutingScreen extends StatefulWidget {
 
 class _TestRoutingScreenState extends State<TestRoutingScreen> {
 
-  //strange error case
+  //strange api error case
   // LatLng firstPoint = LatLng(10.836858, 106.678863);
   // LatLng secondPoint = LatLng(10.844372, 106.673161);
 
@@ -58,6 +58,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
           myLocationEnabled: true,
           myLocationButtonEnabled: true,
           myLocationButtonAlignment: Alignment.bottomRight,
+          selectedRouteColor: Colors.blue
         ),
         callbacks: CoreMapCallbacks(
           onRoutingManagerReady: (manager) {
