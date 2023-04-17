@@ -1,7 +1,10 @@
 import 'package:maps_core/maps/models/models.dart';
 import 'package:maps_core/maps/extensions/extensions.dart';
+import 'package:uuid/uuid.dart';
+import 'package:uuid/uuid_util.dart';
 
 class MapRoute {
+  final String id;
   final ViewPort? bounds;
   final String? copyrights;
   final List<LatLng>? points;
@@ -15,6 +18,7 @@ class MapRoute {
   }
 
   MapRoute({
+    required this.id,
     this.bounds,
     this.copyrights,
     this.points,
@@ -33,6 +37,7 @@ class MapRoute {
     final List<RouteLeg>? legs = (json?['legs'] as List<dynamic>?)
         ?.map((json) => RouteLeg.fromJson(json)).toList();
     return MapRoute(
+      id: const Uuid().v4(),
       bounds: bounds,
       copyrights: copyrights,
       points: points,

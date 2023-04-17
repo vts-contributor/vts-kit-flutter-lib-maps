@@ -24,14 +24,16 @@ class CoreMap extends StatefulWidget {
 class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   CoreMapController? _controller;
 
-  late final _LocationManager _locationManager =
-      _LocationManager(widget.callbacks);
+  late final _LocationManager _locationManager = _LocationManager(widget.callbacks);
+  
+  late final _RoutingManagerImpl _routingManager = _RoutingManagerImpl(_locationManager);
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initLocationManager();
+    _routingManager.addListener(() => setState((){}));
   }
 
   @override
@@ -39,6 +41,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _locationManager.dispose();
+    _routingManager.dispose();
   }
 
   void _initLocationManager() {
@@ -77,12 +80,13 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           data: widget.data.copyWith(
               initialCameraPosition: _controller?.getCurrentPosition() ??
                   widget.data.initialCameraPosition),
-          shapes: widget.shapes,
+          shapes: _routingManager.combineShape(widget.shapes),
           callbacks: callbacks.copyWith(
             onMapCreated: (controller) {
               _controller = controller;
               widget.callbacks?.onMapCreated?.call(controller);
               _locationManager.notifyRebuildUserLocationMapObject();
+              widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
             },
           ),
         ),
@@ -95,7 +99,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   Widget _buildMap({
     required CoreMapType type,
     required CoreMapData data,
-    CoreMapShapes? shapes,
+    required CoreMapShapes shapes,
     CoreMapCallbacks? callbacks,
   }) {
     switch (type) {
@@ -103,15 +107,16 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         return _CoreGoogleMap(
           data: data,
           callbacks: callbacks,
-          shapes: shapes ?? CoreMapShapes(),
+          shapes: shapes,
         );
       case CoreMapType.viettel:
         return _CoreViettelMap(
-            data: data,
-            callbacks: callbacks,
-            userLocationDrawOptions: getViettelUserLocationDrawOptions(
-                _locationManager._userLocation),
-            shapes: shapes ?? CoreMapShapes());
+          data: data,
+          callbacks: callbacks,
+          userLocationDrawOptions: getViettelUserLocationDrawOptions(
+              _locationManager._userLocation),
+          shapes: shapes,
+        );
     }
   }
 

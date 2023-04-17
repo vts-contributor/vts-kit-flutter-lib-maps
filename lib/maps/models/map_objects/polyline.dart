@@ -196,11 +196,11 @@ class Polyline implements MapObject<Polyline> {
 
   vtmap.LineOptions toLineOptions() {
     return vtmap.LineOptions(
-        geometry: points.toViettel(),
-        lineWidth: width.toDouble(),
-        lineColor: color.toRGBA(),
-        lineJoin: jointType.toViettel(),
-        lineOpacity: color.opacity
+      geometry: points.toViettel(),
+      lineWidth: width.toDouble(),
+      lineColor: color.toRGBA(),
+      lineJoin: jointType.toViettel(),
+      lineOpacity: color.opacity,
     );
   }
 }

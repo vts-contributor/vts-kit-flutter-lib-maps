@@ -15,6 +15,7 @@ class CoreMapCallbacks {
     this.onServiceDisabled,
     this.onPermissionDenied,
     this.onPermissionDeniedForever,
+    this.onRoutingManagerReady,
   });
 
   ///Map is ready to be used
@@ -39,6 +40,8 @@ class CoreMapCallbacks {
 
   final Future<bool> Function()? onPermissionDeniedForever;
 
+  final void Function(RoutingManager)? onRoutingManagerReady;
+
   CoreMapCallbacks copyWith({
     final void Function(CoreMapController controller)? onMapCreated,
     final void Function(CameraPosition position)? onCameraMove,
@@ -50,6 +53,7 @@ class CoreMapCallbacks {
     final Future<bool> Function()? onServiceDisabled,
     final Future<bool> Function()? onPermissionDenied,
     final Future<bool> Function()? onPermissionDeniedForever,
+    final void Function(RoutingManager)? onRoutingManagerReady,
   }) {
     return CoreMapCallbacks(
       onMapCreated: onMapCreated ?? this.onMapCreated,
@@ -62,6 +66,7 @@ class CoreMapCallbacks {
       onServiceDisabled: onServiceDisabled ?? this.onServiceDisabled,
       onPermissionDenied: onPermissionDenied ?? this.onPermissionDenied,
       onPermissionDeniedForever: onPermissionDeniedForever ?? this.onPermissionDeniedForever,
+      onRoutingManagerReady: onRoutingManagerReady ?? this.onRoutingManagerReady,
     );
   }
 }

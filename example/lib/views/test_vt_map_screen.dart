@@ -24,6 +24,8 @@ class TestVTMapScreen extends StatefulWidget {
 
 class _TestVTMapScreenState extends State<TestVTMapScreen> {
   MapboxMapController? controller;
+  LatLng firstPoint = LatLng(10.838872, 106.682448);
+  LatLng secondPoint = LatLng(10.840771708418337, 106.68043930473854);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +42,8 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
       body: VTMap(
         accessToken: "49013166841fe36d7fa7f395fce4a663",
         initialCameraPosition:
-        const CameraPosition(target: LatLng( 16.065423, 108.188714),zoom: 11),
+        CameraPosition(
+            target: firstPoint, zoom: 15),
 
         onMapCreated: (controller) {
           this.controller = controller;
@@ -60,6 +63,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
         myLocationEnabled: false,
         myLocationRenderMode: MyLocationRenderMode.NORMAL,
         myLocationTrackingMode: MyLocationTrackingMode.None,
+        gpsControlEnable: false,
         trackCameraPosition: true,
         compassEnabled: true,
         compassViewMargins: Point(100, 100),
@@ -73,12 +77,12 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
     List<WayPoint> wayPoints = [];
     final _stop1 = WayPoint(
         name: "Way Point 2",
-        latitude: 16.065423,
-        longitude: 108.188714);
+        latitude: secondPoint.latitude,
+        longitude: secondPoint.longitude);
     final _origin = WayPoint(
         name: "Way Point 1",
-        latitude: 16.059761,
-        longitude: 108.211771);
+        latitude: firstPoint.latitude,
+        longitude: firstPoint.longitude);
 
     wayPoints.add(_origin);
     wayPoints.add(_stop1);
