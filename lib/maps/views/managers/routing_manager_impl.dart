@@ -8,7 +8,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   _RoutingManagerImpl(this._locationManager);
 
-  Directions? _directions;
+  List<MapRoute>? _routes;
 
   String? _currentSelectedId;
 
@@ -18,11 +18,6 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   final List<void Function(String id)> _routeSelectedListeners = [];
 
-  String? _getSelectedId([Directions? directions]) {
-    _currentSelectedId ??= directions?.routes?.firstOrNull?.id;
-    return _currentSelectedId;
-  }
-
   void updateColor(Color selected, Color unselected) {
     _selectedColor = selected;
     _unselectedColor = unselected;
@@ -30,10 +25,15 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   @override
-  Future<void> buildDirections(Directions directions) async {
+  Future<void> buildRoutes(List<MapRoute>? routes) async {
+    if (routes == null) {
+      Log.e(RoutingManager.logTag, "Can't build null routes");
+      return;
+    }
     _clearOldDirections();
-    _directions = directions;
-    await _moveCameraToSelectedBounds(directions);
+    _routes = routes;
+    _pickSelectedRoute();
+    await _moveCameraToSelectedBounds(routes);
     notifyListeners();
   }
 
@@ -43,17 +43,21 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     throw UnimplementedError();
   }
 
+  void _pickSelectedRoute() async {
+    _currentSelectedId = _routes?.firstOrNull?.id;
+  }
+
   void _clearOldDirections() {
-    _directions = null;
+    _routes = null;
     _currentSelectedId = null;
   }
 
-  Future<void> _moveCameraToSelectedBounds(Directions directions) async {
+  Future<void> _moveCameraToSelectedBounds(List<MapRoute> routes) async {
     if (mapController == null) return;
 
-    String? selectedId = _getSelectedId(directions);
+    String? selectedId = _currentSelectedId;
 
-    ViewPort? bounds = directions.routes?.firstWhereOrNull(
+    ViewPort? bounds = routes.firstWhereOrNull(
             (e) => e.id == selectedId)?.bounds;
 
     LatLng? northeast = bounds?.northeast;
@@ -70,21 +74,16 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   CoreMapShapes combineShape(CoreMapShapes? originalShape) {
     CoreMapShapes shapes = originalShape ?? CoreMapShapes();
 
-    Directions? directions = _directions;
-    if (directions != null) {
-      shapes.polylines.addAll(_buildPolylinesFromDirections(directions));
+    List<MapRoute>? routes = _routes;
+    if (routes != null) {
+      shapes.polylines.addAll(_buildPolylinesFromDirections(routes));
     }
 
     return shapes;
   }
 
-  Set<Polyline> _buildPolylinesFromDirections(Directions directions) {
-
-    List<MapRoute>? routes = directions.routes;
-    if (routes == null) return {};
-
-    String? selectedId = _getSelectedId(directions);
-
+  Set<Polyline> _buildPolylinesFromDirections(List<MapRoute> routes) {
+    String? selectedId = _currentSelectedId;
     return routes.map((e) => _buildPolylineFromRoute(e, e.id == selectedId)).toSet();
   }
 
@@ -98,31 +97,56 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       onTap: () {
         Log.d("ROUTING", "ontap");
         _setSelectedId(route.id);
+        notifyRouteTapListeners(route.id);
       }
     );
   }
 
   void _setSelectedId(String id) {
-    if (id != _getSelectedId()) {
+    if (id != _currentSelectedId) {
       _currentSelectedId = id;
       notifyListeners();
-      notifyRouteSelectedListener(id);
     }
   }
 
   @override
-  void addRouteSelectedListener(void Function(String id) listener) {
+  void addRouteTapListener(void Function(String id) listener) {
     _routeSelectedListeners.add(listener);
   }
 
   @override
-  void removeRouteSelectedListener(void Function(String id) listener) {
+  void removeRouteTapListener(void Function(String id) listener) {
     _routeSelectedListeners.remove(listener);
   }
 
-  void notifyRouteSelectedListener(String id) {
+  void notifyRouteTapListeners(String id) {
     for (final listener in _routeSelectedListeners) {
       listener(id);
+    }
+  }
+
+  @override
+  bool selectRoute(String id) {
+    if (_routes == null) {
+      Log.e(RoutingManager.logTag, "Can't select route when directions are null");
+      return false;
+    }
+
+    MapRoute? route = _routes?.firstWhereOrNull((e) => e.id == id);
+    if (route == null) return false;
+
+    _setSelectedId(id);
+
+    return true;
+  }
+
+  @override
+  MapRoute? get selectedRoute {
+    String? selectedId = _currentSelectedId;
+    if (selectedId != null) {
+      return _routes?.firstWhereOrNull((e) => e.id == selectedId);
+    } else {
+      return null;
     }
   }
 }

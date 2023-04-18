@@ -32,6 +32,10 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          IconButton(onPressed: () {
+            final routes = Provider.of<RoutingViewModel>(context, listen: false).directions?.routes;
+            _routingManager?.selectRoute(routes?.first.id ?? "");
+          }, icon: Icon(Icons.swap_vert_circle)),
           IconButton(
             icon: Icon(Icons.swap_horiz),
             onPressed: () async {
@@ -45,7 +49,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
               firstPoint,
               secondPoint
             );
-            _routingManager?.buildDirections(directions);
+            _routingManager?.buildRoutes(directions.routes);
           }, icon: Icon(Icons.download))
         ],
       ),
@@ -64,7 +68,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
         callbacks: CoreMapCallbacks(
           onRoutingManagerReady: (manager) {
             _routingManager = manager;
-            _routingManager?.addRouteSelectedListener((id) {
+            _routingManager?.addRouteTapListener((id) {
               Log.d("TEST ROUTING SCREEN", "new route selected $id");
             });
           }
