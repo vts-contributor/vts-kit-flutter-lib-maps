@@ -6,7 +6,6 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart' show immutable, objectRuntimeType;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 /// Represents a point coordinate in the [CoreMap]'s view.
 ///

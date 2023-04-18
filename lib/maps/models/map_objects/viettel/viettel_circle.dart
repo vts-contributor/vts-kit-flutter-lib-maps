@@ -1,4 +1,3 @@
-import '../lat_lng.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 class ViettelCircle {

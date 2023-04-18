@@ -51,7 +51,7 @@ class Log {
         Log.stackTraceMaxLength;
     final stackTraceString = stackTrace
         ?.toString()
-        .takeIf((it) => it.length > 0)
+        .takeIf((it) => it.isNotEmpty)
         ?.substring(0, stackTraceMaxLength - 1)
         .let((it) => '\r\n$tag: Stacktrace: ~~~~~~~~~~~~\r\n$it\r\n~~~~~~~~~~~~') ??
         '';

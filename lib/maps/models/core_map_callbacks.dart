@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:location/location.dart';
 import 'package:maps_core/maps.dart';
 
 class CoreMapCallbacks {

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:dio/dio.dart';
 
-import 'errors.dart';
-import 'maps_api_response_status.dart';
 
 abstract class MapsAPIResponseParser {
   @protected

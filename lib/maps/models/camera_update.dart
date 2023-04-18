@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:maps_core/maps/extensions/convert.dart';
-import 'package:maps_core/maps/extensions/utils.dart';
 
 import 'models.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;

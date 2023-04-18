@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:map_core_example/view_models/routing_view_model.dart';
 import 'package:maps_core/log/log.dart';
@@ -20,8 +19,8 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
   // LatLng secondPoint = LatLng(10.844372, 106.673161);
 
   //have alternatives case
-  LatLng firstPoint = LatLng(10.83581439676659, 106.67246659058827);
-  LatLng secondPoint = LatLng(10.844372, 106.673161);
+  LatLng firstPoint = const LatLng(10.83581439676659, 106.67246659058827);
+  LatLng secondPoint = const LatLng(10.844372, 106.673161);
 
   RoutingManager? _routingManager;
 
@@ -35,9 +34,9 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
           IconButton(onPressed: () {
             final routes = Provider.of<RoutingViewModel>(context, listen: false).directions?.routes;
             _routingManager?.selectRoute(routes?.first.id ?? "");
-          }, icon: Icon(Icons.swap_vert_circle)),
+          }, icon: const Icon(Icons.swap_vert_circle)),
           IconButton(
-            icon: Icon(Icons.swap_horiz),
+            icon: const Icon(Icons.swap_horiz),
             onPressed: () async {
               setState(() {
                 _type = _type == CoreMapType.viettel? CoreMapType.google: CoreMapType.viettel;
@@ -50,7 +49,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
               secondPoint
             );
             _routingManager?.buildRoutes(directions.routes);
-          }, icon: Icon(Icons.download))
+          }, icon: const Icon(Icons.download))
         ],
       ),
       body: CoreMap(

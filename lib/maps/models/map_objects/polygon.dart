@@ -77,6 +77,7 @@ class Polygon implements MapObject<Polygon> {
   ///
   /// Overlays are drawn in order of z-index, so that lower values means drawn
   /// earlier, and thus appearing to be closer to the surface of the Earth.
+  @override
   final int zIndex;
 
   /// Callbacks to receive tap events for polygon placed on this map.
@@ -110,13 +111,11 @@ class Polygon implements MapObject<Polygon> {
   }
 
   /// Creates a new [Polygon] object whose values are the same as this instance.
-  @override
   Polygon clone() {
     return copyWith(pointsParam: List<LatLng>.of(points));
   }
 
   /// Converts this object to something serializable in JSON.
-  @override
   Object toJson() {
     final Map<String, Object> json = <String, Object>{};
 
@@ -134,13 +133,9 @@ class Polygon implements MapObject<Polygon> {
     addIfPresent('visible', visible);
     addIfPresent('zIndex', zIndex);
 
-    if (points != null) {
-      json['points'] = _pointsToJson();
-    }
+    json['points'] = _pointsToJson();
 
-    if (holes != null) {
-      json['holes'] = _holesToJson();
-    }
+    json['holes'] = _holesToJson();
 
     return json;
   }
@@ -153,16 +148,6 @@ class Polygon implements MapObject<Polygon> {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    bool comp = other is Polygon &&
-        id == other.id &&
-        fillColor == other.fillColor &&
-        geodesic == other.geodesic &&
-        listEquals(points, other.points) &&
-        const DeepCollectionEquality().equals(holes, other.holes) &&
-        visible == other.visible &&
-        strokeColor == other.strokeColor &&
-        strokeWidth == other.strokeWidth &&
-        zIndex == other.zIndex;
     return other is Polygon && 
         id == other.id &&
         fillColor == other.fillColor &&

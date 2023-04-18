@@ -6,10 +6,7 @@ import 'package:flutter/foundation.dart'
     show immutable, listEquals, VoidCallback;
 import 'package:flutter/material.dart' show Color, Colors;
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
-import 'joint_type.dart';
-import 'lat_lng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
@@ -73,6 +70,7 @@ class Polyline implements MapObject<Polyline> {
   ///
   /// Overlays are drawn in order of z-index, so that lower values means drawn
   /// earlier, and thus appearing to be closer to the surface of the Earth.
+  @override
   final int zIndex;
 
   /// Callbacks to receive tap events for polyline placed on this map.
@@ -104,7 +102,6 @@ class Polyline implements MapObject<Polyline> {
 
   /// Creates a new [Polyline] object whose values are the same as this
   /// instance.
-  @override
   Polyline clone() {
     return copyWith(
       pointsParam: List<LatLng>.of(points),
@@ -112,7 +109,6 @@ class Polyline implements MapObject<Polyline> {
   }
 
   /// Converts this object to something serializable in JSON.
-  @override
   Object toJson() {
     final Map<String, Object> json = <String, Object>{};
 
@@ -129,9 +125,7 @@ class Polyline implements MapObject<Polyline> {
     addIfPresent('width', width);
     addIfPresent('zIndex', zIndex);
 
-    if (points != null) {
-      json['points'] = _pointsToJson();
-    }
+    json['points'] = _pointsToJson();
 
 
     return json;

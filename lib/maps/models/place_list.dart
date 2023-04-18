@@ -10,7 +10,7 @@ class PlaceList<T extends Place> {
   });
 
   factory PlaceList.fromResponse(
-      PlaceListingResponse response, T map(Map<String, dynamic> json)) {
+      PlaceListingResponse response, T Function(Map<String, dynamic> json) map) {
     final result = response.list?.map((json) => map(json)).toList() ?? [];
     return PlaceList(
       values: result,

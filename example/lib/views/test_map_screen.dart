@@ -1,10 +1,8 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:map_core_example/views/test_shapes.dart';
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/controllers/core_map_controller_completer.dart';
 
 class TestMapScreen extends StatefulWidget {
   
@@ -18,9 +16,9 @@ class TestMapScreen extends StatefulWidget {
 
 class _TestMapScreenState extends State<TestMapScreen> {
 
-  CoreMapControllerCompleter _controllerCompleter = CoreMapControllerCompleter();
+  final CoreMapControllerCompleter _controllerCompleter = CoreMapControllerCompleter();
 
-  CoreMapShapes _shapes = CoreMapShapes(
+  final CoreMapShapes _shapes = CoreMapShapes(
     polygons: {polygon1()}
   );
 
@@ -33,16 +31,16 @@ class _TestMapScreenState extends State<TestMapScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
-            icon: Icon(Icons.abc),
+            icon: const Icon(Icons.abc),
             onPressed: () async {
               final controller = await _controllerCompleter.controller;
               controller.animateCamera(CameraUpdate.newLatLngBounds(
-                  LatLngBounds(northeast: LatLng(10.844472, 106.673261),
-                      southwest: LatLng(10.83571439676659, 106.67236659058827)), 0));
+                  LatLngBounds(northeast: const LatLng(10.844472, 106.673261),
+                      southwest: const LatLng(10.83571439676659, 106.67236659058827)), 0));
             },
           ),
           IconButton(
-            icon: Icon(Icons.swap_horiz),
+            icon: const Icon(Icons.swap_horiz),
             onPressed: () async {
               setState(() {
                 _type = _type == CoreMapType.viettel? CoreMapType.google: CoreMapType.viettel;
@@ -50,7 +48,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: () async {
               final controller = await _controllerCompleter.controller;
               showDialog(
@@ -74,7 +72,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
         data: CoreMapData(
           accessToken: "49013166841fe36d7fa7f395fce4a663",
           initialCameraPosition: CameraPosition(
-              target: LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
+              target: const LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
           compassEnabled: true,
           myLocationEnabled: true,
           myLocationButtonEnabled: true,
@@ -136,21 +134,21 @@ class _TestDialogState extends State<TestDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: Text("Test features"),
+      title: const Text("Test features"),
       alignment: Alignment.center,
-      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       children: [
         Row(
           children: [
             ElevatedButton(onPressed: () {
               widget.shapes.polygons.add(polygon1());
               widget.setState();
-            }, child: Text("add a polygon")),
-            SizedBox(width: 10,),
+            }, child: const Text("add a polygon")),
+            const SizedBox(width: 10,),
             IconButton(onPressed: () {
               widget.shapes.polygons.removeWhere((element) => element.id == polygon1().id);
               widget.setState();
-            }, icon: Icon(Icons.delete),)
+            }, icon: const Icon(Icons.delete),)
           ],
         ),
         Row(
@@ -158,12 +156,12 @@ class _TestDialogState extends State<TestDialog> {
             ElevatedButton(onPressed: () {
               widget.shapes.polylines.add(polyline());
               widget.setState();
-            }, child: Text("add a polyline")),
-            SizedBox(width: 10,),
+            }, child: const Text("add a polyline")),
+            const SizedBox(width: 10,),
             IconButton(onPressed: () {
               widget.shapes.polylines.removeWhere((element) => element.id == polyline().id);
               widget.setState();
-            }, icon: Icon(Icons.delete),)
+            }, icon: const Icon(Icons.delete),)
           ],
         ),
         Row(
@@ -171,12 +169,12 @@ class _TestDialogState extends State<TestDialog> {
             ElevatedButton(onPressed: () {
               widget.shapes.circles.add(circle());
               widget.setState();
-            }, child: Text("add a circle")),
-            SizedBox(width: 10,),
+            }, child: const Text("add a circle")),
+            const SizedBox(width: 10,),
             IconButton(onPressed: () {
               widget.shapes.circles.removeWhere((element) => element.id == circle().id);
               widget.setState();
-            }, icon: Icon(Icons.delete),)
+            }, icon: const Icon(Icons.delete),)
           ],
         ),
         Row(
@@ -184,12 +182,12 @@ class _TestDialogState extends State<TestDialog> {
             ElevatedButton(onPressed: () {
               widget.shapes.markers.add(marker());
               widget.setState();
-            }, child: Text("add a marker")),
-            SizedBox(width: 10,),
+            }, child: const Text("add a marker")),
+            const SizedBox(width: 10,),
             IconButton(onPressed: () {
               widget.shapes.markers.removeWhere((element) => element.id == marker().id);
               widget.setState();
-            }, icon: Icon(Icons.delete),)
+            }, icon: const Icon(Icons.delete),)
           ],
         ),
         Row(
@@ -197,10 +195,10 @@ class _TestDialogState extends State<TestDialog> {
             ElevatedButton(onPressed: () async {
               Log.d("getScreenCoordinate",
                   (await widget.controller.getScreenCoordinate(
-                      LatLng(9.75419858085518, 105.59970250115466))
+                      const LatLng(9.75419858085518, 105.59970250115466))
                   ).toString());
-            }, child: Text("Log screen coordinate")),
-            SizedBox(width: 10,),
+            }, child: const Text("Log screen coordinate")),
+            const SizedBox(width: 10,),
           ],
         ),
         Row(
@@ -208,34 +206,34 @@ class _TestDialogState extends State<TestDialog> {
             ElevatedButton(onPressed: () async {
               Log.d("getCurrentPosition",
                   (widget.controller.getCurrentPosition()).toString());
-            }, child: Text("Log camera position")),
-            SizedBox(width: 10,),
+            }, child: const Text("Log camera position")),
+            const SizedBox(width: 10,),
           ],
         ),
         Row(
           children: [
-            Text("zoom in/out"),
-            SizedBox(width: 10,),
+            const Text("zoom in/out"),
+            const SizedBox(width: 10,),
             IconButton(
               onPressed: () {
                 widget.controller.animateCamera(CameraUpdate.zoomIn());
               },
-              icon: Icon(Icons.zoom_in),
+              icon: const Icon(Icons.zoom_in),
             ),
-            SizedBox(width: 10,),
+            const SizedBox(width: 10,),
             IconButton(
               onPressed: () {
                 widget.controller.animateCamera(CameraUpdate.zoomOut());
               },
-              icon: Icon(Icons.zoom_out),
+              icon: const Icon(Icons.zoom_out),
             )
           ],
         ),
         Row(
           children: [
-            Text("zoom by"),
-            SizedBox(width: 10,),
-            Container(
+            const Text("zoom by"),
+            const SizedBox(width: 10,),
+            SizedBox(
               height: 40,
               width: 40,
               child: TextField(
@@ -245,9 +243,9 @@ class _TestDialogState extends State<TestDialog> {
                 },
               ),
             ),
-            SizedBox(width: 10,),
+            const SizedBox(width: 10,),
             IconButton(
-              icon: Icon(Icons.skip_next_outlined),
+              icon: const Icon(Icons.skip_next_outlined),
               onPressed: () {
                 widget.controller.animateCamera(CameraUpdate.zoomBy(_zoomBy));
               },
@@ -256,9 +254,9 @@ class _TestDialogState extends State<TestDialog> {
         ),
         Row(
           children: [
-            Text("zoom to"),
-            SizedBox(width: 10,),
-            Container(
+            const Text("zoom to"),
+            const SizedBox(width: 10,),
+            SizedBox(
               height: 40,
               width: 40,
               child: TextField(
@@ -268,9 +266,9 @@ class _TestDialogState extends State<TestDialog> {
                 },
               ),
             ),
-            SizedBox(width: 10,),
+            const SizedBox(width: 10,),
             IconButton(
-              icon: Icon(Icons.skip_next_outlined),
+              icon: const Icon(Icons.skip_next_outlined),
               onPressed: () {
                 widget.controller.animateCamera(CameraUpdate.zoomTo(_zoomTo));
               },

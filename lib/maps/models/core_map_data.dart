@@ -1,13 +1,8 @@
-import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/models/camera_position.dart';
-import 'package:maps_core/maps/models/map_objects/polygon.dart';
 
 ///Data the map. Used as object for better transferring between maps and controllers
 class CoreMapData {

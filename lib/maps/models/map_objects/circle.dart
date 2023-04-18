@@ -101,11 +101,9 @@ class Circle implements MapObject<Circle> {
   }
 
   /// Creates a new [Circle] object whose values are the same as this instance.
-  @override
   Circle clone() => copyWith();
 
   /// Converts this object to something serializable in JSON.
-  @override
   Object toJson() {
     final Map<String, Object> json = <String, Object>{};
 

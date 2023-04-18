@@ -78,6 +78,6 @@ class JsonResponse {
     return responseJson;
   }
 
-  T map<T>(T fun(Map<String, dynamic>? json)) =>
+  T map<T>(T Function(Map<String, dynamic>? json) fun) =>
       fun(content);
 }

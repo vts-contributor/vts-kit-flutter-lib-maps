@@ -2,15 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:math';
-import 'dart:ui' show Offset;
 
 import 'package:flutter/foundation.dart';
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
-import 'package:maps_core/maps/extensions/utils.dart';
 
-import 'map_objects/lat_lng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 

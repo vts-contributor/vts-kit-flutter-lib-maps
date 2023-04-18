@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:maps_core/maps.dart';
 

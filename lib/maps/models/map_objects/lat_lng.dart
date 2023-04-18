@@ -6,32 +6,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 class LatLng {
-  late final double lat;
-  late final double lng;
-  late final bool isValid;
-  int? _receiveTimestamp;
-  final bool isDefault;
-
-  int? get receiveTimestamp => _receiveTimestamp;
+  final double lat;
+  final double lng;
 
   /// The [lat] from -90.0 to +90.0.
   ///
   /// The [lng] from -180.0 to +180.0.
-  LatLng(double lat, double lng,
-      {bool receiveNow = false, this.isDefault = false}) {
-    if (-90 > lat || lat > 90 || -180 > lng || lng > 180) {
-      isValid = false;
-      this.lat = 0.0;
-      this.lng = 0.0;
-    } else {
-      isValid = true;
-      this.lat = lat;
-      this.lng = lng;
-    }
-    if (receiveNow) {
-      _receiveTimestamp = DateTime.now().millisecondsSinceEpoch;
-    }
-  }
+  const LatLng(double lat, double lng):
+        lat = (lat < -90.0 ? -90.0 : (90.0 < lat ? 90.0 : lat)),
+        lng = (lng + 180.0) % 360.0 - 180.0;
 
   /// The [latLngMap] structured {lat: ..., lng: ...}
   ///
@@ -40,7 +23,7 @@ class LatLng {
   /// The [lng] from -180.0 to +180.0.
   factory LatLng.fromMap(Map latLngMap, {bool receiveNow = false}) {
     try {
-      return LatLng(latLngMap['lat'], latLngMap['lng'], receiveNow: receiveNow);
+      return LatLng(latLngMap['lat'], latLngMap['lng']);
     } catch (err) {
       Log.e('LatLng.fromMap',
           'Parse LatLng from Map $latLngMap failed because $err');
@@ -50,7 +33,7 @@ class LatLng {
 
   factory LatLng.defaultInvalid() {
     //constructor will set lat=0.0, lng=0.0
-    return LatLng(-91, -181);
+    return const LatLng(-91, -181);
   }
 
   static LatLng? fromMapsAPIJson(Map<String, dynamic>? json) {
@@ -80,7 +63,6 @@ class LatLng {
       return null;
     }
   }
-
 
   @override
   bool operator ==(Object other) {
@@ -117,9 +99,7 @@ class LatLngBounds {
   /// The lat of the southwest corner cannot be larger than the
   /// lat of the northeast corner.
   LatLngBounds({required this.southwest, required this.northeast})
-      : assert(southwest != null),
-        assert(northeast != null),
-        assert(southwest.lat <= northeast.lat);
+      : assert(southwest.lat <= northeast.lat);
 
   /// The southwest corner of the rectangle.
   final LatLng southwest;
@@ -171,6 +151,7 @@ class LatLngBounds {
       southwest: southwest.toGoogle(),
     );
   }
+
   vtmap.LatLngBounds toViettel() {
     return vtmap.LatLngBounds(
       northeast: northeast.toViettel(),

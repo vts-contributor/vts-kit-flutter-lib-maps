@@ -13,8 +13,8 @@ import '../models/network/language.dart';
 import '../models/network/token.dart';
 
 
-typedef R LetCallback<T, R>(final T it);
-typedef Future<R> FutureLetCallback<T, R>(final T it);
+typedef LetCallback<T, R> = R Function(T it);
+typedef FutureLetCallback<T, R> = Future<R> Function(T it);
 
 extension Let<T, R> on T {
   R let<R>(LetCallback<T, R> callback) {
@@ -26,7 +26,7 @@ extension Let<T, R> on T {
   }
 }
 
-typedef bool TakeIfCallback<T>(final T it);
+typedef TakeIfCallback<T> = bool Function(T it);
 extension TakeIf<T> on T {
   T? takeIf(TakeIfCallback<T> callback) {
     if (callback(this)) {
@@ -126,7 +126,7 @@ extension BinaryInt on int {
 extension Localex on Locale {
   Locale? supportedOrNull() {
     for (Locale locale in SUPPORTED_LOCALES) {
-      if (this.languageCode == locale.languageCode) {
+      if (languageCode == locale.languageCode) {
         return this;
       }
     }

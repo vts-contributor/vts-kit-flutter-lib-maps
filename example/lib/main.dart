@@ -5,7 +5,6 @@ import 'package:map_core_example/views/test_map_screen.dart';
 import 'package:map_core_example/views/test_routing_screen.dart';
 import 'package:map_core_example/views/test_vt_map_screen.dart';
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/constants.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
@@ -111,20 +110,20 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestMapScreen.routeName),
-              child: Text("Test map"),
+              child: const Text("Test map"),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestGoogleMapScreen.routeName),
-              child: Text("Test google map"),
+              child: const Text("Test google map"),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestVTMapScreen.routeName),
-              child: Text("Test vt map"),
+              child: const Text("Test vt map"),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestRoutingScreen.routeName),
-              child: Text("Test routing map"),
+              child: const Text("Test routing map"),
             ),
           ],
         ),

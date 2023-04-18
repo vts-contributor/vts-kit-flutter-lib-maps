@@ -5,11 +5,11 @@ import 'package:maps_core/maps/models/models.dart';
 Polygon polygon1() {
   List<LatLng> polygonCoords = [];
   polygonCoords.addAll([
-    LatLng(9.85419858085518, 105.49970250115466),
-    LatLng(10.111173278744552, 105.79221346758048),
-    LatLng(9.739171049977948, 106.4115676734868),
-    LatLng(9.408755662724216, 106.01194001513039),
-    LatLng(9.148388064993938, 105.04703715806114),
+    const LatLng(9.85419858085518, 105.49970250115466),
+    const LatLng(10.111173278744552, 105.79221346758048),
+    const LatLng(9.739171049977948, 106.4115676734868),
+    const LatLng(9.408755662724216, 106.01194001513039),
+    const LatLng(9.148388064993938, 105.04703715806114),
     // LatLng(10.716637841384983, 105.63506199738214),
   ]);
 
@@ -20,14 +20,14 @@ Polygon polygon1() {
       zIndex: 0,
       holes: [
         [
-          LatLng(9.749998867791605, 105.59033970201901),
-          LatLng(9.605997144751647, 105.67252492760872),
-          LatLng(9.575401419508188, 105.58270292414889)
+          const LatLng(9.749998867791605, 105.59033970201901),
+          const LatLng(9.605997144751647, 105.67252492760872),
+          const LatLng(9.575401419508188, 105.58270292414889)
         ],
         [
-          LatLng(9.861925859419564, 105.93872468331696),
-          LatLng(9.776638107960828, 106.03507919611933),
-          LatLng(9.683279273763315, 105.85380206186403)
+          const LatLng(9.861925859419564, 105.93872468331696),
+          const LatLng(9.776638107960828, 106.03507919611933),
+          const LatLng(9.683279273763315, 105.85380206186403)
         ],
       ],
       fillColor: Colors.black,
@@ -41,11 +41,11 @@ Polygon polygon1() {
 Polygon polygon2() {
   List<LatLng> polygonCoords = [];
   polygonCoords.addAll([
-    LatLng(9.85419858085518, 105.49970250115466),
-    LatLng(10.111173278744552, 105.79221346758048),
-    LatLng(9.739171049977948, 106.4115676734868),
-    LatLng(9.408755662724216, 106.01194001513039),
-    LatLng(9.148388064993938, 105.04703715806114),
+    const LatLng(9.85419858085518, 105.49970250115466),
+    const LatLng(10.111173278744552, 105.79221346758048),
+    const LatLng(9.739171049977948, 106.4115676734868),
+    const LatLng(9.408755662724216, 106.01194001513039),
+    const LatLng(9.148388064993938, 105.04703715806114),
   ]);
 
   return Polygon(
@@ -53,14 +53,14 @@ Polygon polygon2() {
       points: polygonCoords,
       holes: [
         [
-          LatLng(9.749998867791605, 105.59033970201901),
-          LatLng(9.605997144751647, 105.67252492760872),
-          LatLng(9.575401419508188, 105.58270292414889)
+          const LatLng(9.749998867791605, 105.59033970201901),
+          const LatLng(9.605997144751647, 105.67252492760872),
+          const LatLng(9.575401419508188, 105.58270292414889)
         ],
         [
-          LatLng(9.861925859419564, 105.93872468331696),
-          LatLng(9.776638107960828, 106.03507919611933),
-          LatLng(9.683279273763315, 105.85380206186403)
+          const LatLng(9.861925859419564, 105.93872468331696),
+          const LatLng(9.776638107960828, 106.03507919611933),
+          const LatLng(9.683279273763315, 105.85380206186403)
         ],
       ],
       fillColor: Colors.black,
@@ -73,7 +73,7 @@ Polygon polygon2() {
 
 Polyline polyline() => Polyline(
     id: const PolylineId("test1"),
-    points: [
+    points: const [
       LatLng(10.015567019306467, 105.74686134987519),
       LatLng(10.19612670788822, 105.97871325750828),
       LatLng(10.651704727581484, 106.2319038895347),
@@ -90,7 +90,7 @@ Polyline polyline() => Polyline(
 
 Polyline polyline2() => Polyline(
     id: const PolylineId("test2"),
-    points: [
+    points: const [
       LatLng(10.015567019306467, 105.74686134987519),
       LatLng(10.19612670788822, 105.97871325750828),
       LatLng(10.651704727581484, 106.2319038895347),
@@ -107,7 +107,7 @@ Polyline polyline2() => Polyline(
 
 Circle circle() => Circle(
   id: const CircleId("123"),
-  center: LatLng(8.848028919141523, 104.96513564005897),
+  center: const LatLng(8.848028919141523, 104.96513564005897),
   radius: 10000,
   strokeColor: Colors.blue,
   strokeWidth: 10,
@@ -121,10 +121,10 @@ Circle circle() => Circle(
 Marker marker() => Marker(
   id: const MarkerId("test1"),
   // position: LatLng(10.625380787927542, 105.051574201898),
-  position: LatLng(8.848028919141523, 104.96513564005897),
+  position: const LatLng(8.848028919141523, 104.96513564005897),
   alpha: 1,
   zIndex: 0,
-  infoWindow: InfoWindow(
+  infoWindow: const InfoWindow(
     title: "Test"
   ),
   icon: MarkerIcon.fromAsset("marker icon", "assets/marker_red.png"),

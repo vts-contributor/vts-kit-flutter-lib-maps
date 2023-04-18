@@ -4,7 +4,6 @@
 
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 /// Joint types for [Polyline].
 @immutable

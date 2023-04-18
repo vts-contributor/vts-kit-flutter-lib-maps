@@ -1,7 +1,6 @@
 import 'package:maps_core/maps/models/models.dart';
 import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:uuid/uuid.dart';
-import 'package:uuid/uuid_util.dart';
 
 class MapRoute {
   final String id;

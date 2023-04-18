@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/extensions/utils.dart';
 
 import 'map_objects/lat_lng.dart';
