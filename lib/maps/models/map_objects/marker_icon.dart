@@ -21,6 +21,9 @@ class MarkerIcon {
 
   static MarkerIcon fromNetwork(final String name, final String url) =>
       MarkerIcon._(NetworkMarkerIconData(name, url));
+
+  static MarkerIcon fromBitmap(final String name, final Uint8List bitmap) =>
+      MarkerIcon._(BitmapMarkerIconData(name, bitmap));
 }
 
 abstract class MarkerIconData<T> {
