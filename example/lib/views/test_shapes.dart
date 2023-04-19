@@ -119,7 +119,7 @@ Circle circle() => Circle(
 );
 
 Marker marker() => Marker(
-  id: const MarkerId("test1"),
+  id: const MarkerId("test2"),
   // position: LatLng(10.625380787927542, 105.051574201898),
   position: const LatLng(8.848028919141523, 104.96513564005897),
   alpha: 1,
@@ -127,7 +127,7 @@ Marker marker() => Marker(
   infoWindow: const InfoWindow(
     title: "Test"
   ),
-  icon: MarkerIcon.fromAsset("marker icon", "assets/marker_red.png"),
+  icon: MarkerIcon.fromAsset("marker icon 21", "assets/marker_red.png", height: 1000, width: 100),
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
   // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
 );

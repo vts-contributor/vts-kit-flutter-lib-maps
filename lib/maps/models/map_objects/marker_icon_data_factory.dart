@@ -1,6 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:image/image.dart';
 import 'package:maps_core/maps/extensions/utils.dart';
 import 'package:maps_core/maps/models/map_objects/bitmap_cache_factory.dart';
 import 'package:maps_core/maps/models/map_objects/marker_icon.dart';
@@ -12,16 +13,30 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   final Map<String, Uint8List> _cache = {};
 
   @override
-  Future<Uint8List> processAssetMarkerIcon(MarkerIconData<String> markerIconData) async {
+  Future<Uint8List> processAssetMarkerIcon(AssetMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
-      final assetBitmap = await rootBundle.loadImageAsUint8List(markerIconData.value);
-      _cache.putIfAbsent(markerIconData.name, () => assetBitmap);
-      return assetBitmap;
+      final  assetBitmap = await rootBundle.loadImageAsUint8List(markerIconData.value);
+      final resizedBitmap = _resizeBitmap(
+          assetBitmap, markerIconData.height, markerIconData.width);
+      _cache.putIfAbsent(markerIconData.name, () => resizedBitmap);
+      return resizedBitmap;
     });
   }
 
+  Uint8List _resizeBitmap(Uint8List bitmap, int? height, int? width) {
+    if (height == null && width == null) {
+      return bitmap;
+    }
+
+    Image? img = decodeImage(bitmap);
+    if (img == null) return bitmap;
+
+    Image resized = copyResize(img, height: height ?? img.height, width: width ?? img.width);
+    return encodePng(resized);
+  }
+
   @override
-  Future<Uint8List> processBitmapMarkerIcon(MarkerIconData<Uint8List> markerIconData) async {
+  Future<Uint8List> processBitmapMarkerIcon(BitmapMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
       _cache.putIfAbsent(markerIconData.name, () => markerIconData.value);
       return markerIconData.value;
@@ -29,7 +44,7 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   }
 
   @override
-  Future<Uint8List> processNetworkMarkerIcon(MarkerIconData<String> markerIconData) async {
+  Future<Uint8List> processNetworkMarkerIcon(NetworkMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
       final networkBitmap = await Dio().downloadImageToBitmap(markerIconData.value);
       _cache.putIfAbsent(markerIconData.name, () => networkBitmap);
