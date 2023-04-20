@@ -8,6 +8,7 @@ class CoreMapControllerCompleter {
 
   Future<CoreMapController> get controller => _completer.future;
 
+  ///complete with a controller
   void complete(CoreMapController controller) {
     if (_completer.isCompleted) {
       _completer = Completer();

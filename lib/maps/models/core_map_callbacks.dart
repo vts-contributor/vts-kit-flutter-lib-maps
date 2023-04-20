@@ -11,34 +11,43 @@ class CoreMapCallbacks {
     this.onTap,
     this.onLongPress,
     this.onUserLocationUpdated,
-    this.onServiceDisabled,
-    this.onPermissionDenied,
-    this.onPermissionDeniedForever,
+    this.onLocationServiceDisabled,
+    this.onLocationPermissionDenied,
+    this.onLocationPermissionDeniedForever,
     this.onRoutingManagerReady,
   });
 
   ///Map is ready to be used
   final void Function(CoreMapController controller)? onMapCreated;
 
+  ///listener for camera position changes.
   final void Function(CameraPosition position)? onCameraMove;
 
+  ///camera starts moving
   final VoidCallback? onCameraMoveStarted;
 
+  ///camera idling
   final VoidCallback? onCameraIdle;
 
+  ///listen to user's tap on the map
   final void Function(LatLng latLng)? onTap;
 
+  ///listen to user's long press on the map
   final void Function(LatLng latLng)? onLongPress;
 
   ///This will be called periodically even if [userLocation] doesn't change.
   final void Function(LocationData userLocation)? onUserLocationUpdated;
 
-  final Future<bool> Function()? onServiceDisabled;
+  ///override default handler when location service is disabled.
+  final Future<bool> Function()? onLocationServiceDisabled;
 
-  final Future<bool> Function()? onPermissionDenied;
+  ///override default handler when location permission is denied.
+  final Future<bool> Function()? onLocationPermissionDenied;
 
-  final Future<bool> Function()? onPermissionDeniedForever;
+  ///override default handler when location permission is denied forever.
+  final Future<bool> Function()? onLocationPermissionDeniedForever;
 
+  ///routing manager is ready to be used.
   final void Function(RoutingManager)? onRoutingManagerReady;
 
   CoreMapCallbacks copyWith({
@@ -62,9 +71,9 @@ class CoreMapCallbacks {
       onTap: onTap ?? this.onTap,
       onLongPress: onLongPress ?? this.onLongPress,
       onUserLocationUpdated: onUserLocationUpdated ?? this.onUserLocationUpdated,
-      onServiceDisabled: onServiceDisabled ?? this.onServiceDisabled,
-      onPermissionDenied: onPermissionDenied ?? this.onPermissionDenied,
-      onPermissionDeniedForever: onPermissionDeniedForever ?? this.onPermissionDeniedForever,
+      onLocationServiceDisabled: onServiceDisabled ?? this.onLocationServiceDisabled,
+      onLocationPermissionDenied: onPermissionDenied ?? this.onLocationPermissionDenied,
+      onLocationPermissionDeniedForever: onPermissionDeniedForever ?? this.onLocationPermissionDeniedForever,
       onRoutingManagerReady: onRoutingManagerReady ?? this.onRoutingManagerReady,
     );
   }

@@ -3,10 +3,6 @@ import '../models/models.dart';
 //This interface should only be used by client
 //If you're a maintainer, please make your new controller extends BaseCoreMapController
 abstract class CoreMapController {
-
-  ///current type of the map
-  CoreMapType get coreMapType;
-
   ///get current [CameraPosition]
   CameraPosition getCurrentPosition();
 

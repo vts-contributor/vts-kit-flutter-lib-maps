@@ -31,9 +31,6 @@ class _ViettelMapController extends BaseCoreMapController {
     _initHandlers();
   }
 
-  @override
-  CoreMapType get coreMapType => CoreMapType.viettel;
-
   Future<void> updateUserLocationShape(vt.CircleOptions? options) async {
     vt.Circle? currentUserLocationShape = _userLocationShape;
     if (options == null) {
@@ -50,8 +47,9 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> loadNewShapes(CoreMapShapes shapes) async {
-    await _loadNewMapObjects(_originalShapes.toSet(), shapes.toSet());
+    final oldShapes = _originalShapes.toSet();
     _originalShapes = shapes.clone();
+    await _loadNewMapObjects(oldShapes, shapes.toSet());
   }
 
   ///return addObjects
@@ -61,7 +59,7 @@ class _ViettelMapController extends BaseCoreMapController {
 
     _updateMapObjects(mapObjectUpdates.updateObjects);
     await _removeMapObjects(mapObjectUpdates.removeObjects);
-    await _addMapObjectsInZIndexOrder(mapObjectUpdates.addObjects);
+    _addMapObjectsInZIndexOrder(mapObjectUpdates.addObjects);
   }
 
   ///add objects by zIndex ASC order
@@ -130,7 +128,7 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _addPolygon(Polygon polygon) async {
-    if (_viettelPolygonMap.containsKey(polygon.id)) {
+    if (_viettelPolygonMap.containsKey(polygon.id.value)) {
       return;
     }
 
@@ -185,7 +183,7 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _addPolyline(Polyline polyline) async {
-    if (_viettelPolylineMap.containsKey(polyline.id)) {
+    if (_viettelPolylineMap.containsKey(polyline.id.value)) {
       return;
     }
 
@@ -219,7 +217,7 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _addCircle(Circle circle) async {
-    if (_viettelCircleMap.containsKey(circle.id)) {
+    if (_viettelCircleMap.containsKey(circle.id.value)) {
       return;
     }
 
@@ -267,7 +265,7 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _addMarker(Marker marker) async {
-    if (_viettelMarkerMap.containsKey(marker.id)) {
+    if (_viettelMarkerMap.containsKey(marker.id.value)) {
       return;
     }
 

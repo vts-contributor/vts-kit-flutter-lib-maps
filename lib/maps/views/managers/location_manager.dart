@@ -38,9 +38,9 @@ class _LocationManager extends ChangeNotifier {
 
   void updateCallbacks(CoreMapCallbacks? callbacks) {
     _onUserLocationUpdated = callbacks?.onUserLocationUpdated;
-    onServiceDisabled = callbacks?.onServiceDisabled;
-    onPermissionDenied = callbacks?.onPermissionDenied;
-    _onPermissionDeniedForever = callbacks?.onPermissionDeniedForever;
+    onServiceDisabled = callbacks?.onLocationServiceDisabled;
+    onPermissionDenied = callbacks?.onLocationPermissionDenied;
+    _onPermissionDeniedForever = callbacks?.onLocationPermissionDeniedForever;
   }
 
   set onServiceDisabled(Future<bool> Function()? onServiceDisabled) {

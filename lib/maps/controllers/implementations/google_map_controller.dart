@@ -3,9 +3,6 @@ part of core_map;
 class _GoogleMapController extends BaseCoreMapController
     with ChangeNotifier {
 
-  @override
-  CoreMapType get coreMapType => CoreMapType.google;
-
   final gg.GoogleMapController _controller;
 
   gg.CameraPosition _currentCameraPosition;

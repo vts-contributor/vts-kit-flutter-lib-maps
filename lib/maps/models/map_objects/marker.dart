@@ -414,8 +414,8 @@ class Marker implements MapObject<Marker> {
         iconImage: icon.data.name,
         iconOpacity: alpha,
         iconAnchor: anchor.string,
-        draggable: draggable,
-        zIndex: zIndex.toInt()
+        draggable: true,
+        zIndex: zIndex.toInt(),
       // textField: infoWindow.title,
       // textAnchor: infoWindow.anchor.toString()
     );
