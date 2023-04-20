@@ -9,7 +9,6 @@ import 'package:location/location.dart';
 import 'package:maps_core/log/log.dart';
 
 import 'package:maps_core/maps.dart';
-import 'package:synchronized/extension.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
 

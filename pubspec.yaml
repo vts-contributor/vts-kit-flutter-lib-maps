@@ -34,7 +34,6 @@ dependencies:
   location: ^4.4.0
   uuid: ^3.0.7
   image: ^4.0.15
-  synchronized: ^3.0.1
 
 dev_dependencies:
   flutter_test:
