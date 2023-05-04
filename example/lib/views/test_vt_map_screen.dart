@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:maps_core/log/log.dart';
+import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:vtmap_gl/vtmap_gl.dart';
 
 class TestVTMapScreen extends StatefulWidget {
@@ -16,7 +18,7 @@ class TestVTMapScreen extends StatefulWidget {
 
 class _TestVTMapScreenState extends State<TestVTMapScreen> {
   MapboxMapController? controller;
-  LatLng firstPoint = const LatLng(10.83581439676659, 106.67246659058827);
+  LatLng firstPoint = const LatLng(8.848028919141523, 104.96513564005897);
   LatLng secondPoint = const LatLng(10.844372, 106.673161);
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,12 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           IconButton(
               icon: const Icon(Icons.add),
               onPressed: () async {
-                navigate();
+                await controller?.addImage("123", await rootBundle.loadImageAsUint8List("assets/custom_marker.png"));
+
+                await controller?.addSymbol(SymbolOptions(
+                  iconImage: "123",
+                  geometry: const LatLng(8.848028919141523, 104.96513564005897)
+                ));
               }
           )
         ],
@@ -35,7 +42,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
         accessToken: "49013166841fe36d7fa7f395fce4a663",
         initialCameraPosition:
         CameraPosition(
-            target: firstPoint, zoom: 15),
+            target: firstPoint, zoom: 7),
 
         onMapCreated: (controller) {
           this.controller = controller;

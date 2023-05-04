@@ -410,14 +410,21 @@ class Marker implements MapObject<Marker> {
 
   vtmap.SymbolOptions toSymbolOptions() {
     return vtmap.SymbolOptions(
-        geometry: position.toViettel(),
-        iconImage: icon.data.name,
-        iconOpacity: alpha,
-        iconAnchor: anchor.string,
-        draggable: true,
-        zIndex: zIndex.toInt(),
-      // textField: infoWindow.title,
-      // textAnchor: infoWindow.anchor.toString()
+      geometry: position.toViettel(),
+      iconImage: icon.data.name,
+      iconOpacity: alpha,
+      iconAnchor: anchor.string,
+      // draggable: true,
+      zIndex: zIndex.toInt(),
+      // fontNames: ["Arial Unicode MS Regular"],
+      // textField: 'Airport',
+      // textSize: 500,
+      // textOffset: Offset(0, 0.8),
+      // textAnchor: 'top',
+      // textColor: '#000000',
+      // textHaloBlur: 1,
+      // textHaloColor: '#ffffff',
+      // textHaloWidth: 0.8,
     );
   }
 }

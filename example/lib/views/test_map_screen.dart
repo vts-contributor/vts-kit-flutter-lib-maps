@@ -18,10 +18,6 @@ class _TestMapScreenState extends State<TestMapScreen> {
 
   final CoreMapControllerCompleter _controllerCompleter = CoreMapControllerCompleter();
 
-  final CoreMapShapes _shapes = CoreMapShapes(
-    polygons: {polygon1()}
-  );
-
   CoreMapType _type = CoreMapType.viettel;
 
   @override
@@ -34,9 +30,12 @@ class _TestMapScreenState extends State<TestMapScreen> {
             icon: const Icon(Icons.abc),
             onPressed: () async {
               final controller = await _controllerCompleter.controller;
-              controller.animateCamera(CameraUpdate.newLatLngBounds(
-                  LatLngBounds(northeast: const LatLng(10.844472, 106.673261),
-                      southwest: const LatLng(10.83571439676659, 106.67236659058827)), 0));
+              controller.animateCameraToCenterOfPoints([
+                LatLng(9.50184, 105.26001),
+                LatLng(9.14554, 105.15764),
+                LatLng(9.22674, 105.45377),
+              ], 0
+              );
             },
           ),
           IconButton(
@@ -56,7 +55,9 @@ class _TestMapScreenState extends State<TestMapScreen> {
                 builder: (context) {
                   return TestDialog(
                     controller: controller,
-                    shapes: _shapes,
+                    shapes:  CoreMapShapes(
+                        polygons: {polygon1()}
+                    ),
                     setState: () => setState(() {
 
                     }),
@@ -96,9 +97,9 @@ class _TestMapScreenState extends State<TestMapScreen> {
         ),
         shapes: CoreMapShapes(
           // polygons: {polygon1()},
-          circles: {circle()},
+          // circles: {circle()},
           markers: {marker()},
-          polylines: {polyline(), polyline2()},
+          // polylines: {polyline(), polyline2()},
         ),
       ),
     );

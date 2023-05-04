@@ -6,21 +6,21 @@ import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 class LatLng {
-  final double lat;
-  final double lng;
+  final double latitude;
+  final double longitude;
 
   /// The [lat] from -90.0 to +90.0.
   ///
   /// The [lng] from -180.0 to +180.0.
   const LatLng(double lat, double lng):
-        lat = (lat < -90.0 ? -90.0 : (90.0 < lat ? 90.0 : lat)),
-        lng = (lng + 180.0) % 360.0 - 180.0;
+        latitude = (lat < -90.0 ? -90.0 : (90.0 < lat ? 90.0 : lat)),
+        longitude = (lng + 180.0) % 360.0 - 180.0;
 
   /// The [latLngMap] structured {lat: ..., lng: ...}
   ///
-  /// The [lat] from -90.0 to +90.0.
+  /// The [latitude] from -90.0 to +90.0.
   ///
-  /// The [lng] from -180.0 to +180.0.
+  /// The [longitude] from -180.0 to +180.0.
   factory LatLng.fromMap(Map latLngMap, {bool receiveNow = false}) {
     try {
       return LatLng(latLngMap['lat'], latLngMap['lng']);
@@ -46,12 +46,12 @@ class LatLng {
   }
 
   @override
-  String toString() => '{lat:$lat, lng:$lng}';
+  String toString() => '{lat:$latitude, lng:$longitude}';
 
   Map<String, dynamic> toJson() {
     return {
-      "lat": lat,
-      "lng": lng
+      "lat": latitude,
+      "lng": longitude
     };
   }
   
@@ -67,19 +67,19 @@ class LatLng {
   @override
   bool operator ==(Object other) {
     return other is LatLng &&
-        other.lat == lat &&
-        other.lng == lng;
+        other.latitude == latitude &&
+        other.longitude == longitude;
   }
 
   @override
-  int get hashCode => Object.hash(lat, lng);
+  int get hashCode => Object.hash(latitude, longitude);
 
   ggmap.LatLng toGoogle() {
-    return ggmap.LatLng(lat, lng);
+    return ggmap.LatLng(latitude, longitude);
   }
 
   vtmap.LatLng toViettel() {
-    return vtmap.LatLng(lat, lng);
+    return vtmap.LatLng(latitude, longitude);
   }
 }
 
@@ -99,7 +99,7 @@ class LatLngBounds {
   /// The lat of the southwest corner cannot be larger than the
   /// lat of the northeast corner.
   LatLngBounds({required this.southwest, required this.northeast})
-      : assert(southwest.lat <= northeast.lat);
+      : assert(southwest.latitude <= northeast.latitude);
 
   /// The southwest corner of the rectangle.
   final LatLng southwest;
@@ -114,19 +114,19 @@ class LatLngBounds {
 
   /// Returns whether this rectangle contains the given [LatLng].
   bool contains(LatLng point) {
-    return _containslat(point.lat) &&
-        _containslng(point.lng);
+    return _containslat(point.latitude) &&
+        _containslng(point.longitude);
   }
 
   bool _containslat(double lat) {
-    return (southwest.lat <= lat) && (lat <= northeast.lat);
+    return (southwest.latitude <= lat) && (lat <= northeast.latitude);
   }
 
   bool _containslng(double lng) {
-    if (southwest.lng <= northeast.lng) {
-      return southwest.lng <= lng && lng <= northeast.lng;
+    if (southwest.longitude <= northeast.longitude) {
+      return southwest.longitude <= lng && lng <= northeast.longitude;
     } else {
-      return southwest.lng <= lng || lng <= northeast.lng;
+      return southwest.longitude <= lng || lng <= northeast.longitude;
     }
   }
 

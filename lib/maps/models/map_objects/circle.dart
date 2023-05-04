@@ -213,7 +213,7 @@ class Circle implements MapObject<Circle> {
 
     // find the radius in lat/lon
     var rlat = (radius / earthsradius) * r2d;
-    var rlng = rlat / cos(point.lat * d2r);
+    var rlng = rlat / cos(point.latitude * d2r);
 
     List<LatLng> extp = [];
     int start = 0;
@@ -224,9 +224,9 @@ class Circle implements MapObject<Circle> {
     }
     for (var i = start; (dir == 1 ? i < end : i > end); i = i + dir) {
       var theta = pi * (i / (points / 2));
-      double ey = point.lng +
+      double ey = point.longitude +
           (rlng * cos(theta)); // center a + radius x * cos(theta)
-      double ex = point.lat +
+      double ex = point.latitude +
           (rlat * sin(theta)); // center b + radius y * sin(theta)
       extp.add(LatLng(ex, ey));
     }

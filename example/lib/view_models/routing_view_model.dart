@@ -9,10 +9,10 @@ class RoutingViewModel extends ChangeNotifier {
 
   Future<Directions> downloadDirections(LatLng origin, LatLng dest) async {
    return  directions = await mapsAPIService.direction(
-      originLat: origin.lat,
-      originLng: origin.lng,
-      destLat: dest.lat,
-      destLng: dest.lng,
+      originLat: origin.latitude,
+      originLng: origin.longitude,
+      destLat: dest.latitude,
+      destLng: dest.longitude,
       alternatives: true,
     );
   }
