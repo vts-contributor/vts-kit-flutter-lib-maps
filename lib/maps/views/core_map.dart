@@ -160,31 +160,29 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   }
 
   Widget _buildUserLocationButton(BuildContext context) {
+    const buttonSize = 36.0;
     return Align(
       alignment: widget.data.myLocationButtonAlignment,
-      child: SizedBox(
-        height: 52,
-        width: 52,
-        child: Center(
-          child: Material(
-            color: Colors.white.withOpacity(0.5),
-            child: InkWell(
-              onTap: () {
-                double? lat = _locationManager._userLocation?.latitude;
-                double? lng = _locationManager._userLocation?.longitude;
-                if (lat != null && lng != null) {
-                  _controller?.animateCamera(
-                      CameraUpdate.newLatLng(LatLng(lat, lng))
-                  );
-                }
-              },
-              child: Ink(
-                height: 36,
-                width: 36,
-                child: Icon(
-                  Icons.my_location_outlined,
-                  color: Colors.black.withOpacity(0.6),
-                ),
+      child: Padding(
+        padding: widget.data.myLocationButtonPadding,
+        child: Material(
+          color: Colors.white.withOpacity(0.5),
+          child: InkWell(
+            onTap: () {
+              double? lat = _locationManager._userLocation?.latitude;
+              double? lng = _locationManager._userLocation?.longitude;
+              if (lat != null && lng != null) {
+                _controller?.animateCamera(
+                    CameraUpdate.newLatLng(LatLng(lat, lng))
+                );
+              }
+            },
+            child: Ink(
+              height: buttonSize,
+              width: buttonSize,
+              child: Icon(
+                Icons.my_location_outlined,
+                color: Colors.black.withOpacity(0.6),
               ),
             ),
           ),

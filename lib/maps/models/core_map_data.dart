@@ -22,6 +22,7 @@ class CoreMapData {
     this.myLocationButtonAlignment = Alignment.topRight,
     this.selectedRouteColor = Colors.blue,
     this.unselectedRouteColor = Colors.grey,
+    this.myLocationButtonPadding = const EdgeInsets.all(10),
   });
 
   ///should be removed, use file instead
@@ -105,6 +106,9 @@ class CoreMapData {
   ///alignment of the location button if it exists
   final Alignment myLocationButtonAlignment;
 
+  ///padding for my location button
+  final EdgeInsets myLocationButtonPadding;
+
   ///Color for the selected route
   final Color selectedRouteColor;
 
@@ -127,6 +131,7 @@ class CoreMapData {
     Alignment? myLocationButtonAlignment,
     Color? selectedRouteColor,
     Color? unselectedRouteColor,
+    EdgeInsets? myLocationButtonPadding,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -144,6 +149,7 @@ class CoreMapData {
       myLocationButtonAlignment: myLocationButtonAlignment ?? this.myLocationButtonAlignment,
       selectedRouteColor: selectedRouteColor ?? this.selectedRouteColor,
       unselectedRouteColor: unselectedRouteColor ?? this.unselectedRouteColor,
+      myLocationButtonPadding: myLocationButtonPadding ?? this.myLocationButtonPadding,
     );
   }
 }
