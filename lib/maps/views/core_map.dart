@@ -109,8 +109,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
             },
           ),
         ),
-        if (widget.data.myLocationButtonEnabled && widget.data.myLocationEnabled)
-          _buildUserLocationButton(context),
+        ..._buildButtons(context),
       ],
     );
   }
@@ -159,34 +158,101 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     }
   }
 
+  List<Widget> _buildButtons(BuildContext context) {
+    bool hasLocationButton = widget.data.myLocationEnabled && widget.data.myLocationEnabled;
+    bool hasZoomButton = widget.data.zoomButtonEnabled;
+
+    EdgeInsets zoomButtonPadding = hasZoomButton
+        ? (widget.data.zoomButtonPadding ?? const EdgeInsets.all(Constant.defaultButtonPadding))
+        : EdgeInsets.zero;
+
+    double locationButtonPaddingSize = hasZoomButton
+        ? zoomButtonPadding.horizontal + Constant.buttonDistance + Constant.zoomButtonSize
+        : Constant.defaultButtonPadding;
+    EdgeInsets locationButtonPadding = widget.data.myLocationButtonPadding ??
+        EdgeInsets.symmetric(horizontal: locationButtonPaddingSize, vertical: Constant.defaultButtonPadding);
+
+    return [
+      if (hasLocationButton)
+        Align(
+          alignment: widget.data.myLocationButtonAlignment,
+          child: Padding(
+            padding: locationButtonPadding,
+            child: _buildUserLocationButton(context),
+          ),
+        ),
+      if (hasZoomButton)
+        Align(
+          alignment: widget.data.zoomButtonAlignment,
+          child: Padding(
+            padding: zoomButtonPadding,
+            child: _buildZoomButtons(context),
+          ),
+        ),
+    ];
+  }
+
   Widget _buildUserLocationButton(BuildContext context) {
-    const buttonSize = 36.0;
-    return Align(
-      alignment: widget.data.myLocationButtonAlignment,
-      child: Padding(
-        padding: widget.data.myLocationButtonPadding,
-        child: Material(
-          color: Colors.white.withOpacity(0.5),
-          child: InkWell(
-            onTap: () {
-              double? lat = _locationManager._userLocation?.latitude;
-              double? lng = _locationManager._userLocation?.longitude;
-              if (lat != null && lng != null) {
-                _controller?.animateCamera(
-                    CameraUpdate.newLatLng(LatLng(lat, lng))
-                );
-              }
-            },
-            child: widget.data.myLocationButton ?? Ink(
-              height: buttonSize,
-              width: buttonSize,
-              child: Icon(
-                Icons.my_location_outlined,
-                color: Colors.black.withOpacity(0.6),
-              ),
+    const buttonSize = Constant.myLocationButtonSize;
+
+    return Material(
+      color: widget.data.myLocationButton != null
+          ? Colors.transparent: Colors.white.withOpacity(0.5),
+      child: InkWell(
+        onTap: () {
+          double? lat = _locationManager._userLocation?.latitude;
+          double? lng = _locationManager._userLocation?.longitude;
+          if (lat != null && lng != null) {
+            _controller?.animateCamera(
+                CameraUpdate.newLatLng(LatLng(lat, lng))
+            );
+          }
+        },
+        child: widget.data.myLocationButton ?? Ink(
+          height: buttonSize,
+          width: buttonSize,
+          child: Center(
+            child: Icon(
+              Icons.my_location_outlined,
+              color: Colors.black.withOpacity(0.6),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildZoomButtons(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildZoomButton(context, true),
+        _buildZoomButton(context, false)
+      ],
+    );
+  }
+
+  Widget _buildZoomButton(BuildContext context, bool zoomIn) {
+    double buttonSize = Constant.zoomButtonSize;
+    CameraUpdate cameraUpdate = zoomIn ? CameraUpdate.zoomIn(): CameraUpdate.zoomOut();
+    Widget? customWidget = zoomIn ? widget.data.zoomInButton: widget.data.zoomOutButton;
+    Widget defaultWidget = Ink(
+      height: buttonSize,
+      width: buttonSize,
+      child: Icon(
+        zoomIn? Icons.add: Icons.remove,
+        color: Colors.black.withOpacity(0.6),
+      ),
+    );
+    return Material(
+      color: customWidget != null? Colors.transparent: Colors.white.withOpacity(0.5),
+      child: InkWell(
+        onTap: () async {
+          await _controller?.animateCamera(cameraUpdate);
+        },
+        child: customWidget ?? defaultWidget,
       ),
     );
   }

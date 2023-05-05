@@ -22,8 +22,13 @@ class CoreMapData {
     this.myLocationButtonAlignment = Alignment.topRight,
     this.selectedRouteColor = Colors.blue,
     this.unselectedRouteColor = Colors.grey,
-    this.myLocationButtonPadding = const EdgeInsets.all(10),
+    this.myLocationButtonPadding,
     this.myLocationButton,
+    this.zoomButtonEnabled = true,
+    this.zoomButtonAlignment = Alignment.bottomRight,
+    this.zoomButtonPadding,
+    this.zoomInButton,
+    this.zoomOutButton,
   });
 
   ///should be removed, use file instead
@@ -104,11 +109,14 @@ class CoreMapData {
   ///   * [myLocationEnabled] parameter.
   final bool myLocationButtonEnabled;
 
-  ///alignment of the location button if it exists
+  ///alignment of the location button
+  ///
+  /// Please note that if you set [compassEnabled] to true,
+  /// these two will be overlapped
   final Alignment myLocationButtonAlignment;
 
   ///padding for my location button
-  final EdgeInsets myLocationButtonPadding;
+  final EdgeInsets? myLocationButtonPadding;
 
   ///custom my location button.
   ///
@@ -121,6 +129,29 @@ class CoreMapData {
   ///Color for unselected routes
   final Color unselectedRouteColor;
 
+  ///add zoom button to bottom right corner
+  final bool zoomButtonEnabled;
+
+  ///alignment for zoom button
+  ///
+  /// Please note that if you set [compassEnabled] to true,
+  /// these two will be overlapped
+  final Alignment zoomButtonAlignment;
+
+  ///padding for zoom button
+  final EdgeInsets? zoomButtonPadding;
+
+  ///custom zoom in button
+  ///
+  ///If you want a ripple press effect, use [Ink] to wrap your custom button
+  final Widget? zoomInButton;
+
+  ///custom zoom out button
+  ///
+  /// If you want a ripple press effect, use [Ink] to wrap your custom button
+  final Widget? zoomOutButton;
+
+  ///copy data with new parameters
   CoreMapData copyWith({
     String? accessToken,
     CameraPosition? initialCameraPosition,
@@ -139,6 +170,11 @@ class CoreMapData {
     Color? unselectedRouteColor,
     EdgeInsets? myLocationButtonPadding,
     Widget? myLocationButton,
+    bool? zoomButtonEnabled,
+    Alignment? zoomButtonAlignment,
+    EdgeInsets? zoomButtonPadding,
+    Widget? zoomInButton,
+    Widget? zoomOutButton,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -158,6 +194,11 @@ class CoreMapData {
       unselectedRouteColor: unselectedRouteColor ?? this.unselectedRouteColor,
       myLocationButtonPadding: myLocationButtonPadding ?? this.myLocationButtonPadding,
       myLocationButton: myLocationButton ?? this.myLocationButton,
+      zoomButtonEnabled: zoomButtonEnabled ?? this.zoomButtonEnabled,
+      zoomButtonAlignment: zoomButtonAlignment ?? this.zoomButtonAlignment,
+      zoomButtonPadding: zoomButtonPadding ?? this.zoomButtonPadding,
+      zoomInButton: zoomInButton ?? this.zoomInButton,
+      zoomOutButton: zoomOutButton ?? this.zoomOutButton,
     );
   }
 }
