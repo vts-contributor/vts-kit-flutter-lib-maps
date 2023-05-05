@@ -77,7 +77,8 @@ class _TestMapScreenState extends State<TestMapScreen> {
           compassEnabled: true,
           myLocationEnabled: true,
           myLocationButtonEnabled: true,
-          myLocationButtonAlignment: Alignment.bottomRight,
+          myLocationButtonAlignment: Alignment.bottomLeft,
+          zoomButtonAlignment: Alignment.bottomLeft,
         ),
         callbacks: CoreMapCallbacks(
           onMapCreated: (controller) {

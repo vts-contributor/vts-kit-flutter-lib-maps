@@ -166,7 +166,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         ? (widget.data.zoomButtonPadding ?? const EdgeInsets.all(Constant.defaultButtonPadding))
         : EdgeInsets.zero;
 
-    double locationButtonPaddingSize = hasZoomButton
+    double locationButtonPaddingSize = hasZoomButton && widget.data.myLocationButtonAlignment == widget.data.zoomButtonAlignment
         ? zoomButtonPadding.horizontal + Constant.buttonDistance + Constant.zoomButtonSize
         : Constant.defaultButtonPadding;
     EdgeInsets locationButtonPadding = widget.data.myLocationButtonPadding ??
