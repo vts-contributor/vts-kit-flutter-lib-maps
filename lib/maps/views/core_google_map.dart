@@ -60,6 +60,7 @@ class _CoreGoogleMapState extends State<_CoreGoogleMap> {
         _controller = controller;
         widget.callbacks?.onMapCreated?.call(controller);
       },
+      gestureRecognizers: widget.data.gestureRecognizers,
       cameraTargetBounds: widget.data.cameraTargetBounds.toGoogle(),
       minMaxZoomPreference: widget.data.minMaxZoomPreference.toGoogle(),
       compassEnabled: widget.data.compassEnabled,
