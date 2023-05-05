@@ -428,7 +428,7 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   void onCameraIdle() {
-    callbacks?.onCameraMoveStarted?.call();
+    callbacks?.onCameraIdle?.call();
   }
 
   void onMapClick(vt.LatLng latLng) {

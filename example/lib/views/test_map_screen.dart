@@ -95,6 +95,9 @@ class _TestMapScreenState extends State<TestMapScreen> {
           onLongPress: (latLng) {
             Log.d("onLongPress", latLng.toString());
           },
+          onCameraIdle: () {
+            Log.d("CameraIdle", "camera idle");
+          }
         ),
         shapes: CoreMapShapes(
           // polygons: {polygon1()},
