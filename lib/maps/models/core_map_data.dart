@@ -23,6 +23,7 @@ class CoreMapData {
     this.selectedRouteColor = Colors.blue,
     this.unselectedRouteColor = Colors.grey,
     this.myLocationButtonPadding = const EdgeInsets.all(10),
+    this.myLocationButton,
   });
 
   ///should be removed, use file instead
@@ -109,6 +110,11 @@ class CoreMapData {
   ///padding for my location button
   final EdgeInsets myLocationButtonPadding;
 
+  ///custom my location button.
+  ///
+  /// If you want a ripple press effect, use [Ink] to wrap your custom button
+  final Widget? myLocationButton;
+
   ///Color for the selected route
   final Color selectedRouteColor;
 
@@ -132,6 +138,7 @@ class CoreMapData {
     Color? selectedRouteColor,
     Color? unselectedRouteColor,
     EdgeInsets? myLocationButtonPadding,
+    Widget? myLocationButton,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -150,6 +157,7 @@ class CoreMapData {
       selectedRouteColor: selectedRouteColor ?? this.selectedRouteColor,
       unselectedRouteColor: unselectedRouteColor ?? this.unselectedRouteColor,
       myLocationButtonPadding: myLocationButtonPadding ?? this.myLocationButtonPadding,
+      myLocationButton: myLocationButton ?? this.myLocationButton,
     );
   }
 }

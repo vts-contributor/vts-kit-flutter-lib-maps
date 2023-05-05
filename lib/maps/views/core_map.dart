@@ -177,7 +177,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
                 );
               }
             },
-            child: Ink(
+            child: widget.data.myLocationButton ?? Ink(
               height: buttonSize,
               width: buttonSize,
               child: Icon(
