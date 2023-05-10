@@ -1,6 +1,7 @@
 library core_map;
 
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';

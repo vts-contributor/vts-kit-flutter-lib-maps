@@ -28,6 +28,8 @@ class CoreMapData {
     this.zoomButtonPadding,
     this.zoomInButtonData,
     this.zoomOutButtonData,
+    this.zoomButtonDividerColor = Colors.grey,
+    this.zoomButtonDividerThickness = 1,
   });
 
   ///should be removed, use file instead
@@ -148,6 +150,16 @@ class CoreMapData {
   /// If you want a ripple press effect, use [Ink] to wrap your custom button
   final CoreMapButtonCustomizeData? zoomOutButtonData;
 
+  ///color of the divider between zoom buttons
+  ///
+  /// set this = [Colors.transparent] to disable the divider
+  final Color zoomButtonDividerColor;
+
+  ///width of the divider between zoom buttons
+  ///
+  /// set this = 0 to disable the divider
+  final double zoomButtonDividerThickness;
+
   ///copy data with new parameters
   CoreMapData copyWith({
     String? accessToken,
@@ -172,6 +184,8 @@ class CoreMapData {
     EdgeInsets? zoomButtonPadding,
     CoreMapButtonCustomizeData? zoomInButtonData,
     CoreMapButtonCustomizeData? zoomOutButtonData,
+    Color? zoomButtonDividerColor,
+    double? zoomButtonDividerWidth,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -196,6 +210,8 @@ class CoreMapData {
       zoomButtonPadding: zoomButtonPadding ?? this.zoomButtonPadding,
       zoomInButtonData: zoomInButtonData ?? this.zoomInButtonData,
       zoomOutButtonData: zoomOutButtonData ?? this.zoomOutButtonData,
+      zoomButtonDividerColor: zoomButtonDividerColor ?? this.zoomButtonDividerColor,
+      zoomButtonDividerThickness: zoomButtonDividerWidth ?? this.zoomButtonDividerThickness,
     );
   }
 }
@@ -205,7 +221,7 @@ class CoreMapButtonCustomizeData {
     this.width,
     this.height,
     this.color,
-    this.border,
+    this.borderSide,
     this.icon,
     this.borderRadius,
   });
@@ -213,7 +229,7 @@ class CoreMapButtonCustomizeData {
   final double? width;
   final double? height;
   final Color? color;
-  final Border? border;
+  final BorderSide? borderSide;
   final Icon? icon;
   final BorderRadius? borderRadius;
 }

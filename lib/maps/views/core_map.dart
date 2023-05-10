@@ -195,9 +195,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     const buttonSize = Constant.myLocationButtonSize;
 
     return Material(
-      color: widget.data.myLocationButtonData?.color ?? Colors.white.withOpacity(0.5),
-      shape: widget.data.myLocationButtonData?.border,
-      borderRadius: widget.data.myLocationButtonData?.borderRadius,
+      color: Colors.transparent,
       child: InkWell(
         onTap: () {
           double? lat = _locationManager._userLocation?.latitude;
@@ -209,6 +207,11 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         child: Ink(
           height: widget.data.myLocationButtonData?.height ?? buttonSize,
           width: widget.data.myLocationButtonData?.width ?? buttonSize,
+          decoration: BoxDecoration(
+            color: widget.data.myLocationButtonData?.color ?? Colors.white.withOpacity(0.5),
+            borderRadius: widget.data.myLocationButtonData?.borderRadius,
+            border: Border.fromBorderSide(widget.data.myLocationButtonData?.borderSide ?? BorderSide.none),
+          ),
           child: Center(
             child: widget.data.myLocationButtonData?.icon ??
                 Icon(
@@ -226,7 +229,21 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [_buildZoomButton(context, true), _buildZoomButton(context, false)],
+      children: [
+        _buildZoomButton(context, true),
+        _buildDivider(context),
+        _buildZoomButton(context, false),
+      ],
+    );
+  }
+
+  Widget _buildDivider(BuildContext context) {
+    double width = min(widget.data.zoomInButtonData?.width ?? Constant.zoomButtonSize,
+        widget.data.zoomOutButtonData?.width ?? Constant.zoomButtonSize);
+    return Container(
+      width: width,
+      height: widget.data.zoomButtonDividerThickness,
+      color: widget.data.zoomButtonDividerColor,
     );
   }
 
@@ -236,9 +253,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     CoreMapButtonCustomizeData? buttonData =
         zoomIn ? widget.data.zoomInButtonData : widget.data.zoomOutButtonData;
     return Material(
-      color: buttonData?.color ?? Colors.white.withOpacity(0.5),
-      shape: buttonData?.border,
-      borderRadius: buttonData?.borderRadius,
+      color: Colors.transparent,
       child: InkWell(
         onTap: () async {
           await _controller?.animateCamera(cameraUpdate);
@@ -246,6 +261,11 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         child: Ink(
           height: buttonData?.height ?? buttonSize,
           width: buttonData?.width ?? buttonSize,
+          decoration: BoxDecoration(
+            color: buttonData?.color ?? Colors.white.withOpacity(0.5),
+            borderRadius: buttonData?.borderRadius,
+            border: Border.fromBorderSide(buttonData?.borderSide ?? BorderSide.none),
+          ),
           child: buttonData?.icon ??
               Icon(
                 zoomIn ? Icons.add : Icons.remove,

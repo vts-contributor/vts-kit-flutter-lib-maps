@@ -13,7 +13,8 @@ class TestMapScreen extends StatefulWidget {
 }
 
 class _TestMapScreenState extends State<TestMapScreen> {
-  final CoreMapControllerCompleter _controllerCompleter = CoreMapControllerCompleter();
+  final CoreMapControllerCompleter _controllerCompleter =
+      CoreMapControllerCompleter();
 
   CoreMapType _type = CoreMapType.viettel;
 
@@ -38,7 +39,9 @@ class _TestMapScreenState extends State<TestMapScreen> {
             icon: const Icon(Icons.swap_horiz),
             onPressed: () async {
               setState(() {
-                _type = _type == CoreMapType.viettel ? CoreMapType.google : CoreMapType.viettel;
+                _type = _type == CoreMapType.viettel
+                    ? CoreMapType.google
+                    : CoreMapType.viettel;
               });
             },
           ),
@@ -62,14 +65,32 @@ class _TestMapScreenState extends State<TestMapScreen> {
       body: CoreMap(
         type: _type,
         data: CoreMapData(
-            accessToken: "49013166841fe36d7fa7f395fce4a663",
-            initialCameraPosition:
-                CameraPosition(target: const LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
-            compassEnabled: true,
-            myLocationEnabled: true,
-            zoomInButtonData: CoreMapButtonCustomizeData(
-              icon: Icon(Icons.reddit),
-            )),
+          accessToken: "49013166841fe36d7fa7f395fce4a663",
+          initialCameraPosition: CameraPosition(
+              target: const LatLng(9.85419858085518, 105.49970250115466),
+              zoom: 7),
+          compassEnabled: true,
+          myLocationEnabled: true,
+          zoomInButtonData: CoreMapButtonCustomizeData(
+            icon: Icon(Icons.reddit, ),
+            color: Colors.yellow.withOpacity(0.4),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(4),
+            )
+          ),
+          zoomOutButtonData: CoreMapButtonCustomizeData(
+            icon: Icon(Icons.bluetooth),
+            color: Colors.yellow.withOpacity(0.4),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(4),
+              bottomRight: Radius.circular(4),
+            ),
+          ),
+          zoomButtonAlignment: Alignment.topRight,
+          zoomButtonDividerColor: Colors.grey,
+          zoomButtonDividerThickness: 1,
+        ),
         callbacks: CoreMapCallbacks(onMapCreated: (controller) {
           _controllerCompleter.complete(controller);
         }, onCameraMove: (position) {
@@ -138,7 +159,8 @@ class _TestDialogState extends State<TestDialog> {
             ),
             IconButton(
               onPressed: () {
-                widget.shapes.polygons.removeWhere((element) => element.id == polygon1().id);
+                widget.shapes.polygons
+                    .removeWhere((element) => element.id == polygon1().id);
                 widget.setState();
               },
               icon: const Icon(Icons.delete),
@@ -158,7 +180,8 @@ class _TestDialogState extends State<TestDialog> {
             ),
             IconButton(
               onPressed: () {
-                widget.shapes.polylines.removeWhere((element) => element.id == polyline().id);
+                widget.shapes.polylines
+                    .removeWhere((element) => element.id == polyline().id);
                 widget.setState();
               },
               icon: const Icon(Icons.delete),
@@ -178,7 +201,8 @@ class _TestDialogState extends State<TestDialog> {
             ),
             IconButton(
               onPressed: () {
-                widget.shapes.circles.removeWhere((element) => element.id == circle().id);
+                widget.shapes.circles
+                    .removeWhere((element) => element.id == circle().id);
                 widget.setState();
               },
               icon: const Icon(Icons.delete),
@@ -198,7 +222,8 @@ class _TestDialogState extends State<TestDialog> {
             ),
             IconButton(
               onPressed: () {
-                widget.shapes.markers.removeWhere((element) => element.id == marker().id);
+                widget.shapes.markers
+                    .removeWhere((element) => element.id == marker().id);
                 widget.setState();
               },
               icon: const Icon(Icons.delete),
@@ -211,8 +236,8 @@ class _TestDialogState extends State<TestDialog> {
                 onPressed: () async {
                   Log.d(
                       "getScreenCoordinate",
-                      (await widget.controller.getScreenCoordinate(
-                              const LatLng(9.75419858085518, 105.59970250115466)))
+                      (await widget.controller.getScreenCoordinate(const LatLng(
+                              9.75419858085518, 105.59970250115466)))
                           .toString());
                 },
                 child: const Text("Log screen coordinate")),
@@ -225,7 +250,8 @@ class _TestDialogState extends State<TestDialog> {
           children: [
             ElevatedButton(
                 onPressed: () async {
-                  Log.d("getCurrentPosition", (widget.controller.getCurrentPosition()).toString());
+                  Log.d("getCurrentPosition",
+                      (widget.controller.getCurrentPosition()).toString());
                 },
                 child: const Text("Log camera position")),
             const SizedBox(
