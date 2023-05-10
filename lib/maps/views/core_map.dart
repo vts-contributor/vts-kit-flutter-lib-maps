@@ -25,7 +25,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   CoreMapController? _controller;
 
   late final _LocationManager _locationManager = _LocationManager(widget.callbacks);
-  
+
   late final _RoutingManagerImpl _routingManager = _RoutingManagerImpl(_locationManager);
 
   @override
@@ -54,9 +54,8 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   }
 
   void _initRoutingManager() {
-    _routingManager.addListener(() => setState((){}));
-    _routingManager.updateColor(widget.data.selectedRouteColor,
-        widget.data.unselectedRouteColor);
+    _routingManager.addListener(() => setState(() {}));
+    _routingManager.updateColor(widget.data.selectedRouteColor, widget.data.unselectedRouteColor);
   }
 
   @override
@@ -73,8 +72,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   }
 
   void _updateRoutingManager() {
-    _routingManager.updateColor(widget.data.selectedRouteColor,
-        widget.data.unselectedRouteColor);
+    _routingManager.updateColor(widget.data.selectedRouteColor, widget.data.unselectedRouteColor);
   }
 
   @override
@@ -94,8 +92,8 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         _buildMap(
           type: widget.type,
           data: widget.data.copyWith(
-              initialCameraPosition: _controller?.getCurrentPosition() ??
-                  widget.data.initialCameraPosition),
+              initialCameraPosition:
+                  _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition),
           shapes: _routingManager.combineShape(widget.shapes),
           callbacks: callbacks.copyWith(
             onMapCreated: (controller) {
@@ -131,8 +129,8 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         return _CoreViettelMap(
           data: data,
           callbacks: callbacks,
-          userLocationDrawOptions: getViettelUserLocationDrawOptions(
-              _locationManager._userLocation),
+          userLocationDrawOptions:
+              getViettelUserLocationDrawOptions(_locationManager._userLocation),
           shapes: shapes,
         );
     }
@@ -140,8 +138,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   ///for pseudo user location icon on the vt map because currently, vt map's
   ///location feature is broken
-  vt.CircleOptions? getViettelUserLocationDrawOptions(
-      LocationData? userLocation) {
+  vt.CircleOptions? getViettelUserLocationDrawOptions(LocationData? userLocation) {
     double? lat = userLocation?.latitude;
     double? lng = userLocation?.longitude;
 
@@ -166,11 +163,13 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         ? (widget.data.zoomButtonPadding ?? const EdgeInsets.all(Constant.defaultButtonPadding))
         : EdgeInsets.zero;
 
-    double locationButtonPaddingSize = hasZoomButton && widget.data.myLocationButtonAlignment == widget.data.zoomButtonAlignment
-        ? zoomButtonPadding.horizontal + Constant.buttonDistance + Constant.zoomButtonSize
-        : Constant.defaultButtonPadding;
+    double locationButtonPaddingSize =
+        hasZoomButton && widget.data.myLocationButtonAlignment == widget.data.zoomButtonAlignment
+            ? zoomButtonPadding.horizontal + Constant.buttonDistance + Constant.zoomButtonSize
+            : Constant.defaultButtonPadding;
     EdgeInsets locationButtonPadding = widget.data.myLocationButtonPadding ??
-        EdgeInsets.symmetric(horizontal: locationButtonPaddingSize, vertical: Constant.defaultButtonPadding);
+        EdgeInsets.symmetric(
+            horizontal: locationButtonPaddingSize, vertical: Constant.defaultButtonPadding);
 
     return [
       if (hasLocationButton)
@@ -196,26 +195,26 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     const buttonSize = Constant.myLocationButtonSize;
 
     return Material(
-      color: widget.data.myLocationButton != null
-          ? Colors.transparent: Colors.white.withOpacity(0.5),
+      color: widget.data.myLocationButtonData?.color ?? Colors.white.withOpacity(0.5),
+      shape: widget.data.myLocationButtonData?.border,
+      borderRadius: widget.data.myLocationButtonData?.borderRadius,
       child: InkWell(
         onTap: () {
           double? lat = _locationManager._userLocation?.latitude;
           double? lng = _locationManager._userLocation?.longitude;
           if (lat != null && lng != null) {
-            _controller?.animateCamera(
-                CameraUpdate.newLatLng(LatLng(lat, lng))
-            );
+            _controller?.animateCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
           }
         },
-        child: widget.data.myLocationButton ?? Ink(
-          height: buttonSize,
-          width: buttonSize,
+        child: Ink(
+          height: widget.data.myLocationButtonData?.height ?? buttonSize,
+          width: widget.data.myLocationButtonData?.width ?? buttonSize,
           child: Center(
-            child: Icon(
-              Icons.my_location_outlined,
-              color: Colors.black.withOpacity(0.6),
-            ),
+            child: widget.data.myLocationButtonData?.icon ??
+                Icon(
+                  Icons.my_location_outlined,
+                  color: Colors.black.withOpacity(0.6),
+                ),
           ),
         ),
       ),
@@ -227,32 +226,32 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _buildZoomButton(context, true),
-        _buildZoomButton(context, false)
-      ],
+      children: [_buildZoomButton(context, true), _buildZoomButton(context, false)],
     );
   }
 
   Widget _buildZoomButton(BuildContext context, bool zoomIn) {
     double buttonSize = Constant.zoomButtonSize;
-    CameraUpdate cameraUpdate = zoomIn ? CameraUpdate.zoomIn(): CameraUpdate.zoomOut();
-    Widget? customWidget = zoomIn ? widget.data.zoomInButton: widget.data.zoomOutButton;
-    Widget defaultWidget = Ink(
-      height: buttonSize,
-      width: buttonSize,
-      child: Icon(
-        zoomIn? Icons.add: Icons.remove,
-        color: Colors.black.withOpacity(0.6),
-      ),
-    );
+    CameraUpdate cameraUpdate = zoomIn ? CameraUpdate.zoomIn() : CameraUpdate.zoomOut();
+    CoreMapButtonCustomizeData? buttonData =
+        zoomIn ? widget.data.zoomInButtonData : widget.data.zoomOutButtonData;
     return Material(
-      color: customWidget != null? Colors.transparent: Colors.white.withOpacity(0.5),
+      color: buttonData?.color ?? Colors.white.withOpacity(0.5),
+      shape: buttonData?.border,
+      borderRadius: buttonData?.borderRadius,
       child: InkWell(
         onTap: () async {
           await _controller?.animateCamera(cameraUpdate);
         },
-        child: customWidget ?? defaultWidget,
+        child: Ink(
+          height: buttonData?.height ?? buttonSize,
+          width: buttonData?.width ?? buttonSize,
+          child: buttonData?.icon ??
+              Icon(
+                zoomIn ? Icons.add : Icons.remove,
+                color: Colors.black.withOpacity(0.6),
+              ),
+        ),
       ),
     );
   }

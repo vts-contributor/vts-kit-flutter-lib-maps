@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +22,12 @@ class CoreMapData {
     this.selectedRouteColor = Colors.blue,
     this.unselectedRouteColor = Colors.grey,
     this.myLocationButtonPadding,
-    this.myLocationButton,
+    this.myLocationButtonData,
     this.zoomButtonEnabled = true,
     this.zoomButtonAlignment = Alignment.bottomRight,
     this.zoomButtonPadding,
-    this.zoomInButton,
-    this.zoomOutButton,
+    this.zoomInButtonData,
+    this.zoomOutButtonData,
   });
 
   ///should be removed, use file instead
@@ -119,9 +118,7 @@ class CoreMapData {
   final EdgeInsets? myLocationButtonPadding;
 
   ///custom my location button.
-  ///
-  /// If you want a ripple press effect, use [Ink] to wrap your custom button
-  final Widget? myLocationButton;
+  final CoreMapButtonCustomizeData? myLocationButtonData;
 
   ///Color for the selected route
   final Color selectedRouteColor;
@@ -144,12 +141,12 @@ class CoreMapData {
   ///custom zoom in button
   ///
   ///If you want a ripple press effect, use [Ink] to wrap your custom button
-  final Widget? zoomInButton;
+  final CoreMapButtonCustomizeData? zoomInButtonData;
 
   ///custom zoom out button
   ///
   /// If you want a ripple press effect, use [Ink] to wrap your custom button
-  final Widget? zoomOutButton;
+  final CoreMapButtonCustomizeData? zoomOutButtonData;
 
   ///copy data with new parameters
   CoreMapData copyWith({
@@ -169,12 +166,12 @@ class CoreMapData {
     Color? selectedRouteColor,
     Color? unselectedRouteColor,
     EdgeInsets? myLocationButtonPadding,
-    Widget? myLocationButton,
+    CoreMapButtonCustomizeData? myLocationButtonData,
     bool? zoomButtonEnabled,
     Alignment? zoomButtonAlignment,
     EdgeInsets? zoomButtonPadding,
-    Widget? zoomInButton,
-    Widget? zoomOutButton,
+    CoreMapButtonCustomizeData? zoomInButtonData,
+    CoreMapButtonCustomizeData? zoomOutButtonData,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -193,12 +190,30 @@ class CoreMapData {
       selectedRouteColor: selectedRouteColor ?? this.selectedRouteColor,
       unselectedRouteColor: unselectedRouteColor ?? this.unselectedRouteColor,
       myLocationButtonPadding: myLocationButtonPadding ?? this.myLocationButtonPadding,
-      myLocationButton: myLocationButton ?? this.myLocationButton,
+      myLocationButtonData: myLocationButtonData ?? this.myLocationButtonData,
       zoomButtonEnabled: zoomButtonEnabled ?? this.zoomButtonEnabled,
       zoomButtonAlignment: zoomButtonAlignment ?? this.zoomButtonAlignment,
       zoomButtonPadding: zoomButtonPadding ?? this.zoomButtonPadding,
-      zoomInButton: zoomInButton ?? this.zoomInButton,
-      zoomOutButton: zoomOutButton ?? this.zoomOutButton,
+      zoomInButtonData: zoomInButtonData ?? this.zoomInButtonData,
+      zoomOutButtonData: zoomOutButtonData ?? this.zoomOutButtonData,
     );
   }
+}
+
+class CoreMapButtonCustomizeData {
+  const CoreMapButtonCustomizeData({
+    this.width,
+    this.height,
+    this.color,
+    this.border,
+    this.icon,
+    this.borderRadius,
+  });
+
+  final double? width;
+  final double? height;
+  final Color? color;
+  final Border? border;
+  final Icon? icon;
+  final BorderRadius? borderRadius;
 }

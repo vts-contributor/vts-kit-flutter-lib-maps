@@ -13,7 +13,6 @@ class TestRoutingScreen extends StatefulWidget {
 }
 
 class _TestRoutingScreenState extends State<TestRoutingScreen> {
-
   //strange api error case
   // LatLng firstPoint = LatLng(10.836858, 106.678863);
   // LatLng secondPoint = LatLng(10.844372, 106.673161);
@@ -31,47 +30,46 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(onPressed: () {
-            final routes = Provider.of<RoutingViewModel>(context, listen: false).directions?.routes;
-            _routingManager?.selectRoute(routes?.first.id ?? "");
-          }, icon: const Icon(Icons.swap_vert_circle)),
+          IconButton(
+              onPressed: () {
+                final routes =
+                    Provider.of<RoutingViewModel>(context, listen: false).directions?.routes;
+                _routingManager?.selectRoute(routes?.first.id ?? "");
+              },
+              icon: const Icon(Icons.swap_vert_circle)),
           IconButton(
             icon: const Icon(Icons.swap_horiz),
             onPressed: () async {
               setState(() {
-                _type = _type == CoreMapType.viettel? CoreMapType.google: CoreMapType.viettel;
+                _type = _type == CoreMapType.viettel ? CoreMapType.google : CoreMapType.viettel;
               });
             },
           ),
-          IconButton(onPressed: () async {
-            final directions = await Provider.of<RoutingViewModel>(context, listen: false).downloadDirections(
-              firstPoint,
-              secondPoint
-            );
-            _routingManager?.buildRoutes(directions.routes);
-          }, icon: const Icon(Icons.download))
+          IconButton(
+              onPressed: () async {
+                final directions = await Provider.of<RoutingViewModel>(context, listen: false)
+                    .downloadDirections(firstPoint, secondPoint);
+                _routingManager?.buildRoutes(directions.routes);
+              },
+              icon: const Icon(Icons.download))
         ],
       ),
       body: CoreMap(
         type: _type,
         data: CoreMapData(
-          accessToken: "49013166841fe36d7fa7f395fce4a663",
-          initialCameraPosition: CameraPosition(
-              target: firstPoint, zoom: 15),
-          compassEnabled: true,
-          myLocationEnabled: true,
-          myLocationButtonEnabled: true,
-          myLocationButtonAlignment: Alignment.bottomRight,
-          selectedRouteColor: Colors.blue
-        ),
-        callbacks: CoreMapCallbacks(
-          onRoutingManagerReady: (manager) {
-            _routingManager = manager;
-            _routingManager?.addRouteTapListener((id) {
-              Log.d("TEST ROUTING SCREEN", "new route selected $id");
-            });
-          }
-        ),
+            accessToken: "49013166841fe36d7fa7f395fce4a663",
+            initialCameraPosition: CameraPosition(target: firstPoint, zoom: 15),
+            compassEnabled: true,
+            myLocationEnabled: true,
+            myLocationButtonData: true,
+            myLocationButtonAlignment: Alignment.bottomRight,
+            selectedRouteColor: Colors.blue),
+        callbacks: CoreMapCallbacks(onRoutingManagerReady: (manager) {
+          _routingManager = manager;
+          _routingManager?.addRouteTapListener((id) {
+            Log.d("TEST ROUTING SCREEN", "new route selected $id");
+          });
+        }),
       ),
     );
   }
