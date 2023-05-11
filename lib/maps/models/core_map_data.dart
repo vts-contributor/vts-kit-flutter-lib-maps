@@ -185,7 +185,7 @@ class CoreMapData {
     CoreMapButtonCustomizeData? zoomInButtonData,
     CoreMapButtonCustomizeData? zoomOutButtonData,
     Color? zoomButtonDividerColor,
-    double? zoomButtonDividerWidth,
+    double? zoomButtonDividerThickness,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -211,7 +211,7 @@ class CoreMapData {
       zoomInButtonData: zoomInButtonData ?? this.zoomInButtonData,
       zoomOutButtonData: zoomOutButtonData ?? this.zoomOutButtonData,
       zoomButtonDividerColor: zoomButtonDividerColor ?? this.zoomButtonDividerColor,
-      zoomButtonDividerThickness: zoomButtonDividerWidth ?? this.zoomButtonDividerThickness,
+      zoomButtonDividerThickness: zoomButtonDividerThickness ?? this.zoomButtonDividerThickness,
     );
   }
 }
@@ -230,6 +230,6 @@ class CoreMapButtonCustomizeData {
   final double? height;
   final Color? color;
   final BorderSide? borderSide;
-  final Icon? icon;
+  final Widget? icon;
   final BorderRadius? borderRadius;
 }
