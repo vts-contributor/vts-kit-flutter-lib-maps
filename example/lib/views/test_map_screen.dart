@@ -13,8 +13,7 @@ class TestMapScreen extends StatefulWidget {
 }
 
 class _TestMapScreenState extends State<TestMapScreen> {
-  final CoreMapControllerCompleter _controllerCompleter =
-      CoreMapControllerCompleter();
+  CoreMapController? _controller;
 
   CoreMapType _type = CoreMapType.viettel;
 
@@ -27,8 +26,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           IconButton(
             icon: const Icon(Icons.abc),
             onPressed: () async {
-              final controller = await _controllerCompleter.controller;
-              controller.animateCameraToCenterOfPoints([
+              _controller?.animateCameraToCenterOfPoints([
                 LatLng(9.50184, 105.26001),
                 LatLng(9.14554, 105.15764),
                 LatLng(9.22674, 105.45377),
@@ -48,16 +46,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
-              final controller = await _controllerCompleter.controller;
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return TestDialog(
-                      controller: controller,
-                      shapes: CoreMapShapes(polygons: {polygon1()}),
-                      setState: () => setState(() {}),
-                    );
-                  });
+                  _controller?.animateCamera(CameraUpdate.newLatLng(LatLng(13.199416385789831, 108.46161682049204)), duration: 1);
             },
           ),
         ],
@@ -92,9 +81,9 @@ class _TestMapScreenState extends State<TestMapScreen> {
           zoomButtonDividerThickness: 1,
         ),
         callbacks: CoreMapCallbacks(onMapCreated: (controller) {
-          _controllerCompleter.complete(controller);
+          _controller = controller;
         }, onCameraMove: (position) {
-          Log.d("onCameraMove", position.toString());
+          Log.d("onCameraMove", position.toString() + (_controller?.getCurrentPosition().toString() ?? ""));
         },
             // onCameraIdle: () => Log.d("onCameraIdle", ""),
             // onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
@@ -116,227 +105,4 @@ class _TestMapScreenState extends State<TestMapScreen> {
   }
 
   void findRoute() {}
-}
-
-class TestDialog extends StatefulWidget {
-  final CoreMapController controller;
-  final VoidCallback setState;
-  final CoreMapShapes shapes;
-
-  const TestDialog({
-    super.key,
-    required this.controller,
-    required this.shapes,
-    required this.setState,
-  });
-
-  @override
-  State<TestDialog> createState() => _TestDialogState();
-}
-
-class _TestDialogState extends State<TestDialog> {
-  double _zoomBy = 2;
-
-  double _zoomTo = 7;
-
-  @override
-  Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: const Text("Test features"),
-      alignment: Alignment.center,
-      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      children: [
-        Row(
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  widget.shapes.polygons.add(polygon1());
-                  widget.setState();
-                },
-                child: const Text("add a polygon")),
-            const SizedBox(
-              width: 10,
-            ),
-            IconButton(
-              onPressed: () {
-                widget.shapes.polygons
-                    .removeWhere((element) => element.id == polygon1().id);
-                widget.setState();
-              },
-              icon: const Icon(Icons.delete),
-            )
-          ],
-        ),
-        Row(
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  widget.shapes.polylines.add(polyline());
-                  widget.setState();
-                },
-                child: const Text("add a polyline")),
-            const SizedBox(
-              width: 10,
-            ),
-            IconButton(
-              onPressed: () {
-                widget.shapes.polylines
-                    .removeWhere((element) => element.id == polyline().id);
-                widget.setState();
-              },
-              icon: const Icon(Icons.delete),
-            )
-          ],
-        ),
-        Row(
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  widget.shapes.circles.add(circle());
-                  widget.setState();
-                },
-                child: const Text("add a circle")),
-            const SizedBox(
-              width: 10,
-            ),
-            IconButton(
-              onPressed: () {
-                widget.shapes.circles
-                    .removeWhere((element) => element.id == circle().id);
-                widget.setState();
-              },
-              icon: const Icon(Icons.delete),
-            )
-          ],
-        ),
-        Row(
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  widget.shapes.markers.add(marker());
-                  widget.setState();
-                },
-                child: const Text("add a marker")),
-            const SizedBox(
-              width: 10,
-            ),
-            IconButton(
-              onPressed: () {
-                widget.shapes.markers
-                    .removeWhere((element) => element.id == marker().id);
-                widget.setState();
-              },
-              icon: const Icon(Icons.delete),
-            )
-          ],
-        ),
-        Row(
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  Log.d(
-                      "getScreenCoordinate",
-                      (await widget.controller.getScreenCoordinate(const LatLng(
-                              9.75419858085518, 105.59970250115466)))
-                          .toString());
-                },
-                child: const Text("Log screen coordinate")),
-            const SizedBox(
-              width: 10,
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  Log.d("getCurrentPosition",
-                      (widget.controller.getCurrentPosition()).toString());
-                },
-                child: const Text("Log camera position")),
-            const SizedBox(
-              width: 10,
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            const Text("zoom in/out"),
-            const SizedBox(
-              width: 10,
-            ),
-            IconButton(
-              onPressed: () {
-                widget.controller.animateCamera(CameraUpdate.zoomIn());
-              },
-              icon: const Icon(Icons.zoom_in),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            IconButton(
-              onPressed: () {
-                widget.controller.animateCamera(CameraUpdate.zoomOut());
-              },
-              icon: const Icon(Icons.zoom_out),
-            )
-          ],
-        ),
-        Row(
-          children: [
-            const Text("zoom by"),
-            const SizedBox(
-              width: 10,
-            ),
-            SizedBox(
-              height: 40,
-              width: 40,
-              child: TextField(
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  _zoomBy = double.parse(value);
-                },
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            IconButton(
-              icon: const Icon(Icons.skip_next_outlined),
-              onPressed: () {
-                widget.controller.animateCamera(CameraUpdate.zoomBy(_zoomBy));
-              },
-            )
-          ],
-        ),
-        Row(
-          children: [
-            const Text("zoom to"),
-            const SizedBox(
-              width: 10,
-            ),
-            SizedBox(
-              height: 40,
-              width: 40,
-              child: TextField(
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  _zoomTo = double.parse(value);
-                },
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            IconButton(
-              icon: const Icon(Icons.skip_next_outlined),
-              onPressed: () {
-                widget.controller.animateCamera(CameraUpdate.zoomTo(_zoomTo));
-              },
-            )
-          ],
-        )
-      ],
-    );
-  }
 }

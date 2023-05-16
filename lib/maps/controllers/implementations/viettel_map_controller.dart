@@ -455,7 +455,12 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   @override
-  Future<void> animateCamera(CameraUpdate cameraUpdate) async {
-    await _controller.animateCamera(cameraUpdate: cameraUpdate.toViettel());
+  Future<void> animateCamera(CameraUpdate cameraUpdate, {int? duration}) async {
+    await _controller.animateCamera(cameraUpdate: cameraUpdate.toViettel(), duration: duration);
+  }
+
+  @override
+  Future<void> moveCamera(CameraUpdate cameraUpdate) async {
+    await _controller.moveCamera(cameraUpdate.toViettel());
   }
 }

@@ -42,8 +42,13 @@ class _GoogleMapController extends BaseCoreMapController
   }
 
   @override
-  Future<void> animateCamera(CameraUpdate cameraUpdate) async {
+  Future<void> animateCamera(CameraUpdate cameraUpdate, {int? duration}) async {
     await _controller.animateCamera(cameraUpdate.toGoogle());
+  }
+
+  @override
+  Future<void> moveCamera(CameraUpdate cameraUpdate) async {
+    await _controller.moveCamera(cameraUpdate.toGoogle());
   }
 
   Future<void> updateMarkers(Set<Marker> newMarkers) async {
