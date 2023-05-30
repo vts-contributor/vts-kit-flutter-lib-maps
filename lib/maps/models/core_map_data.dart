@@ -21,6 +21,8 @@ class CoreMapData {
     this.myLocationButtonAlignment = Alignment.topRight,
     this.selectedRouteColor = Colors.blue,
     this.unselectedRouteColor = Colors.grey,
+    this.selectedRouteWidth,
+    this.unselectedRouteWidth,
     this.myLocationButtonPadding,
     this.myLocationButtonData,
     this.zoomButtonEnabled = true,
@@ -128,6 +130,12 @@ class CoreMapData {
   ///Color for unselected routes
   final Color unselectedRouteColor;
 
+  ///Selected route polyline width
+  final int? selectedRouteWidth;
+
+  ///Unselected route polyline width
+  final int? unselectedRouteWidth;
+
   ///add zoom button to bottom right corner
   final bool zoomButtonEnabled;
 
@@ -177,6 +185,8 @@ class CoreMapData {
     Alignment? myLocationButtonAlignment,
     Color? selectedRouteColor,
     Color? unselectedRouteColor,
+    int? selectedRouteWidth,
+    int? unselectedRouteWidth,
     EdgeInsets? myLocationButtonPadding,
     CoreMapButtonCustomizeData? myLocationButtonData,
     bool? zoomButtonEnabled,
@@ -203,6 +213,8 @@ class CoreMapData {
       myLocationButtonAlignment: myLocationButtonAlignment ?? this.myLocationButtonAlignment,
       selectedRouteColor: selectedRouteColor ?? this.selectedRouteColor,
       unselectedRouteColor: unselectedRouteColor ?? this.unselectedRouteColor,
+      selectedRouteWidth: selectedRouteWidth,
+      unselectedRouteWidth: unselectedRouteWidth,
       myLocationButtonPadding: myLocationButtonPadding ?? this.myLocationButtonPadding,
       myLocationButtonData: myLocationButtonData ?? this.myLocationButtonData,
       zoomButtonEnabled: zoomButtonEnabled ?? this.zoomButtonEnabled,

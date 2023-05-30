@@ -16,6 +16,12 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   Color _unselectedColor = Colors.grey;
 
+  int? _selectedWidth;
+
+  int? _unselectedWidth;
+
+  final int _defaultWidth = 10;
+
   final List<void Function(String id)> _routeSelectedListeners = [];
 
   void updateColor(Color selected, Color unselected) {
@@ -23,6 +29,14 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     _unselectedColor = unselected;
     //don't need to call notify listener here.
   }
+
+  void updateWidth(int? selected, int? unselected) {
+    _selectedWidth = selected;
+    _unselectedWidth = unselected;
+    //don't need to call notify listener here.
+  }
+
+
 
   @override
   Future<void> buildRoutes(List<MapRoute>? routes) async {
@@ -94,6 +108,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       color: isSelected? _selectedColor: _unselectedColor,
       zIndex: isSelected? 6: 5,
       jointType: JointType.round,
+      width: (isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth,
       onTap: () {
         Log.d("ROUTING", "ontap");
         _setSelectedId(route.id);

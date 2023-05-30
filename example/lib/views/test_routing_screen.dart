@@ -62,6 +62,8 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
             compassEnabled: true,
             myLocationEnabled: true,
             myLocationButtonAlignment: Alignment.bottomRight,
+            selectedRouteWidth: 20,
+            unselectedRouteWidth: 10,
             selectedRouteColor: Colors.blue),
         callbacks: CoreMapCallbacks(onRoutingManagerReady: (manager) {
           _routingManager = manager;
