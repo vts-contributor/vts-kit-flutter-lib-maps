@@ -68,4 +68,9 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   Uint8List? getCachedBitmap(String name) {
     return _cache[name];
   }
+
+  @override
+  Future<void> validateCache(List<String> validNames) async {
+    _cache.removeWhere((key, value) => !validNames.contains(key));
+  }
 }

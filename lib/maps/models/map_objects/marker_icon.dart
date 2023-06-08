@@ -108,6 +108,9 @@ class AssetMarkerIconData extends MarkerIconData<String> {
 
   @override
   int get hashCode => name.hashCode;
+
+  @override
+  String get name => "${super.name}-${width}x$height";
 }
 
 class NetworkMarkerIconData extends MarkerIconData<String> {

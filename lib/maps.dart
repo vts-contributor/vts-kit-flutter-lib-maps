@@ -14,6 +14,7 @@ import 'package:maps_core/maps/constants.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;
 
+import 'maps/models/map_objects/bitmap_cache_factory.dart';
 import 'maps/models/map_objects/marker_icon_data_factory.dart';
 import 'maps/models/map_objects/marker_icon_data_processor.dart';
 

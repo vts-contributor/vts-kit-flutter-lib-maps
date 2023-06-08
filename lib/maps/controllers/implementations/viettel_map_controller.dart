@@ -17,15 +17,18 @@ class _ViettelMapController extends BaseCoreMapController {
   vt.Circle? _userLocationShape;
 
   //used to check if marker icon has been added
-  final Set<String> _markerIconNames = {};
+  final Set<String> _addedMarkerIconNames = {};
 
   final MarkerIconDataProcessor markerIconDataProcessor;
+
+  final BitmapCacheFactory cacheFactory;
 
   _ViettelMapController(
     this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callbacks,
     required this.markerIconDataProcessor,
+    required this.cacheFactory,
   })  : _initialCameraPosition = data.initialCameraPosition,
         super(callbacks) {
     _initHandlers();
@@ -49,7 +52,13 @@ class _ViettelMapController extends BaseCoreMapController {
   Future<void> loadNewShapes(CoreMapShapes shapes) async {
     final oldShapes = _originalShapes.toSet();
     _originalShapes = shapes.clone();
+    await _validateMarkerBitmaps(_originalShapes.markers);
     await _loadNewMapObjects(oldShapes, shapes.toSet());
+  }
+
+  Future<void> _validateMarkerBitmaps(Set<Marker> markers) async {
+    List<String> validNames = _originalShapes.markers.map((e) => e.icon.data.name).toList();
+    await cacheFactory.validateCache(validNames);
   }
 
   ///return addObjects
@@ -274,12 +283,7 @@ class _ViettelMapController extends BaseCoreMapController {
         marker.id.value, () => vt.Symbol("dummy", const vt.SymbolOptions()));
 
     //marker resource must has been initialized before being added to the map
-    if (!_markerIconNames.contains(marker.icon.data.name)) {
-      _markerIconNames.add(marker.icon.data.name);
-      Uint8List bitmap =
-          await marker.icon.data.initResource(markerIconDataProcessor);
-      _controller.addImage(marker.icon.data.name, bitmap);
-    }
+    await _tryAddMarkerIconData(marker);
 
     final symbol = await _controller.addSymbol(marker.toSymbolOptions());
 
@@ -304,7 +308,23 @@ class _ViettelMapController extends BaseCoreMapController {
       return;
     }
 
+    await _tryAddMarkerIconData(marker);
+
     _controller.updateSymbol(updatingMarker, marker.toSymbolOptions());
+  }
+
+
+  Future<void> _tryAddMarkerIconData(Marker marker) async {
+    if (!_addedMarkerIconNames.contains(marker.icon.data.name)) {
+      _addedMarkerIconNames.add(marker.icon.data.name);
+      Uint8List bitmap =
+          await marker.icon.data.initResource(markerIconDataProcessor);
+      _controller.addImage(marker.icon.data.name, bitmap);
+    }
+  }
+
+  Future<void> _removeOldIconData() async {
+    final markers = _originalShapes.markers;
   }
 
   @override

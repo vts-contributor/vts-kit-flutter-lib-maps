@@ -77,7 +77,8 @@ class _CoreViettelMapState extends State<_CoreViettelMap> {
         final controller = _ViettelMapController(mapboxMapController,
           data: data,
           callbacks: widget.callbacks,
-          markerIconDataProcessor: _markerIconDataFactory
+          markerIconDataProcessor: _markerIconDataFactory,
+          cacheFactory: _markerIconDataFactory,
         );
 
         _controller = controller;

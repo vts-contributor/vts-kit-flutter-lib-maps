@@ -51,6 +51,7 @@ class _CoreGoogleMapState extends State<_CoreGoogleMap> {
           data: widget.data,
           callbacks: widget.callbacks,
           markerIconDataProcessor: _markerIconDataFactory,
+          bitmapCacheFactory: _markerIconDataFactory,
         );
 
         controller.addListener(() => setState(() {}));
