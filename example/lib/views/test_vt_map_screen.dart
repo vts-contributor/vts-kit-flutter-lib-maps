@@ -20,6 +20,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
   MapboxMapController? controller;
   LatLng firstPoint = const LatLng(8.848028919141523, 104.96513564005897);
   LatLng secondPoint = const LatLng(10.844372, 106.673161);
+  double height = 400;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,46 +29,48 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           IconButton(
               icon: const Icon(Icons.add),
               onPressed: () async {
-                await controller?.addImage("123", await rootBundle.loadImageAsUint8List("assets/custom_marker.png"));
-
-                await controller?.addSymbol(SymbolOptions(
-                  iconImage: "123",
-                  geometry: const LatLng(8.848028919141523, 104.96513564005897)
-                ));
+                setState(() {
+                  height = 100;
+                });
+                await Future.delayed(Duration(seconds: 1));
+                setState(() {
+                  height = 200;
+                });
               }
           )
         ],
       ),
-      body: VTMap(
-        accessToken: "49013166841fe36d7fa7f395fce4a663",
-        initialCameraPosition:
-        CameraPosition(
-            target: firstPoint, zoom: 7),
+      body: SizedBox(
+        height: 100,
+        child: VTMap(
+          accessToken: "49013166841fe36d7fa7f395fce4a663",
+          initialCameraPosition:
+          CameraPosition(
+              target: firstPoint, zoom: 7),
 
-        onMapCreated: (controller) {
-          this.controller = controller;
-        },
-        onCameraTrackingChanged: (mode) {
-          Log.d("VTMAP", "onCameraTrackingChanged: ${mode.toString()}");
-        },
-        onCameraMovingStarted: () {
-          Log.d("VTMAP", "onCameraMovingStarted: ${controller?.cameraPosition?.target.toString()}");
-        },
-        onCameraIdle: () {
-          Log.d("VTMAP", "onCameraIdle: ${controller?.cameraPosition?.target.toString()}");
-        },
-        onCameraTrackingDismissed: () {
-          Log.d("VTMAP", "onCameraTrackingDismissed: ${controller?.cameraPosition?.target.toString()}");
-        },
-        myLocationEnabled: false,
-        myLocationRenderMode: MyLocationRenderMode.NORMAL,
-        myLocationTrackingMode: MyLocationTrackingMode.None,
-        gpsControlEnable: false,
-        trackCameraPosition: true,
-        compassEnabled: true,
-        compassViewMargins: const Point(100, 100),
-        compassViewPosition: CompassViewPosition.TopLeft,
-        logoEnabled: false,
+          onMapCreated: (controller) {
+            this.controller = controller;
+          },
+          onCameraTrackingChanged: (mode) {
+            Log.d("VTMAP", "onCameraTrackingChanged: ${mode.toString()}");
+          },
+          onCameraMovingStarted: () {
+            Log.d("VTMAP", "onCameraMovingStarted: ${controller?.cameraPosition?.target.toString()}");
+          },
+          onCameraIdle: () {
+            Log.d("VTMAP", "onCameraIdle: ${controller?.cameraPosition?.target.toString()}");
+          },
+          onCameraTrackingDismissed: () {
+            Log.d("VTMAP", "onCameraTrackingDismissed: ${controller?.cameraPosition?.target.toString()}");
+          },
+          myLocationEnabled: true,
+          myLocationRenderMode: MyLocationRenderMode.NORMAL,
+          myLocationTrackingMode: MyLocationTrackingMode.None,
+          gpsControlEnable: true,
+          trackCameraPosition: false,
+          compassEnabled: false,
+          logoEnabled: false,
+        ),
       ),
     );
   }

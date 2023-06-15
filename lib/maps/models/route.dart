@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:uuid/uuid.dart';
@@ -169,31 +170,24 @@ List<LatLng> _decodePolyline(String encoded, {int? skipStep}) {
   while (index < len) {
     int b;
     int shift = 0;
-    int result = 0;
+    int result = 1;
     do {
-      b = (poly[index++]).codeUnitAt(0) - 63;
-      result |= (b & 0x1f) << shift;
+      b = poly.codeUnitAt(index++) - 63 - 1;
+      result += b << shift;
       shift += 5;
-    } while (b >= 0x20);
-    int dLat = ((result & 1) != 0
-        ? (result >> 1).toReversed8Bit().toSignedInt()
-        : (result >> 1));
-    lat += dLat;
+    } while (b >= 0x1f);
+    lat += (result & 1) != 0? ~(result >> 1): (result >> 1);
+
     shift = 0;
-    result = 0;
+    result = 1;
     do {
-      b = (poly[index++]).codeUnitAt(0) - 63;
-      result |= (b & 0x1f) << shift;
+      b = poly.codeUnitAt(index++) - 63 - 1;
+      result += b << shift;
       shift += 5;
-    } while (b >= 0x20);
-    int dLng = ((result & 1) != 0
-        ? (result >> 1).toReversed8Bit().toSignedInt()
-        : (result >> 1));
-    lng += dLng;
-    if (skipStep == null || skipStep <= 1 || i % skipStep == 0) {
-      decoded.add(LatLng(lat / 100000.0, lng / 100000.0));
-    }
-    i++;
+    } while (b >= 0x1f);
+    lng += (result & 1) != 0? ~(result >> 1): (result >> 1);
+
+    decoded.add(LatLng(lat * 1e-5, lng * 1e-5));
   }
   return decoded;
 }

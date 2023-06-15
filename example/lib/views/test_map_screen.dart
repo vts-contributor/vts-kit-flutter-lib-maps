@@ -51,54 +51,57 @@ class _TestMapScreenState extends State<TestMapScreen> {
           ),
         ],
       ),
-      body: CoreMap(
-        type: _type,
-        data: CoreMapData(
-          accessToken: "49013166841fe36d7fa7f395fce4a663",
-          initialCameraPosition: CameraPosition(
-              target: const LatLng(9.85419858085518, 105.49970250115466),
-              zoom: 7),
-          compassEnabled: true,
-          myLocationEnabled: true,
-          zoomInButtonData: CoreMapButtonCustomizeData(
-            icon: Icon(Icons.reddit, ),
-            color: Colors.yellow.withOpacity(0.4),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(4),
-            )
-          ),
-          zoomOutButtonData: CoreMapButtonCustomizeData(
-            icon: Icon(Icons.bluetooth),
-            color: Colors.yellow.withOpacity(0.4),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(4),
-              bottomRight: Radius.circular(4),
+      body: SizedBox(
+        height: 300,
+        child: CoreMap(
+          type: _type,
+          data: CoreMapData(
+            accessToken: "49013166841fe36d7fa7f395fce4a663",
+            initialCameraPosition: CameraPosition(
+                target: const LatLng(9.85419858085518, 105.49970250115466),
+                zoom: 7),
+            compassEnabled: true,
+            myLocationEnabled: true,
+            zoomInButtonData: CoreMapButtonCustomizeData(
+                icon: Icon(Icons.reddit, ),
+                color: Colors.yellow.withOpacity(0.4),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(4),
+                ),
             ),
+            zoomOutButtonData: CoreMapButtonCustomizeData(
+              icon: Icon(Icons.bluetooth),
+              color: Colors.yellow.withOpacity(0.4),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(4),
+                bottomRight: Radius.circular(4),
+              ),
+            ),
+            zoomButtonAlignment: Alignment.bottomRight,
+            zoomButtonDividerColor: Colors.grey,
+            zoomButtonDividerThickness: 1,
           ),
-          zoomButtonAlignment: Alignment.topRight,
-          zoomButtonDividerColor: Colors.grey,
-          zoomButtonDividerThickness: 1,
-        ),
-        callbacks: CoreMapCallbacks(onMapCreated: (controller) {
-          _controller = controller;
-        }, onCameraMove: (position) {
-          Log.d("onCameraMove", position.toString() + (_controller?.getCurrentPosition().toString() ?? ""));
-        },
-            // onCameraIdle: () => Log.d("onCameraIdle", ""),
-            // onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
-            onTap: (latLng) {
-          Log.d("onTap", latLng.toString());
-        }, onLongPress: (latLng) {
-          Log.d("onLongPress", latLng.toString());
-        }, onCameraIdle: () {
-          Log.d("CameraIdle", "camera idle");
-        }),
-        shapes: CoreMapShapes(
-          // polygons: {polygon1()},
-          // circles: {circle()},
-          markers: {marker()},
-          // polylines: {polyline(), polyline2()},
+          callbacks: CoreMapCallbacks(onMapCreated: (controller) {
+            _controller = controller;
+          }, onCameraMove: (position) {
+            Log.d("onCameraMove", position.toString() + (_controller?.getCurrentPosition().toString() ?? ""));
+          },
+              // onCameraIdle: () => Log.d("onCameraIdle", ""),
+              // onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
+              onTap: (latLng) {
+                Log.d("onTap", latLng.toString());
+              }, onLongPress: (latLng) {
+                Log.d("onLongPress", latLng.toString());
+              }, onCameraIdle: () {
+                Log.d("CameraIdle", "camera idle");
+              }),
+          shapes: CoreMapShapes(
+            // polygons: {polygon1()},
+            // circles: {circle()},
+            markers: {marker()},
+            // polylines: {polyline(), polyline2()},
+          ),
         ),
       ),
     );

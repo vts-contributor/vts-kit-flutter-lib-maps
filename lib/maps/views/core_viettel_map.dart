@@ -54,7 +54,12 @@ class _CoreViettelMapState extends State<_CoreViettelMap> {
       initialCameraPosition: data.initialCameraPosition.toViettel(),
       gestureRecognizers: widget.data.gestureRecognizers,
       onStyleLoadedCallback: () {
-        _controller?.onStyleLoaded(widget.shapes);
+        _ViettelMapController? controller = _controller;
+        if (controller != null) {
+          controller.onStyleLoaded(widget.shapes);
+          controller.updateUserLocationShape(widget.userLocationDrawOptions);
+          widget.callbacks?.onMapCreated?.call(controller);
+        }
       },
       minMaxZoomPreference: data.minMaxZoomPreference.toViettel(),
       cameraTargetBounds: data.cameraTargetBounds.toViettel(),

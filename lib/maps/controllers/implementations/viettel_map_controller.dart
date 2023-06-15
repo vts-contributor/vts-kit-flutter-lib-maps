@@ -23,6 +23,8 @@ class _ViettelMapController extends BaseCoreMapController {
 
   final BitmapCacheFactory cacheFactory;
 
+  bool _styleLoaded = false;
+
   _ViettelMapController(
     this._controller, {
     required CoreMapData data,
@@ -35,6 +37,8 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> updateUserLocationShape(vt.CircleOptions? options) async {
+    if (!_styleLoaded) return;
+
     vt.Circle? currentUserLocationShape = _userLocationShape;
     if (options == null) {
       if (currentUserLocationShape != null) {
@@ -333,9 +337,8 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> onStyleLoaded(CoreMapShapes shapes) async {
+    _styleLoaded = true;
     loadNewShapes(shapes);
-
-    callbacks?.onMapCreated?.call(this);
   }
 
   @override
