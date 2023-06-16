@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/network/language.dart';
 import '../models/network/token.dart';
+import '../models/route.dart';
 
 
 typedef LetCallback<T, R> = R Function(T it);
@@ -223,5 +224,26 @@ extension CompareDouble on double {
       debugPrintStack(stackTrace: s);
       return compareTo(other);
     }
+  }
+}
+
+extension ListMapRoute on List<MapRoute> {
+  MapRoute? trySelectShortestRoute() {
+    Iterable<double> distanceList = map((e) => e.legs?.getDistance()).whereNotNull();
+    if (distanceList.isNotEmpty) {
+      double min = distanceList.min;
+      return firstWhere((element) => element.legs?.getDistance() == min);
+    } else {
+      return firstOrNull;
+    }
+  }
+}
+
+extension RouteLegExtension on List<RouteLeg> {
+  double? getDistance() {
+    Iterable<double?> distances = map((e) => e.distance?.value);
+    //error value detected in distances list, return null
+    if (distances.contains(null)) return null;
+    return distances.whereNotNull().sum;
   }
 }

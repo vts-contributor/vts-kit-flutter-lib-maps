@@ -31,10 +31,14 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {
-                final routes =
-                    Provider.of<RoutingViewModel>(context, listen: false).directions?.routes;
-                _routingManager?.selectRoute(routes?.first.id ?? "");
+              onPressed: () async {
+                await _routingManager?.buildRoutes(RoutingOptions("49013166841fe36d7fa7f395fce4a663", points: [
+                  firstPoint,
+                  secondPoint,
+                ],
+                  alternatives: true,
+                )
+                );
               },
               icon: const Icon(Icons.swap_vert_circle)),
           IconButton(
@@ -49,7 +53,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
               onPressed: () async {
                 final directions = await Provider.of<RoutingViewModel>(context, listen: false)
                     .downloadDirections(firstPoint, secondPoint);
-                _routingManager?.buildRoutes(directions.routes);
+                _routingManager?.buildListMapRoute(directions.routes);
               },
               icon: const Icon(Icons.download))
         ],
@@ -62,8 +66,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
             compassEnabled: true,
             myLocationEnabled: true,
             myLocationButtonAlignment: Alignment.bottomRight,
-            selectedRouteWidth: 20,
-            unselectedRouteWidth: 10,
+
             selectedRouteColor: Colors.blue),
         callbacks: CoreMapCallbacks(onRoutingManagerReady: (manager) {
           _routingManager = manager;

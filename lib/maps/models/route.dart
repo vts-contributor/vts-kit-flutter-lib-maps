@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:maps_core/maps/models/models.dart';
-import 'package:maps_core/maps/extensions/extensions.dart';
 import 'package:uuid/uuid.dart';
 
 class MapRoute {
@@ -14,7 +13,7 @@ class MapRoute {
   final List<RouteLeg>? legs;
 
   List<LatLng>? shortenedPoints(int step) {
-    return points?.whereIndexed((point, i) => i % step == 0).toList();
+    return points?.whereIndexed((i, point) => i % step == 0).toList();
   }
 
   MapRoute({
@@ -44,6 +43,18 @@ class MapRoute {
       summary: summary,
       legs: legs,
     );
+  }
+
+  List<LatLng>? get pointsFromLegs {
+    return legs?.map((leg) =>
+        //return points of steps of a leg
+        leg.steps?.map((step) => step.points).whereNotNull().reduce((value, element) => value + element)
+    ).whereNotNull().reduce((value, element) => value + element).toList();
+  }
+
+  List<LatLng>? tryGetNonNullOrEmptyPoints() {
+    List<LatLng>? points = this.points;
+    return (points != null && points.isNotEmpty) ? points: pointsFromLegs;
   }
 }
 
@@ -152,6 +163,16 @@ enum TravelMode {
       return TravelMode.walking;
     } else {
       return null;
+    }
+  }
+
+  @override
+  String toString() {
+    switch(this) {
+      case TravelMode.driving:
+        return "driving";
+      case TravelMode.walking:
+        return "walking";
     }
   }
 }

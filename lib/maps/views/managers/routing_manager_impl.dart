@@ -39,7 +39,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
 
   @override
-  Future<void> buildRoutes(List<MapRoute>? routes) async {
+  Future<void> buildListMapRoute(List<MapRoute>? routes) async {
     if (routes == null) {
       Log.e(RoutingManager.logTag, "Can't build null routes");
       return;
@@ -58,7 +58,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   void _pickSelectedRoute() async {
-    _currentSelectedId = _routes?.firstOrNull?.id;
+    _currentSelectedId = _routes?.trySelectShortestRoute()?.id;
   }
 
   void _clearOldDirections() {
@@ -104,7 +104,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   Polyline _buildPolylineFromRoute(MapRoute route, bool isSelected) {
     return Polyline(
       id: PolylineId(route.id),
-      points: route.points ?? [],
+      points: route.tryGetNonNullOrEmptyPoints() ?? [],
       color: isSelected? _selectedColor: _unselectedColor,
       zIndex: isSelected? 6: 5,
       jointType: JointType.round,
@@ -164,4 +164,29 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       return null;
     }
   }
+
+  @override
+  Future<void> buildRoutes(RoutingOptions options) async {
+    if (options.points.length >= 2) {
+      List<LatLng>? waypoints;
+      if (options.points.length > 2) {
+        waypoints = options.points.sublist(1, options.points.length - 1);
+      }
+
+      Directions direction = (await MapsAPIServiceImpl(key: options.apiKey).direction(
+        originLat: options.points.first.latitude,
+        originLng: options.points.first.longitude,
+        destLat: options.points.last.latitude,
+        destLng: options.points.last.longitude,
+        mode: options.mode.toString(),
+        alternatives: options.alternatives,
+        waypoints: waypoints,
+      ));
+
+      buildListMapRoute(direction.routes);
+    } else {
+      Log.e(RoutingManager.logTag, "Can't draw a route with only 1 point");
+    }
+  }
+
 }

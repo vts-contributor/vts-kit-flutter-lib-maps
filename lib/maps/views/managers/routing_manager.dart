@@ -8,7 +8,10 @@ abstract class RoutingManager {
   static const String logTag = "ROUTING MANAGER";
 
   ///build routes base on [directions]
-  Future<void> buildRoutes(List<MapRoute>? routes) ;
+  Future<void> buildListMapRoute(List<MapRoute>? routes);
+
+  ///options
+  Future<void> buildRoutes(RoutingOptions options);
 
   ///start navigation with the selected route
   ///
@@ -27,4 +30,16 @@ abstract class RoutingManager {
 
   ///get current selected route if possible
   MapRoute? get selectedRoute;
+}
+
+class RoutingOptions {
+  final List<LatLng> points;
+  final String apiKey;
+  final bool alternatives;
+  final TravelMode mode;
+  RoutingOptions(this.apiKey, {
+    required this.points,
+    this.alternatives = false,
+    this.mode = TravelMode.driving
+  });
 }

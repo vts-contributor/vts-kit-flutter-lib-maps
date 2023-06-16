@@ -178,6 +178,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     String? mode,
     Map<String, String>? paramsKeyMapper,
     int? routePointsSkipStep,
+    List<LatLng>? waypoints,
     CustomCancelToken? cancelToken,
   }) async {
     final keyOrigin = paramsKeyMapper.valueOrKey(MapsAPIConst.kOrigin);
@@ -186,11 +187,13 @@ class MapsAPIServiceImpl extends MapsAPIService {
     final keyAlternatives =
         paramsKeyMapper.valueOrKey(MapsAPIConst.kAlternatives);
     final keyMode = paramsKeyMapper.valueOrKey(MapsAPIConst.kMode);
+    final keyWaypoints = paramsKeyMapper.valueOrKey(MapsAPIConst.kWayPoints);
     final params = {
       keyOrigin: '$originLat,$originLng',
       keyDestination: '$destLat,$destLng',
       keyAlternatives: alternatives,
-      keyMode: mode
+      keyMode: mode,
+      if (waypoints != null) keyWaypoints: waypoints.map((e) => "${e.latitude},${e.longitude}").join(";"),
     };
     final response = await get<PlaceResponse>(
       config.directionPath,

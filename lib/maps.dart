@@ -25,6 +25,7 @@ export 'maps/extensions/extensions.dart';
 export 'maps/services/services.dart';
 export 'maps/views/managers/routing_manager.dart';
 export 'package:location/location.dart' show LocationData;
+export 'maps/utils/utils.dart';
 
 part 'maps/views/core_map.dart';
 part 'maps/views/core_viettel_map.dart';
