@@ -32,8 +32,6 @@ abstract class RoutingManager {
 
   ///get current selected route if possible
   MapRoute? get selectedRoute;
-
-  Future<void> testBuildRoute(RoutingOptions options);
 }
 
 class RoutingOptions {
@@ -152,5 +150,8 @@ class RoutingOptions {
       voiceInstructionsEnabled: voiceInstructionsEnabled,
       simulateRoute: simulateRoute,
     );
+  }
+  List<vt.WayPoint> getViettelWaypoints() {
+    return points.map((e) => vt.WayPoint(latitude: e.latitude, longitude: e.longitude, name: e.toString())).toList();
   }
 }

@@ -168,6 +168,8 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   @override
   Future<void> buildRoutes(RoutingOptions options) async {
     if (options.points.length >= 2) {
+      if (_buildRouteVTMap(options)) return;
+
       List<LatLng>? waypoints;
       if (options.points.length > 2) {
         waypoints = options.points.sublist(1, options.points.length - 1);
@@ -189,14 +191,14 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     }
   }
 
-  @override
-  Future<void> testBuildRoute(RoutingOptions options) async {
+  bool _buildRouteVTMap(RoutingOptions options) {
     if (mapController is _ViettelMapController?) {
       (mapController as _ViettelMapController?)?._controller.buildRoute(
-          wayPoints: options.points.map((e) => vt.WayPoint(latitude: e.latitude, longitude: e.longitude, name: e.toString()),).toList(),
+          wayPoints: options.getViettelWaypoints(),
           options: options.toViettelMapOptions(),
       );
-
+      return true;
     }
+    return false;
   }
 }
