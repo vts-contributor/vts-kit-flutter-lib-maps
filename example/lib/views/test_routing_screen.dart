@@ -32,12 +32,12 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
         actions: [
           IconButton(
               onPressed: () async {
-                await _routingManager?.buildRoutes(RoutingOptions("49013166841fe36d7fa7f395fce4a663", points: [
+                await _routingManager?.testBuildRoute(RoutingOptions("49013166841fe36d7fa7f395fce4a663", points: [
                   firstPoint,
                   secondPoint,
                 ],
                   alternatives: true,
-                )
+                ),
                 );
               },
               icon: const Icon(Icons.swap_vert_circle)),

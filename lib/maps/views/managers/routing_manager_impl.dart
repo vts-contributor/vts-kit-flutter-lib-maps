@@ -190,11 +190,11 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   @override
-  Future<void> testBuildRoute(RoutingOptions options, vt.VTMapOptions vtMapOptions) async {
+  Future<void> testBuildRoute(RoutingOptions options) async {
     if (mapController is _ViettelMapController?) {
       (mapController as _ViettelMapController?)?._controller.buildRoute(
           wayPoints: options.points.map((e) => vt.WayPoint(latitude: e.latitude, longitude: e.longitude, name: e.toString()),).toList(),
-          options: vtMapOptions,
+          options: options.toViettelMapOptions(),
       );
 
     }
