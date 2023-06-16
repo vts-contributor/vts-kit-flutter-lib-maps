@@ -1,5 +1,6 @@
 
 import 'package:maps_core/maps.dart';
+import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 abstract class RoutingManager {
 
@@ -30,6 +31,8 @@ abstract class RoutingManager {
 
   ///get current selected route if possible
   MapRoute? get selectedRoute;
+
+  Future<void> testBuildRoute(RoutingOptions options, vt.VTMapOptions vtMapOptions);
 }
 
 class RoutingOptions {
