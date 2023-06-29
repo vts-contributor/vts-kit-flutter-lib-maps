@@ -28,12 +28,15 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   late final _RoutingManagerImpl _routingManager = _RoutingManagerImpl(_locationManager);
 
+  late final _InfoWindowManagerImpl _infoWindowManager = _InfoWindowManagerImpl(widget.shapes?.markers);
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initLocationManager();
     _initRoutingManager();
+    _initInfoWindowManager();
   }
 
   @override
@@ -58,12 +61,20 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     _updateRoutingManager();
   }
 
+  void _initInfoWindowManager() {
+    _infoWindowManager.addListener(() {
+      Log.d("CoreMap location manager", "rebuilding");
+      setState(() {});
+    });
+  }
+
   @override
   void didUpdateWidget(covariant CoreMap oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     _updateLocationManager();
     _updateRoutingManager();
+    _updateInfoWindowManager();
   }
 
   void _updateLocationManager() {
@@ -74,6 +85,10 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   void _updateRoutingManager() {
     _routingManager.updateColor(widget.data.selectedRouteColor, widget.data.unselectedRouteColor);
     _routingManager.updateWidth(widget.data.selectedRouteWidth, widget.data.unselectedRouteWidth);
+  }
+
+  void _updateInfoWindowManager() {
+    _infoWindowManager.updateMarkers(widget.shapes?.markers);
   }
 
   @override
@@ -103,12 +118,21 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
               _locationManager.notifyRebuildUserLocationMapObject();
 
+              _infoWindowManager.updateController(controller);
               _routingManager.mapController = controller;
+
               widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
+              widget.callbacks?.onInfoWindowManagerReady?.call(_infoWindowManager);
             },
+            onCameraMove: (pos) {
+              widget.callbacks?.onCameraMove?.call(pos);
+
+              _infoWindowManager.notifyCameraMove();
+            }
           ),
         ),
         ..._buildButtons(context),
+        ..._infoWindowManager.getInfoWindows(context),
       ],
     );
   }

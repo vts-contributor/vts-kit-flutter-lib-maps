@@ -17,12 +17,20 @@ class _TestMapScreenState extends State<TestMapScreen> {
 
   CoreMapType _type = CoreMapType.viettel;
 
+  InfoWindowManager? _infoWindowManager;
+
   @override
   Widget build(BuildContext context) {
     final mQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
+          IconButton(
+            icon: const Icon(Icons.slideshow),
+            onPressed: () async {
+              _infoWindowManager?.showInfoWindow(MarkerId("test1"));
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.abc),
             onPressed: () async {
@@ -82,20 +90,27 @@ class _TestMapScreenState extends State<TestMapScreen> {
             zoomButtonDividerColor: Colors.grey,
             zoomButtonDividerThickness: 1,
           ),
-          callbacks: CoreMapCallbacks(onMapCreated: (controller) {
-            _controller = controller;
-          }, onCameraMove: (position) {
-            Log.d("onCameraMove", position.toString() + (_controller?.getCurrentPosition().toString() ?? ""));
+          callbacks: CoreMapCallbacks(
+            onMapCreated: (controller) {
+              _controller = controller;
+            },
+            onCameraMove: (position) {
+              Log.d("onCameraMove", position.toString() + (_controller?.getCurrentPosition().toString() ?? ""));
+            },
+            // onCameraIdle: () => Log.d("onCameraIdle", ""),
+            // onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
+            onTap: (latLng) {
+              Log.d("onTap", latLng.toString());
+            },
+            onLongPress: (latLng) {
+              Log.d("onLongPress", latLng.toString());
+            }, onCameraIdle: () {
+            Log.d("CameraIdle", "camera idle");
           },
-              // onCameraIdle: () => Log.d("onCameraIdle", ""),
-              // onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
-              onTap: (latLng) {
-                Log.d("onTap", latLng.toString());
-              }, onLongPress: (latLng) {
-                Log.d("onLongPress", latLng.toString());
-              }, onCameraIdle: () {
-                Log.d("CameraIdle", "camera idle");
-              }),
+            onInfoWindowManagerReady: (infoWindowManager) {
+              _infoWindowManager = infoWindowManager;
+            },
+          ),
           shapes: CoreMapShapes(
             // polygons: {polygon1()},
             // circles: {circle()},

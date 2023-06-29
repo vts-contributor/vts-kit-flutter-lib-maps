@@ -19,7 +19,7 @@ class _LocationManager extends ChangeNotifier {
 
   bool _enabled = false;
 
-  int _updatePrecision = 5;
+  int _updatePrecision = 3;
 
   ///0 <= value <= 20
   ///

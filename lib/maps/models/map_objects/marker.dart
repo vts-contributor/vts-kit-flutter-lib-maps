@@ -5,6 +5,7 @@
 import 'dart:typed_data';
 import 'dart:ui' show Offset;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart'
     show immutable, ValueChanged, VoidCallback;
 import 'package:maps_core/maps/extensions/convert.dart';
@@ -24,24 +25,11 @@ Object _offsetToJson(Offset offset) {
 class InfoWindow {
   /// Creates an immutable representation of a label on for [Marker].
   const InfoWindow({
-    this.title,
-    this.snippet,
+    required this.widget,
     this.anchor = Anchor.top,
-    this.onTap,
   });
 
-  /// Text labels specifying that no text is to be displayed.
-  static const InfoWindow noText = InfoWindow();
-
-  /// Text displayed in an info window when the user taps the marker.
-  ///
-  /// A null value means no title.
-  final String? title;
-
-  /// Additional text displayed below the [title].
-  ///
-  /// A null value means no additional text.
-  final String? snippet;
+  final Widget widget;
 
   /// The icon image point that will be the anchor of the info window when
   /// displayed.
@@ -51,40 +39,18 @@ class InfoWindow {
   /// of (1.0, 1.0) means the bottom right corner of the image.
   final Anchor anchor;
 
-  /// onTap callback for this [InfoWindow].
-  final VoidCallback? onTap;
-
   /// Creates a new [InfoWindow] object whose values are the same as this instance,
   /// unless overwritten by the specified parameters.
   InfoWindow copyWith({
-    String? titleParam,
-    String? snippetParam,
+    Widget? widgetParam,
     Anchor? anchorParam,
-    VoidCallback? onTapParam,
   }) {
     return InfoWindow(
-      title: titleParam ?? title,
-      snippet: snippetParam ?? snippet,
+      widget: widgetParam ?? widget,
       anchor: anchorParam ?? anchor,
-      onTap: onTapParam ?? onTap,
     );
   }
 
-  Object _toJson() {
-    final Map<String, Object> json = <String, Object>{};
-
-    void addIfPresent(String fieldName, Object? value) {
-      if (value != null) {
-        json[fieldName] = value;
-      }
-    }
-
-    addIfPresent('title', title);
-    addIfPresent('snippet', snippet);
-    addIfPresent('anchor', _offsetToJson(anchor.offset));
-
-    return json;
-  }
 
   @override
   bool operator ==(Object other) {
@@ -95,27 +61,12 @@ class InfoWindow {
       return false;
     }
     return other is InfoWindow &&
-        title == other.title &&
-        snippet == other.snippet &&
+        other.widget.key == widget.key &&
         anchor == other.anchor;
   }
 
   @override
-  int get hashCode => Object.hash(title.hashCode, snippet, anchor);
-
-  @override
-  String toString() {
-    return 'InfoWindow{title: $title, snippet: $snippet, anchor: $anchor}';
-  }
-
-  ggmap.InfoWindow toGoogle() {
-    return ggmap.InfoWindow(
-        title: title,
-        snippet: snippet,
-        anchor: anchor.offset,
-        onTap: onTap
-    );
-  }
+  int get hashCode => Object.hash(widget.hashCode, anchor);
 }
 
 enum Anchor {
@@ -218,7 +169,7 @@ class Marker implements MapObject<Marker> {
     this.draggable = false,
     this.flat = false,
     this.icon = MarkerIcon.defaultIcon,
-    this.infoWindow = InfoWindow.noText,
+    this.infoWindow,
     required this.position,
     this.rotation = 0.0,
     this.visible = true,
@@ -255,7 +206,7 @@ class Marker implements MapObject<Marker> {
   /// A Google Maps InfoWindow.
   ///
   /// The window is displayed when the marker is tapped.
-  final InfoWindow infoWindow;
+  final InfoWindow? infoWindow;
 
   /// Geographical location of the marker.
   final LatLng position;
@@ -342,7 +293,6 @@ class Marker implements MapObject<Marker> {
     addIfPresent('draggable', draggable);
     addIfPresent('flat', flat);
     addIfPresent('icon', icon);
-    addIfPresent('infoWindow', infoWindow._toJson());
     addIfPresent('position', position.toJson());
     addIfPresent('rotation', rotation);
     addIfPresent('visible', visible);
@@ -396,7 +346,6 @@ class Marker implements MapObject<Marker> {
       draggable: draggable,
       flat: flat,
       icon: markerDescriptor,
-      infoWindow: infoWindow.toGoogle(),
       position: position.toGoogle(),
       rotation: rotation,
       visible: visible,

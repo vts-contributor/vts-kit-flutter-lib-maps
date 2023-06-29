@@ -23,7 +23,7 @@ export 'maps/models/models.dart';
 export 'maps/controllers/controllers.dart';
 export 'maps/extensions/extensions.dart';
 export 'maps/services/services.dart';
-export 'maps/views/managers/routing_manager.dart';
+export 'maps/views/managers/managers.dart';
 export 'package:location/location.dart' show LocationData;
 export 'maps/utils/utils.dart';
 
@@ -33,6 +33,7 @@ part 'maps/views/core_google_map.dart';
 
 part 'maps/views/managers/location_manager.dart';
 part 'maps/views/managers/routing_manager_impl.dart';
+part 'maps/views/managers/info_window_manager_impl.dart';
 
 part 'maps/controllers/implementations/google_map_controller.dart';
 part 'maps/controllers/implementations/viettel_map_controller.dart';

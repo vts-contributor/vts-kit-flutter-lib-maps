@@ -168,7 +168,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   @override
   Future<void> buildRoutes(RoutingOptions options) async {
     if (options.points.length >= 2) {
-      if (_buildRouteVTMap(options)) return;
+      if (_buildRouteNative(options)) return;
 
       List<LatLng>? waypoints;
       if (options.points.length > 2) {
@@ -191,7 +191,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     }
   }
 
-  bool _buildRouteVTMap(RoutingOptions options) {
+  bool _buildRouteNative(RoutingOptions options) {
     if (mapController is _ViettelMapController?) {
       (mapController as _ViettelMapController?)?._controller.buildRoute(
           wayPoints: options.getViettelWaypoints(),

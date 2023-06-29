@@ -119,14 +119,14 @@ Circle circle() => Circle(
 );
 
 Marker marker() => Marker(
-  id: const MarkerId("test2"),
+  id: const MarkerId("test1"),
   // position: LatLng(10.625380787927542, 105.051574201898),
   position: const LatLng(8.848028919141523, 104.96513564005897),
   alpha: 1,
   zIndex: 0,
   draggable: true,
   infoWindow: const InfoWindow(
-    title: "Test"
+    widget: const Text("text")
   ),
   icon: MarkerIcon.fromAsset("marker icon", "assets/marker_red.png", height: 200, width: 100),
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
