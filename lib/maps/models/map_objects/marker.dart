@@ -26,10 +26,15 @@ class InfoWindow {
   /// Creates an immutable representation of a label on for [Marker].
   const InfoWindow({
     required this.widget,
+    this.maxSize = const Size(400, 400),
     this.anchor = Anchor.top,
   });
 
+  ///widget to be displayed
   final Widget widget;
+
+  ///max possible size
+  final Size maxSize;
 
   /// The icon image point that will be the anchor of the info window when
   /// displayed.

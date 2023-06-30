@@ -3,11 +3,12 @@ part of core_map;
 class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager {
   CoreMapController? _controller;
 
-  final Map<MarkerId, ScreenCoordinate> _coordinates = {};
+  final Map<MarkerId, _InternalInfoWindowData> _coordinates = {};
 
   Set<Marker> _markers = {};
 
   Iterable<MarkerId> get _markerIds => _markers.map((e) => e.id);
+
 
   _InfoWindowManagerImpl(Set<Marker>? markers) {
     _markers = markers ?? {};
@@ -38,17 +39,23 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
         .values.whereNotNull().toList();
   }
 
-  Widget? _getPositionedInfoWindow(BuildContext context, MarkerId markerId, ScreenCoordinate coordinate) {
-    Widget? widget = _markers.firstWhereOrNull(
-            (element) => element.id == markerId)?.infoWindow?.widget;
+  Widget? _getPositionedInfoWindow(BuildContext context, MarkerId markerId, _InternalInfoWindowData data) {
+    Marker? marker = _markers.firstWhereOrNull(
+            (element) => element.id == markerId);
+    Widget? widget = marker?.infoWindow?.widget;
+    double? xMaxSize = marker?.infoWindow?.maxSize.width;
+    double? yMaxSize = marker?.infoWindow?.maxSize.height;
 
     if (widget != null) {
       final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+      final x = (data.coordinate.x.toDouble() / devicePixelRatio) - (xMaxSize ?? 0)/2;
+      final y = (data.coordinate.y.toDouble() / devicePixelRatio) - (yMaxSize ?? 0)/2;
       widget = Positioned(
-        left: coordinate.x.toDouble() / devicePixelRatio,
-        top: coordinate.y.toDouble() / devicePixelRatio,
-        child: Align(
-          alignment: Alignment.center,
+        left: x,
+        top: y,
+        height: xMaxSize,
+        width: yMaxSize,
+        child: Center(
           child: widget,
         ),
       );
@@ -96,11 +103,11 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
     }
 
     ScreenCoordinate? newScreenCoordinate = await _controller?.getScreenCoordinate(marker.position);
-    ScreenCoordinate? oldScreenCoordinate = _coordinates[markerId];
+    ScreenCoordinate? oldScreenCoordinate = _coordinates[markerId]?.coordinate;
 
     if (newScreenCoordinate != null) {
       if (oldScreenCoordinate != newScreenCoordinate) {
-        _coordinates.update(markerId, (_) => newScreenCoordinate);
+        _coordinates.update(markerId, (value) => _InternalInfoWindowData(value.size, newScreenCoordinate));
         Log.d(InfoWindowManager.logTag, "register new screen coordinate ${newScreenCoordinate.toString()} for marker ${markerId.toString()}");
         return true;
       }
@@ -129,8 +136,15 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
     ScreenCoordinate? coordinate = await _controller?.getScreenCoordinate(marker.position);
 
     if (coordinate != null) {
-      _coordinates.putIfAbsent(marker.id, () => coordinate);
+      _coordinates.putIfAbsent(marker.id, () => _InternalInfoWindowData(Size.zero, coordinate));
       notifyListeners();
     }
   }
+}
+
+class _InternalInfoWindowData {
+  Size size;
+  ScreenCoordinate coordinate;
+
+  _InternalInfoWindowData(this.size, this.coordinate);
 }
