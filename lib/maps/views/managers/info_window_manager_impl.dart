@@ -82,11 +82,11 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
 
   Future<void> _updateInfoWindowCoordinates() async {
     List<bool> results = await Future.wait(
-        _coordinates.map((key, value) => MapEntry(key, _updateInfoWindowCoordinate(key, value))).values.toList());
+        _coordinates.keys.map((key) =>_updateInfoWindowCoordinate(key)).toList());
     if (results.contains(true)) notifyListeners();
   }
 
-  Future<bool> _updateInfoWindowCoordinate(MarkerId markerId, ScreenCoordinate oldScreenCoordinate) async {
+  Future<bool> _updateInfoWindowCoordinate(MarkerId markerId) async {
     Marker? marker = _markers.firstWhereOrNull((element) => element.id == markerId);
     if (marker == null) {
       //remove invalid coordinate
@@ -96,10 +96,12 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
     }
 
     ScreenCoordinate? newScreenCoordinate = await _controller?.getScreenCoordinate(marker.position);
+    ScreenCoordinate? oldScreenCoordinate = _coordinates[markerId];
 
     if (newScreenCoordinate != null) {
       if (oldScreenCoordinate != newScreenCoordinate) {
         _coordinates.update(markerId, (_) => newScreenCoordinate);
+        Log.d(InfoWindowManager.logTag, "register new screen coordinate ${newScreenCoordinate.toString()} for marker ${markerId.toString()}");
         return true;
       }
     }
