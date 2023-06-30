@@ -5,11 +5,13 @@ class _CoreViettelMap extends StatefulWidget {
   final CoreMapCallbacks? callbacks;
   final CoreMapShapes shapes;
   final vt.CircleOptions? userLocationDrawOptions;
+  final MarkerIconDataFactory markerIconDataFactory;
   const _CoreViettelMap({Key? key,
     required this.data,
     this.callbacks,
     required this.shapes,
     this.userLocationDrawOptions,
+    required this.markerIconDataFactory,
   }) : super(key: key);
 
   @override
@@ -20,7 +22,7 @@ class _CoreViettelMapState extends State<_CoreViettelMap> {
 
   _ViettelMapController? _controller;
 
-  final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
+  late final MarkerIconDataFactory _markerIconDataFactory = widget.markerIconDataFactory;
 
   @override
   void didUpdateWidget(covariant _CoreViettelMap oldWidget) {

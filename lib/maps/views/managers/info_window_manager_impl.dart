@@ -9,9 +9,11 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
 
   Iterable<MarkerId> get _markerIds => _markers.map((e) => e.id);
 
+  late MarkerIconDataFactory _markerIconDataFactory;
 
-  _InfoWindowManagerImpl(Set<Marker>? markers) {
+  _InfoWindowManagerImpl(Set<Marker>? markers, MarkerIconDataFactory markerIconDataFactory) {
     _markers = markers ?? {};
+    _markerIconDataFactory = markerIconDataFactory;
   }
 
   void updateMarkers(Set<Marker>? markers) {
@@ -46,10 +48,16 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
     double? xMaxSize = marker?.infoWindow?.maxSize.width;
     double? yMaxSize = marker?.infoWindow?.maxSize.height;
 
+    String? markerIconName = marker?.icon.data.name;
+    Size? markerIconSize;
+    if (markerIconName != null) {
+      markerIconSize = _markerIconDataFactory.sizeOf(markerIconName);
+    }
+
     if (widget != null) {
       final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
       final x = (data.coordinate.x.toDouble() / devicePixelRatio) - (xMaxSize ?? 0)/2;
-      final y = (data.coordinate.y.toDouble() / devicePixelRatio) - (yMaxSize ?? 0)/2;
+      final y = (data.coordinate.y.toDouble() / devicePixelRatio) - (yMaxSize ?? 0) - _calculateBottomOffsetOfInfoWindow(marker, markerIconSize);
       widget = Positioned(
         left: x,
         top: y,
@@ -62,6 +70,25 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
     }
 
     return widget;
+  }
+
+  double _calculateBottomOffsetOfInfoWindow(Marker? marker, Size? markerIconSize) {
+    if (marker == null || markerIconSize == null) return 0;
+    return 0;
+    switch(marker.anchor) {
+      case Anchor.left:
+      case Anchor.right:
+      case Anchor.center:
+        return markerIconSize.height / 2;
+      case Anchor.topLeft:
+      case Anchor.topRight:
+      case Anchor.top:
+        return 1;
+      case Anchor.bottomLeft:
+      case Anchor.bottomRight:
+      case Anchor.bottom:
+      return markerIconSize.height / 2;
+    }
   }
 
   void onMarkerTap(MarkerId markerId) {

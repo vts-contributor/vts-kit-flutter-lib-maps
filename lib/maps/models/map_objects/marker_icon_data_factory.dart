@@ -1,11 +1,16 @@
 
+import 'dart:ui' as ui;
+
 import 'package:dio/dio.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart';
 import 'package:maps_core/maps/extensions/utils.dart';
 import 'package:maps_core/maps/models/map_objects/bitmap_cache_factory.dart';
 import 'package:maps_core/maps/models/map_objects/marker_icon.dart';
 import 'package:maps_core/maps/models/map_objects/marker_icon_data_processor.dart';
+
+import '../../utils/widget_converter.dart';
 
 ///A cache factory for marker icon bitmaps
 class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFactory {
@@ -72,5 +77,27 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   @override
   Future<void> validateCache(List<String> validNames) async {
     _cache.removeWhere((key, value) => !validNames.contains(key));
+  }
+
+  @override
+  Future<Uint8List> processWidgetMarkerIcon(WidgetMarkerIconData markerIconData) async {
+    return _getBitmapOrElse(markerIconData.name, orElse: () async {
+      WidgetConverter converter = WidgetConverter();
+      final res = await converter.widgetToBitmap(markerIconData.value);
+      _cache.putIfAbsent(markerIconData.name, () => res);
+      return res;
+    });
+  }
+
+  @override
+  ui.Size? sizeOf(String name) {
+    Uint8List? bitmap = getCachedBitmap(name);
+    if (bitmap != null) {
+      Image? image = decodeImage(bitmap);
+      if (image != null) {
+        return Size(image.width.toDouble(), image.height.toDouble());
+      }
+    }
+    return null;
   }
 }

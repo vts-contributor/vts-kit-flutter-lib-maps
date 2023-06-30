@@ -8,10 +8,13 @@ class _CoreGoogleMap extends StatefulWidget {
 
   final CoreMapCallbacks? callbacks;
 
+  final MarkerIconDataFactory markerIconDataFactory;
+
   const _CoreGoogleMap({Key? key,
     required this.data,
     this.callbacks,
     required this.shapes,
+    required this.markerIconDataFactory,
   }) : super(key: key);
 
   @override
@@ -22,7 +25,7 @@ class _CoreGoogleMapState extends State<_CoreGoogleMap> {
 
   _GoogleMapController? _controller;
 
-  final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
+  late final MarkerIconDataFactory _markerIconDataFactory = widget.markerIconDataFactory;
 
   @override
   void didUpdateWidget(covariant _CoreGoogleMap oldWidget) {

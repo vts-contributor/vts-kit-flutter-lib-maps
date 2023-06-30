@@ -133,7 +133,12 @@ Marker marker() => Marker(
       color: Colors.red,
     )
   ),
-  icon: MarkerIcon.fromAsset("marker icon", "assets/marker_red.png", height: 200, width: 100),
+  icon: MarkerIcon.fromWidget("widget1", Container(
+    color: Colors.blue,
+    child: Image.asset("assets/custom_marker.png"),
+    height: 100,
+    width: 100,
+  )),
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
   // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
 );

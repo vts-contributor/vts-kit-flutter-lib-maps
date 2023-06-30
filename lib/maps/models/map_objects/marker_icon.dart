@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 
@@ -30,6 +31,10 @@ class MarkerIcon {
 
   static MarkerIcon fromBitmap(final String name, final Uint8List bitmap) =>
       MarkerIcon._(BitmapMarkerIconData(name, bitmap));
+
+  static MarkerIcon fromWidget(final String name, final Widget widget) {
+    return  MarkerIcon._(WidgetMarkerIconData(name, widget));
+  }
 
   @override
   bool operator ==(Object other) {
@@ -128,5 +133,14 @@ class BitmapMarkerIconData extends MarkerIconData<Uint8List> {
   @override
   Future<Uint8List> initResource(MarkerIconDataProcessor processor) async {
     return await processor.processBitmapMarkerIcon(this);
+  }
+}
+
+class WidgetMarkerIconData extends MarkerIconData<Widget> {
+  WidgetMarkerIconData(super.name, super.value);
+
+  @override
+  Future<Uint8List> initResource(MarkerIconDataProcessor processor) async {
+    return await processor.processWidgetMarkerIcon(this);
   }
 }

@@ -27,7 +27,6 @@ class InfoWindow {
   const InfoWindow({
     required this.widget,
     this.maxSize = const Size(400, 400),
-    this.anchor = Anchor.top,
   });
 
   ///widget to be displayed
@@ -36,23 +35,23 @@ class InfoWindow {
   ///max possible size
   final Size maxSize;
 
-  /// The icon image point that will be the anchor of the info window when
-  /// displayed.
-  ///
-  /// The image point is specified in normalized coordinates: An anchor of
-  /// (0.0, 0.0) means the top left corner of the image. An anchor
-  /// of (1.0, 1.0) means the bottom right corner of the image.
-  final Anchor anchor;
+  // /// The icon image point that will be the anchor of the info window when
+  // /// displayed.
+  // ///
+  // /// The image point is specified in normalized coordinates: An anchor of
+  // /// (0.0, 0.0) means the top left corner of the image. An anchor
+  // /// of (1.0, 1.0) means the bottom right corner of the image.
+  // final Anchor anchor;
 
   /// Creates a new [InfoWindow] object whose values are the same as this instance,
   /// unless overwritten by the specified parameters.
   InfoWindow copyWith({
     Widget? widgetParam,
-    Anchor? anchorParam,
+    Size? maxSizeParam,
   }) {
     return InfoWindow(
       widget: widgetParam ?? widget,
-      anchor: anchorParam ?? anchor,
+      maxSize: maxSizeParam ?? maxSize,
     );
   }
 
@@ -67,11 +66,11 @@ class InfoWindow {
     }
     return other is InfoWindow &&
         other.widget.key == widget.key &&
-        anchor == other.anchor;
+        maxSize == other.maxSize;
   }
 
   @override
-  int get hashCode => Object.hash(widget.hashCode, anchor);
+  int get hashCode => Object.hash(widget.hashCode, maxSize);
 }
 
 enum Anchor {

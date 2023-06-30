@@ -28,7 +28,9 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   late final _RoutingManagerImpl _routingManager = _RoutingManagerImpl(_locationManager);
 
-  late final _InfoWindowManagerImpl _infoWindowManager = _InfoWindowManagerImpl(widget.shapes?.markers);
+  late final _InfoWindowManagerImpl _infoWindowManager = _InfoWindowManagerImpl(widget.shapes?.markers, _markerIconDataFactory);
+
+  final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
 
   @override
   void initState() {
@@ -149,6 +151,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           data: data,
           callbacks: callbacks,
           shapes: shapes,
+          markerIconDataFactory: _markerIconDataFactory,
         );
       case CoreMapType.viettel:
         return _CoreViettelMap(
@@ -157,6 +160,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           userLocationDrawOptions:
               getViettelUserLocationDrawOptions(_locationManager._userLocation),
           shapes: shapes,
+          markerIconDataFactory: _markerIconDataFactory,
         );
     }
   }
