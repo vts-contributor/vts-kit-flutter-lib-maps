@@ -125,8 +125,13 @@ Marker marker() => Marker(
   alpha: 1,
   zIndex: 0,
   draggable: true,
-  infoWindow: const InfoWindow(
-    widget: const Text("text")
+  infoWindow: InfoWindow(
+    widget: Container(
+      child: Text("123"),
+      height: 100,
+      width: 100,
+      color: Colors.red,
+    )
   ),
   icon: MarkerIcon.fromAsset("marker icon", "assets/marker_red.png", height: 200, width: 100),
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),

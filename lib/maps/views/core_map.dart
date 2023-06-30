@@ -110,7 +110,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           data: widget.data.copyWith(
               initialCameraPosition:
                   _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition),
-          shapes: _routingManager.combineShape(widget.shapes),
+          shapes: _routingManager.combineShape(_infoWindowManager.overrideShapes(widget.shapes)),
           callbacks: callbacks.copyWith(
             onMapCreated: (controller) {
               _controller = controller;

@@ -60,7 +60,6 @@ class _TestMapScreenState extends State<TestMapScreen> {
         ],
       ),
       body: SizedBox(
-        height: 300,
         child: CoreMap(
           type: _type,
           data: CoreMapData(

@@ -3,7 +3,7 @@ part of core_map;
 class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager {
   CoreMapController? _controller;
 
-  final Set<_InfoWindowCoordinate> _coordinates = {};
+  final Map<MarkerId, ScreenCoordinate> _coordinates = {};
 
   Set<Marker> _markers = {};
 
@@ -18,12 +18,13 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
 
     _markers = markers;
 
-    removeOldCoordinates(_markerIds);
+    validateInfoWindows(_markerIds);
   }
 
-  void removeOldCoordinates(Iterable<MarkerId> newMarkerIds) {
+  ///remove old markers
+  void validateInfoWindows(Iterable<MarkerId> newMarkerIds) {
     int oldLength = _coordinates.length;
-    _coordinates.retainWhere((infoWindow) => newMarkerIds.contains(infoWindow.markerId));
+    _coordinates.removeWhere((key, value) => !newMarkerIds.contains(key));
     if (oldLength != _coordinates.length) notifyListeners();
   }
 
@@ -32,23 +33,47 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
   }
 
   List<Widget> getInfoWindows(BuildContext context) {
-    return _coordinates.map((e) => _getPositionedInfoWindow(context, e))
-        .whereNotNull().toList();
+    return _coordinates
+        .map((key, value) => MapEntry(key, _getPositionedInfoWindow(context, key, value)))
+        .values.whereNotNull().toList();
   }
 
-  Widget? _getPositionedInfoWindow(BuildContext context, _InfoWindowCoordinate coordinate) {
+  Widget? _getPositionedInfoWindow(BuildContext context, MarkerId markerId, ScreenCoordinate coordinate) {
     Widget? widget = _markers.firstWhereOrNull(
-            (element) => element.id == coordinate.markerId)?.infoWindow?.widget;
+            (element) => element.id == markerId)?.infoWindow?.widget;
 
     if (widget != null) {
+      final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
       widget = Positioned(
-        left: coordinate.screenCoordinate.x.toDouble() / MediaQuery.of(context).devicePixelRatio,
-        top: coordinate.screenCoordinate.y.toDouble() / MediaQuery.of(context).devicePixelRatio,
-        child: widget,
+        left: coordinate.x.toDouble() / devicePixelRatio,
+        top: coordinate.y.toDouble() / devicePixelRatio,
+        child: Align(
+          alignment: Alignment.center,
+          child: widget,
+        ),
       );
     }
 
     return widget;
+  }
+
+  void onMarkerTap(MarkerId markerId) {
+    if (_coordinates.containsKey(markerId)) {
+      hideInfoWindow(markerId);
+    } else {
+      showInfoWindow(markerId);
+    }
+  }
+
+  CoreMapShapes? overrideShapes(CoreMapShapes? originalShapes) {
+    return originalShapes?.copyWith(
+      markers: originalShapes.markers.map((e) => e.copyWith(
+        onTapParam: () {
+          e.onTap?.call();
+          onMarkerTap(e.id);
+        }
+      )).toSet()
+    );
   }
 
   Future<void> notifyCameraMove() async {
@@ -56,25 +81,25 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
   }
 
   Future<void> _updateInfoWindowCoordinates() async {
-    List<bool> results = await Future.wait(_coordinates.map((e) => _updateInfoWindowCoordinate(e)));
+    List<bool> results = await Future.wait(
+        _coordinates.map((key, value) => MapEntry(key, _updateInfoWindowCoordinate(key, value))).values.toList());
     if (results.contains(true)) notifyListeners();
   }
 
-  Future<bool> _updateInfoWindowCoordinate(_InfoWindowCoordinate iwCoordinate) async {
-    Marker? marker = _markers.firstWhereOrNull((element) => element.id == iwCoordinate.markerId);
+  Future<bool> _updateInfoWindowCoordinate(MarkerId markerId, ScreenCoordinate oldScreenCoordinate) async {
+    Marker? marker = _markers.firstWhereOrNull((element) => element.id == markerId);
     if (marker == null) {
       //remove invalid coordinate
       //don't notifyListeners here
-      _coordinates.remove(iwCoordinate);
+      _coordinates.remove(markerId);
       return true;
     }
 
     ScreenCoordinate? newScreenCoordinate = await _controller?.getScreenCoordinate(marker.position);
 
     if (newScreenCoordinate != null) {
-      if (iwCoordinate.screenCoordinate != newScreenCoordinate) {
-        iwCoordinate.screenCoordinate = newScreenCoordinate;
-        Log.e("TEST", "register new coordinate ${newScreenCoordinate.toString()}");
+      if (oldScreenCoordinate != newScreenCoordinate) {
+        _coordinates.update(markerId, (_) => newScreenCoordinate);
         return true;
       }
     }
@@ -84,11 +109,7 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
 
   @override
   Future<void> hideInfoWindow(MarkerId markerId) async {
-    int oldLength = _coordinates.length;
-    _coordinates.removeWhere((e) => e.markerId == markerId);
-    if (oldLength != _coordinates.length) {
-      notifyListeners();
-    }
+    if (_coordinates.remove(markerId) != null) notifyListeners();
   }
 
   @override
@@ -106,28 +127,8 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
     ScreenCoordinate? coordinate = await _controller?.getScreenCoordinate(marker.position);
 
     if (coordinate != null) {
-      _coordinates.add(_InfoWindowCoordinate(
-        marker.id,
-        coordinate,
-      ));
+      _coordinates.putIfAbsent(marker.id, () => coordinate);
       notifyListeners();
     }
   }
-}
-
-class _InfoWindowCoordinate {
-  MarkerId markerId;
-  ScreenCoordinate screenCoordinate;
-
-  _InfoWindowCoordinate(this.markerId, this.screenCoordinate);
-
-  @override
-  bool operator ==(Object other) {
-    return other is _InfoWindowCoordinate &&
-        other.markerId == markerId;
-  }
-
-  @override
-  int get hashCode => Object.hash(markerId, screenCoordinate);
-
 }
