@@ -94,7 +94,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
               _controller = controller;
             },
             onCameraMove: (position) {
-              Log.d("onCameraMove", position.toString() + (_controller?.getCurrentPosition().toString() ?? ""));
+              // Log.d("onCameraMove", position.toString() + (_controller?.getCurrentPosition().toString() ?? ""));
             },
             // onCameraIdle: () => Log.d("onCameraIdle", ""),
             // onCameraMoveStarted: () => Log.d("onCameraMovingStarted", ""),
@@ -104,7 +104,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
             onLongPress: (latLng) {
               Log.d("onLongPress", latLng.toString());
             }, onCameraIdle: () {
-            Log.d("CameraIdle", "camera idle");
+            // Log.d("CameraIdle", "camera idle");
           },
             onInfoWindowManagerReady: (infoWindowManager) {
               _infoWindowManager = infoWindowManager;

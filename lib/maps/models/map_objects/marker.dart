@@ -27,6 +27,7 @@ class InfoWindow {
   const InfoWindow({
     required this.widget,
     this.maxSize = const Size(400, 400),
+    this.bottomOffset = 4
   });
 
   ///widget to be displayed
@@ -34,6 +35,9 @@ class InfoWindow {
 
   ///max possible size
   final Size maxSize;
+
+  ///distance between info window and marker's icon
+  final double bottomOffset;
 
   // /// The icon image point that will be the anchor of the info window when
   // /// displayed.
@@ -48,10 +52,12 @@ class InfoWindow {
   InfoWindow copyWith({
     Widget? widgetParam,
     Size? maxSizeParam,
+    double? bottomOffsetParam,
   }) {
     return InfoWindow(
       widget: widgetParam ?? widget,
       maxSize: maxSizeParam ?? maxSize,
+      bottomOffset: bottomOffsetParam ?? bottomOffset,
     );
   }
 
@@ -66,6 +72,7 @@ class InfoWindow {
     }
     return other is InfoWindow &&
         other.widget.key == widget.key &&
+        other.bottomOffset == bottomOffset &&
         maxSize == other.maxSize;
   }
 

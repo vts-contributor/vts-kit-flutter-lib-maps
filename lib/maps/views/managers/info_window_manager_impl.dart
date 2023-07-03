@@ -44,26 +44,33 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
   Widget? _getPositionedInfoWindow(BuildContext context, MarkerId markerId, _InternalInfoWindowData data) {
     Marker? marker = _markers.firstWhereOrNull(
             (element) => element.id == markerId);
-    Widget? widget = marker?.infoWindow?.widget;
-    double? xMaxSize = marker?.infoWindow?.maxSize.width;
-    double? yMaxSize = marker?.infoWindow?.maxSize.height;
 
-    String? markerIconName = marker?.icon.data.name;
-    Size? markerIconSize;
-    if (markerIconName != null) {
-      markerIconSize = _markerIconDataFactory.sizeOf(markerIconName);
-    }
+    if (marker?.infoWindow == null) return null;
+
+    Widget? widget = marker?.infoWindow?.widget;
 
     if (widget != null) {
       final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+
+      double? xMaxSize = marker?.infoWindow?.maxSize.width;
+      double? yMaxSize = marker?.infoWindow?.maxSize.height;
+
+      String? markerIconName = marker?.icon.data.name;
+      Size? markerIconSize;
+      if (markerIconName != null) {
+        markerIconSize = _markerIconDataFactory.sizeOf(markerIconName);
+      }
+
       final x = (data.coordinate.x.toDouble() / devicePixelRatio) - (xMaxSize ?? 0)/2;
-      final y = (data.coordinate.y.toDouble() / devicePixelRatio) - (yMaxSize ?? 0) - _calculateBottomOffsetOfInfoWindow(marker, markerIconSize);
+      final y = (data.coordinate.y.toDouble() / devicePixelRatio) - (yMaxSize ?? 0)
+          - _calculateBottomOffsetOfInfoWindow(marker, markerIconSize, devicePixelRatio);
       widget = Positioned(
         left: x,
         top: y,
         height: xMaxSize,
         width: yMaxSize,
-        child: Center(
+        child: Align(
+          alignment: Alignment.bottomCenter,
           child: widget,
         ),
       );
@@ -72,23 +79,28 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
     return widget;
   }
 
-  double _calculateBottomOffsetOfInfoWindow(Marker? marker, Size? markerIconSize) {
+  double _calculateBottomOffsetOfInfoWindow(Marker? marker, Size? markerIconSize, double devicePixelRatio) {
     if (marker == null || markerIconSize == null) return 0;
-    return 0;
+    Size markerIconSizeByDP = Size(markerIconSize.width / devicePixelRatio, markerIconSize.height / devicePixelRatio);
+    double offset = marker.infoWindow?.bottomOffset ?? 0;
     switch(marker.anchor) {
       case Anchor.left:
       case Anchor.right:
       case Anchor.center:
-        return markerIconSize.height / 2;
+        offset += markerIconSizeByDP.height / 2;
+        break;
       case Anchor.topLeft:
       case Anchor.topRight:
       case Anchor.top:
-        return 1;
+        offset += 0;
+        break;
       case Anchor.bottomLeft:
       case Anchor.bottomRight:
       case Anchor.bottom:
-      return markerIconSize.height / 2;
+        offset += markerIconSizeByDP.height;
+        break;
     }
+    return offset;
   }
 
   void onMarkerTap(MarkerId markerId) {
