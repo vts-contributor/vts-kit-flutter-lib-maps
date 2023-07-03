@@ -19,7 +19,7 @@ class CoreMapData {
     this.myLocationEnabled = false,
     this.myLocationButtonEnabled = true,
     this.myLocationButtonAlignment = Alignment.topRight,
-    this.selectedRouteColor = Colors.blue,
+    this.selectedRouteColor = Colors.blueAccent,
     this.unselectedRouteColor = Colors.grey,
     this.selectedRouteWidth,
     this.unselectedRouteWidth,

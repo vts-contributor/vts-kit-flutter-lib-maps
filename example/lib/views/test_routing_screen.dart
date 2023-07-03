@@ -65,9 +65,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
             initialCameraPosition: CameraPosition(target: firstPoint, zoom: 15),
             compassEnabled: true,
             myLocationEnabled: true,
-            myLocationButtonAlignment: Alignment.bottomRight,
-
-            selectedRouteColor: Colors.blue),
+            myLocationButtonAlignment: Alignment.bottomRight,),
         callbacks: CoreMapCallbacks(onRoutingManagerReady: (manager) {
           _routingManager = manager;
           _routingManager?.addRouteTapListener((id) {

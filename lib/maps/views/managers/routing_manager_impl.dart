@@ -12,7 +12,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   String? _currentSelectedId;
 
-  Color _selectedColor = Colors.blue;
+  Color _selectedColor = Colors.blueAccent;
 
   Color _unselectedColor = Colors.grey;
 
@@ -20,7 +20,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   int? _unselectedWidth;
 
-  final int _defaultWidth = 10;
+  final int _defaultWidth = 8;
 
   final List<void Function(String id)> _routeSelectedListeners = [];
 
@@ -168,7 +168,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   @override
   Future<void> buildRoutes(RoutingOptions options) async {
     if (options.points.length >= 2) {
-      if (_buildRouteNative(options)) return;
+      // if (_buildRouteNative(options)) return;
 
       List<LatLng>? waypoints;
       if (options.points.length > 2) {
@@ -191,14 +191,14 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     }
   }
 
-  bool _buildRouteNative(RoutingOptions options) {
-    if (mapController is _ViettelMapController?) {
-      (mapController as _ViettelMapController?)?._controller.buildRoute(
-          wayPoints: options.getViettelWaypoints(),
-          options: options.toViettelMapOptions(),
-      );
-      return true;
-    }
-    return false;
-  }
+  // bool _buildRouteNative(RoutingOptions options) {
+  //   if (mapController is _ViettelMapController?) {
+  //     (mapController as _ViettelMapController?)?._controller.buildRoute(
+  //         wayPoints: options.getViettelWaypoints(),
+  //         options: options.toViettelMapOptions(),
+  //     );
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }
