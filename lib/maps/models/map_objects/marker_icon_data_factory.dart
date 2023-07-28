@@ -16,6 +16,7 @@ import '../../utils/widget_converter.dart';
 class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFactory {
 
   final Map<String, Uint8List> _cache = {};
+  final Map<String, Size> _sizeCache = {};
 
   @override
   Future<Uint8List> processAssetMarkerIcon(AssetMarkerIconData markerIconData) async {
@@ -75,6 +76,7 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   @override
   Future<void> validateCache(List<String> validNames) async {
     _cache.removeWhere((key, value) => !validNames.contains(key));
+    _sizeCache.removeWhere((key, value) => !validNames.contains(key));
   }
 
   @override
@@ -86,11 +88,16 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
 
   @override
   ui.Size? sizeOf(String name) {
+    Size? cachedSize = _sizeCache[name];
+    if (cachedSize != null) return cachedSize;
+
     Uint8List? bitmap = getCachedBitmap(name);
     if (bitmap != null) {
       Image? image = decodeImage(bitmap);
       if (image != null) {
-        return Size(image.width.toDouble(), image.height.toDouble());
+        Size size = Size(image.width.toDouble(), image.height.toDouble());
+        _sizeCache.putIfAbsent(name, () => size);
+        return size;
       }
     }
     return null;

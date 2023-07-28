@@ -19,12 +19,22 @@ class _TestMapScreenState extends State<TestMapScreen> {
 
   InfoWindowManager? _infoWindowManager;
 
+  bool showMarker = false;
+
   @override
   Widget build(BuildContext context) {
     final mQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
+          IconButton(
+            icon: const Icon(Icons.remove_red_eye),
+            onPressed: () async {
+              setState(() {
+                showMarker = !showMarker;
+              });
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.slideshow),
             onPressed: () async {
@@ -113,7 +123,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           shapes: CoreMapShapes(
             // polygons: {polygon1()},
             // circles: {circle()},
-            markers: {marker()},
+            markers: showMarker? {marker()}: {},
             // polylines: {polyline(), polyline2()},
           ),
         ),

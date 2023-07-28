@@ -62,6 +62,15 @@ class _ViettelMapController extends BaseCoreMapController {
 
   Future<void> _validateMarkerBitmaps(Set<Marker> markers) async {
     List<String> validNames = _originalShapes.markers.map((e) => e.icon.data.name).toList();
+    List<String> invalidNames = _addedMarkerIconNames.where((element) => !validNames.contains(element)).toList();
+    _addedMarkerIconNames.removeAll(invalidNames);
+    for(String invalidName in invalidNames) {
+      try {
+        _controller.removeImageSource(invalidName);
+      } catch (e) {
+        Log.e(logTag, e.toString());
+      }
+    }
     await cacheFactory.validateCache(validNames);
   }
 
