@@ -103,23 +103,13 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
     return offset;
   }
 
-  void onMarkerTap(MarkerId markerId) {
+  @override
+  void onMarkerTapSetInfoWindow(MarkerId markerId) {
     if (_coordinates.containsKey(markerId)) {
       hideInfoWindow(markerId);
     } else {
       showInfoWindow(markerId);
     }
-  }
-
-  CoreMapShapes? overrideShapes(CoreMapShapes? originalShapes) {
-    return originalShapes?.copyWith(
-      markers: originalShapes.markers.map((e) => e.copyWith(
-        onTapParam: () {
-          e.onTap?.call();
-          onMarkerTap(e.id);
-        }
-      )).toSet()
-    );
   }
 
   Future<void> notifyCameraMove() async {

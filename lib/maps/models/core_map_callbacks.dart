@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/views/managers/info_window_manager.dart';
 
 class CoreMapCallbacks {
   CoreMapCallbacks({
@@ -16,7 +15,6 @@ class CoreMapCallbacks {
     this.onLocationPermissionDenied,
     this.onLocationPermissionDeniedForever,
     this.onRoutingManagerReady,
-    this.onInfoWindowManagerReady,
   });
 
   ///Map is ready to be used
@@ -52,9 +50,6 @@ class CoreMapCallbacks {
   ///routing manager is ready to be used.
   final void Function(RoutingManager)? onRoutingManagerReady;
 
-  ///you can use InfoWindowManager to show/hide marker's info window
-  final void Function(InfoWindowManager)? onInfoWindowManagerReady;
-
   CoreMapCallbacks copyWith({
     final void Function(CoreMapController controller)? onMapCreated,
     final void Function(CameraPosition position)? onCameraMove,
@@ -67,7 +62,6 @@ class CoreMapCallbacks {
     final Future<bool> Function()? onLocationPermissionDenied,
     final Future<bool> Function()? onLocationPermissionDeniedForever,
     final void Function(RoutingManager)? onRoutingManagerReady,
-    final void Function(InfoWindowManager)? onInfoWindowManagerReady,
   }) {
     return CoreMapCallbacks(
       onMapCreated: onMapCreated ?? this.onMapCreated,
@@ -81,7 +75,6 @@ class CoreMapCallbacks {
       onLocationPermissionDenied: onLocationPermissionDenied ?? this.onLocationPermissionDenied,
       onLocationPermissionDeniedForever: onLocationPermissionDeniedForever ?? this.onLocationPermissionDeniedForever,
       onRoutingManagerReady: onRoutingManagerReady ?? this.onRoutingManagerReady,
-      onInfoWindowManagerReady: onInfoWindowManagerReady ?? this.onInfoWindowManagerReady,
     );
   }
 }

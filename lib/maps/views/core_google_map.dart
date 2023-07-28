@@ -10,11 +10,14 @@ class _CoreGoogleMap extends StatefulWidget {
 
   final MarkerIconDataFactory markerIconDataFactory;
 
+  final InfoWindowManager infoWindowManager;
+
   const _CoreGoogleMap({Key? key,
     required this.data,
     this.callbacks,
     required this.shapes,
     required this.markerIconDataFactory,
+    required this.infoWindowManager,
   }) : super(key: key);
 
   @override
@@ -24,8 +27,6 @@ class _CoreGoogleMap extends StatefulWidget {
 class _CoreGoogleMapState extends State<_CoreGoogleMap> {
 
   _GoogleMapController? _controller;
-
-  late final MarkerIconDataFactory _markerIconDataFactory = widget.markerIconDataFactory;
 
   @override
   void didUpdateWidget(covariant _CoreGoogleMap oldWidget) {
@@ -53,8 +54,9 @@ class _CoreGoogleMapState extends State<_CoreGoogleMap> {
         final controller = _GoogleMapController(googleMapController,
           data: widget.data,
           callbacks: widget.callbacks,
-          markerIconDataProcessor: _markerIconDataFactory,
-          bitmapCacheFactory: _markerIconDataFactory,
+          markerIconDataProcessor: widget.markerIconDataFactory,
+          bitmapCacheFactory: widget.markerIconDataFactory,
+          infoWindowManager: widget.infoWindowManager,
         );
 
         controller.addListener(() => setState(() {}));
@@ -80,7 +82,7 @@ class _CoreGoogleMapState extends State<_CoreGoogleMap> {
       polygons: widget.shapes.polygons.toGoogle(),
       polylines:  widget.shapes.polylines.toGoogle(),
       circles:  widget.shapes.circles.toGoogle(),
-      markers:  widget.shapes.markers.toGoogle(_markerIconDataFactory),
+      markers:  widget.shapes.markers.toGoogle(widget.markerIconDataFactory),
       onCameraMove: (position) {
         _controller?.onCameraMove(position);
       },

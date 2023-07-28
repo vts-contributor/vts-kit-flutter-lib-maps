@@ -16,6 +16,7 @@ import '../../utils/widget_converter.dart';
 class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFactory {
 
   final Map<String, Uint8List> _cache = {};
+  final Map<String, Size> _sizeCache = {};
 
   @override
   Future<Uint8List> processAssetMarkerIcon(AssetMarkerIconData markerIconData) async {
@@ -23,7 +24,6 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
       final  assetBitmap = await rootBundle.loadImageAsUint8List(markerIconData.value);
       final resizedBitmap = _resizeBitmap(
           assetBitmap, markerIconData.height, markerIconData.width);
-      _cache.putIfAbsent(markerIconData.name, () => resizedBitmap);
       return resizedBitmap;
     });
   }
@@ -43,7 +43,6 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   @override
   Future<Uint8List> processBitmapMarkerIcon(BitmapMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
-      _cache.putIfAbsent(markerIconData.name, () => markerIconData.value);
       return markerIconData.value;
     });
   }
@@ -51,9 +50,7 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   @override
   Future<Uint8List> processNetworkMarkerIcon(NetworkMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
-      final networkBitmap = await Dio().downloadImageToBitmap(markerIconData.value);
-      _cache.putIfAbsent(markerIconData.name, () => networkBitmap);
-      return networkBitmap;
+      return await Dio().downloadImageToBitmap(markerIconData.value);
     });
   }
 
@@ -65,7 +62,9 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
     if (bitmap != null) {
       return bitmap;
     } else {
-      return orElse();
+      Uint8List bitmap = await orElse();
+      _cache.putIfAbsent(name, () => bitmap);
+      return bitmap;
     }
   }
 
@@ -77,25 +76,28 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   @override
   Future<void> validateCache(List<String> validNames) async {
     _cache.removeWhere((key, value) => !validNames.contains(key));
+    _sizeCache.removeWhere((key, value) => !validNames.contains(key));
   }
 
   @override
   Future<Uint8List> processWidgetMarkerIcon(WidgetMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
-      WidgetConverter converter = WidgetConverter();
-      final res = await converter.widgetToBitmap(markerIconData.value);
-      _cache.putIfAbsent(markerIconData.name, () => res);
-      return res;
+      return await WidgetConverter().widgetToBitmap(markerIconData.value);
     });
   }
 
   @override
   ui.Size? sizeOf(String name) {
+    Size? cachedSize = _sizeCache[name];
+    if (cachedSize != null) return cachedSize;
+
     Uint8List? bitmap = getCachedBitmap(name);
     if (bitmap != null) {
       Image? image = decodeImage(bitmap);
       if (image != null) {
-        return Size(image.width.toDouble(), image.height.toDouble());
+        Size size = Size(image.width.toDouble(), image.height.toDouble());
+        _sizeCache.putIfAbsent(name, () => size);
+        return size;
       }
     }
     return null;

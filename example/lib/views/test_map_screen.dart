@@ -17,7 +17,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
 
   CoreMapType _type = CoreMapType.viettel;
 
-  InfoWindowManager? _infoWindowManager;
+  bool showMarker = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +26,17 @@ class _TestMapScreenState extends State<TestMapScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
+            icon: const Icon(Icons.remove_red_eye),
+            onPressed: () async {
+              setState(() {
+                showMarker = !showMarker;
+              });
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.slideshow),
             onPressed: () async {
-              _infoWindowManager?.showInfoWindow(MarkerId("test1"));
+              _controller?.showInfoWindow(MarkerId("test1"));
             },
           ),
           IconButton(
@@ -106,14 +114,11 @@ class _TestMapScreenState extends State<TestMapScreen> {
             }, onCameraIdle: () {
             // Log.d("CameraIdle", "camera idle");
           },
-            onInfoWindowManagerReady: (infoWindowManager) {
-              _infoWindowManager = infoWindowManager;
-            },
           ),
           shapes: CoreMapShapes(
             // polygons: {polygon1()},
             // circles: {circle()},
-            markers: {marker()},
+            markers: showMarker? {marker()}: {},
             // polylines: {polyline(), polyline2()},
           ),
         ),

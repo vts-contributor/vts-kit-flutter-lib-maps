@@ -9,12 +9,14 @@ class _GoogleMapController extends BaseCoreMapController
 
   final MarkerIconDataProcessor markerIconDataProcessor;
   final BitmapCacheFactory bitmapCacheFactory;
+  final InfoWindowManager infoWindowManager;
 
   _GoogleMapController(this._controller, {
     required CoreMapData data,
     CoreMapCallbacks? callbacks,
     required this.markerIconDataProcessor,
     required this.bitmapCacheFactory,
+    required this.infoWindowManager,
   }):_currentCameraPosition = data.initialCameraPosition.toGoogle(), super(callbacks);
   @override
   void onDispose() {
@@ -64,4 +66,13 @@ class _GoogleMapController extends BaseCoreMapController
 
     notifyListeners();
   }
+
+  @override
+  Future<void> hideInfoWindow(MarkerId markerId) => infoWindowManager.hideInfoWindow(markerId);
+
+  @override
+  Future<void> showInfoWindow(MarkerId markerId) => infoWindowManager.showInfoWindow(markerId);
+
+  @override
+  void onMarkerTapSetInfoWindow(MarkerId markerId) => infoWindowManager.onMarkerTapSetInfoWindow(markerId);
 }
