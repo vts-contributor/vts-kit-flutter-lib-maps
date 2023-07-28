@@ -23,7 +23,6 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
       final  assetBitmap = await rootBundle.loadImageAsUint8List(markerIconData.value);
       final resizedBitmap = _resizeBitmap(
           assetBitmap, markerIconData.height, markerIconData.width);
-      _cache.putIfAbsent(markerIconData.name, () => resizedBitmap);
       return resizedBitmap;
     });
   }
@@ -43,7 +42,6 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   @override
   Future<Uint8List> processBitmapMarkerIcon(BitmapMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
-      _cache.putIfAbsent(markerIconData.name, () => markerIconData.value);
       return markerIconData.value;
     });
   }
@@ -51,9 +49,7 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   @override
   Future<Uint8List> processNetworkMarkerIcon(NetworkMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
-      final networkBitmap = await Dio().downloadImageToBitmap(markerIconData.value);
-      _cache.putIfAbsent(markerIconData.name, () => networkBitmap);
-      return networkBitmap;
+      return await Dio().downloadImageToBitmap(markerIconData.value);
     });
   }
 
@@ -65,7 +61,9 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
     if (bitmap != null) {
       return bitmap;
     } else {
-      return orElse();
+      Uint8List bitmap = await orElse();
+      _cache.putIfAbsent(name, () => bitmap);
+      return bitmap;
     }
   }
 
@@ -82,10 +80,7 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   @override
   Future<Uint8List> processWidgetMarkerIcon(WidgetMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
-      WidgetConverter converter = WidgetConverter();
-      final res = await converter.widgetToBitmap(markerIconData.value);
-      _cache.putIfAbsent(markerIconData.name, () => res);
-      return res;
+      return await WidgetConverter().widgetToBitmap(markerIconData.value);
     });
   }
 
