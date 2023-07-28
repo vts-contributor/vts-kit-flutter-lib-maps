@@ -49,12 +49,11 @@ Data chứa các tham số như flag, map access token, cấu hình button như 
 ### 4. Callbacks
 Chứa các callback như onCameraMove, onCameraIdle,..
 
-Có 3 callback quan trọng:
+Có 2 callback quan trọng:
 - *onMapCreated*: Dùng để lấy CoreMapController (Xem phần CoreMapController)
 - *onRoutingManagerReady*: dùng để lấy RoutingManager (Xem phần RoutingManager)
-- *onInfoWindowManagerReady*: dùng để lấy InfoWindowManager (Xem phần InfoWindowManager)
 
-**Lưu ý**, do CoreMap có thể đổi type (từ Google thành Viettel và ngược lại) nên *onMapCreated* sẽ được gọi lần nữa mỗi khi đổi loại map (*onRoutingManagerReady* và *onInfoWindowManagerReady* thì chỉ được gọi 1 lần).
+**Lưu ý**, do CoreMap có thể đổi type (từ Google thành Viettel và ngược lại) nên *onMapCreated* sẽ được gọi lần nữa mỗi khi đổi loại map (*onRoutingManagerReady* thì chỉ được gọi 1 lần).
 
 Có 2 cách để lưu các controller và manager trên:
 - Dùng ReusableCompleter. Do Completer thông thường chỉ có thể complete 1 lần duy nhất và sẽ lỗi nếu dùng để lưu CoreMapController trong trường hợp đổi loại map. Vì vậy hãy dùng ReusableCompleter do nó có thể gọi complete nhiều lần.
@@ -63,18 +62,19 @@ Có 2 cách để lưu các controller và manager trên:
 #### a) CoreMapController
 Lưu ý *onMapCreated* sẽ được gọi mỗi khi type của CoreMap thay đổi.
 
-Dùng để di chuyển camera, lấy vị trí trên màn hình, trên bản đồ,...
+Dùng để di chuyển camera, lấy vị trí trên màn hình, trên bản đồ, show/hide info window của marker,...
+
+##### Lưu ý khi dùng animateCamera và moveCamera
+
+Do thư viện VTMap khi animate camera sẽ bị dừng giữa chừng nếu rebuild widget cho nên nếu có thể set duration = 1 để tránh bug này
+
+Tránh dùng moveCamera mà hãy dùng animateCamera với duration = 1 do: callback onCameraMove của thư viện VTMap có thể trả về sai latlng 1 2 lần đầu sau khi moveCamera.
 
 #### b) RoutingManager
 
 Dùng để vẽ Route trên bản đồ.
 Hiện đang dùng Polyline để vẽ nên trên VTMap gặp vấn đề sau: khi zoom max thì route bị lệch so với đường.
 *Nếu bạn có nhu cầu dùng native build route của VTMap (phương thức này dùng RouteLine của Mapbox nên sẽ chính xác và đẹp hơn nhưng không đổi màu được) thì bạn hãy tạo issue và liên hệ chúng tôi để thêm phương thức VTMap native*
-
-#### c) InfoWindowManager
-Do InfoWindow sử dụng class và logic xử lý khác với 2 thư viện map nên một manager được tạo riêng thay vì tích hợp vào CoreMapController.
-
-Dùng để show/hide info window của marker.
 
 ### 5. Shapes
 CoreMap hỗ trợ 4 loại hình: marker, polyline, polygon, circle...
@@ -91,6 +91,10 @@ Marker cung cấp một số loại icon sau:
 
 Lưu ý rằng ngoài data hình ảnh cho marker icon như trên, còn một tham số là name, khi bạn muốn đổi icon khác nên đổi name do marker icon sẽ được cache lại theo name. Vì vậy trong trường hợp icon đổi thường xuyên cho một marker, nên đặt tên kiểu như url hoặc name + thêm size phía sau như "marker1img200x210".
 
-#### InfoWindow
+##### onTap
 
-Mặc định infowindow 
+Mặc định, onTap của marker sẽ chỉnh camera về vị trí marker và show/hide info window. Nếu bạn sử dụng custom onTap, hành vi mặc định trên sẽ bị ghi đè và bạn cần dùng CoreMapController  nếu muốn chỉnh camera hoặc show/hide info window.
+
+#### b) Các loại hình khác:
+
+Các loại hình khác trên bản đồ tương đối đơn giản, xem comment trong thư viện để sử dụng các hình này (lưu ý một số tham số sẽ không hoạt động khi dùng loại Viettel Map)
