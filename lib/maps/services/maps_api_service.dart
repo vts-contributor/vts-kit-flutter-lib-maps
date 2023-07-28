@@ -1,7 +1,7 @@
-
-import 'package:flutter_core/network/custom_cancel_token.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:maps_core/maps/services/maps_api_service_abstract.dart';
+
+import '../models/network/custom_cancel_token.dart';
 
 abstract class MapsAPIService extends MapsAPIAbstractService {
   Future<List<GeocodingPlace>> geocode({
@@ -47,6 +47,7 @@ abstract class MapsAPIService extends MapsAPIAbstractService {
     required double destLat,
     required double destLng,
     bool alternatives = false,
+    String? mode,
     Map<String, String>? paramsKeyMapper,
     int? routePointsSkipStep,
     CustomCancelToken? cancelToken,

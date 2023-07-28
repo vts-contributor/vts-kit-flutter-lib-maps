@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_core/bases/bases.dart';
-import 'package:flutter_core/extensions/map.dart';
-import 'package:flutter_core/models/maps_api/maps_api.dart';
-import 'package:flutter_core/network/custom_cancel_token.dart';
-import 'package:flutter_core/network/maps_api/maps_api.dart';
+import 'package:maps_core/maps/extensions/utils.dart';
+
+import '../models/models.dart';
+import '../models/network/custom_cancel_token.dart';
+import 'maps_api_config.dart';
+import 'maps_api_service.dart';
+import 'maps_api_service_abstract.dart';
 
 class MapsAPIServiceImpl extends MapsAPIService {
   static MapsAPIAbstractService? _instance;
@@ -176,6 +178,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     String? mode,
     Map<String, String>? paramsKeyMapper,
     int? routePointsSkipStep,
+    List<LatLng>? waypoints,
     CustomCancelToken? cancelToken,
   }) async {
     final keyOrigin = paramsKeyMapper.valueOrKey(MapsAPIConst.kOrigin);
@@ -184,11 +187,13 @@ class MapsAPIServiceImpl extends MapsAPIService {
     final keyAlternatives =
         paramsKeyMapper.valueOrKey(MapsAPIConst.kAlternatives);
     final keyMode = paramsKeyMapper.valueOrKey(MapsAPIConst.kMode);
+    final keyWaypoints = paramsKeyMapper.valueOrKey(MapsAPIConst.kWayPoints);
     final params = {
       keyOrigin: '$originLat,$originLng',
       keyDestination: '$destLat,$destLng',
       keyAlternatives: alternatives,
-      keyMode: mode
+      keyMode: mode,
+      if (waypoints != null) keyWaypoints: waypoints.map((e) => "${e.latitude},${e.longitude}").join(";"),
     };
     final response = await get<PlaceResponse>(
       config.directionPath,

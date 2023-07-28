@@ -1,0 +1,4 @@
+enum CoreMapType {
+  google,
+  viettel
+}
