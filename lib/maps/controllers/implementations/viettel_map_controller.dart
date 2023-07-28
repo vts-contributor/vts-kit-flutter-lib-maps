@@ -23,14 +23,16 @@ class _ViettelMapController extends BaseCoreMapController {
 
   final BitmapCacheFactory cacheFactory;
 
+  final InfoWindowManager infoWindowManager;
+
   bool _styleLoaded = false;
 
-  _ViettelMapController(
-    this._controller, {
-    required CoreMapData data,
-    CoreMapCallbacks? callbacks,
-    required this.markerIconDataProcessor,
-    required this.cacheFactory,
+  _ViettelMapController(this._controller, {
+        required CoreMapData data,
+        CoreMapCallbacks? callbacks,
+        required this.markerIconDataProcessor,
+        required this.cacheFactory,
+        required this.infoWindowManager,
   })  : _initialCameraPosition = data.initialCameraPosition,
         super(callbacks) {
     _initHandlers();
@@ -483,7 +485,8 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   void _defaultMarkerOnTap(Marker marker) {
-    animateCamera(CameraUpdate.newLatLng(marker.position));
+    animateCamera(CameraUpdate.newLatLng(marker.position), duration: 1);
+    onMarkerTapSetInfoWindow(marker.id);
   }
 
   @override
@@ -495,4 +498,13 @@ class _ViettelMapController extends BaseCoreMapController {
   Future<void> moveCamera(CameraUpdate cameraUpdate) async {
     await _controller.moveCamera(cameraUpdate.toViettel());
   }
+
+  @override
+  Future<void> hideInfoWindow(MarkerId markerId) => infoWindowManager.hideInfoWindow(markerId);
+
+  @override
+  Future<void> showInfoWindow(MarkerId markerId) => infoWindowManager.showInfoWindow(markerId);
+
+  @override
+  void onMarkerTapSetInfoWindow(MarkerId markerId) => infoWindowManager.onMarkerTapSetInfoWindow(markerId);
 }

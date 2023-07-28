@@ -112,7 +112,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           data: widget.data.copyWith(
               initialCameraPosition:
                   _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition),
-          shapes: _routingManager.combineShape(_infoWindowManager.overrideShapes(widget.shapes)),
+          shapes: _routingManager.combineShape(widget.shapes),
           callbacks: callbacks.copyWith(
             onMapCreated: (controller) {
               _controller = controller;
@@ -124,7 +124,6 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
               _routingManager.mapController = controller;
 
               widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
-              widget.callbacks?.onInfoWindowManagerReady?.call(_infoWindowManager);
             },
             onCameraMove: (pos) {
               widget.callbacks?.onCameraMove?.call(pos);
@@ -152,6 +151,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           callbacks: callbacks,
           shapes: shapes,
           markerIconDataFactory: _markerIconDataFactory,
+          infoWindowManager: _infoWindowManager,
         );
       case CoreMapType.viettel:
         return _CoreViettelMap(
@@ -161,6 +161,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
               getViettelUserLocationDrawOptions(_locationManager._userLocation),
           shapes: shapes,
           markerIconDataFactory: _markerIconDataFactory,
+          infoWindowManager: _infoWindowManager,
         );
     }
   }
