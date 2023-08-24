@@ -87,6 +87,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   void _updateRoutingManager() {
     _routingManager.updateColor(widget.data.selectedRouteColor, widget.data.unselectedRouteColor);
     _routingManager.updateWidth(widget.data.selectedRouteWidth, widget.data.unselectedRouteWidth);
+    _routingManager.token = widget.data.accessToken;
   }
 
   void _updateInfoWindowManager() {

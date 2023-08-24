@@ -23,3 +23,4 @@ export 'core_map_callbacks.dart';
 export 'camera_position.dart';
 export 'camera_update.dart';
 export 'ui.dart';
+export 'auto_route.dart';

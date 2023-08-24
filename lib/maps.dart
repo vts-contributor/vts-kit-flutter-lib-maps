@@ -11,6 +11,7 @@ import 'package:maps_core/log/log.dart';
 
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
+import 'package:maps_core/maps/models/auto_route.dart';
 import 'package:maps_core/maps/views/widgets/measure_size_widget.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gg;

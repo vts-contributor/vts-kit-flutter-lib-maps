@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maps_core/maps.dart';
+import 'package:maps_core/maps/models/auto_route.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 
@@ -14,6 +15,18 @@ abstract class RoutingManager {
 
   ///options
   Future<void> buildRoutes(RoutingOptions options);
+
+  ///add a route go that will go through waypoints (limit of waypoint's length is around 25)
+  Future<void> addRoute(AutoRoute autoRoute);
+
+  ///add multiple routes
+  Future<void> addRoutes(List<AutoRoute> autoRoutes);
+
+  ///clear all routes
+  Future<void> clearAllRoutes();
+
+  ///remove all routes with [id]
+  Future<void> removeRoutes(String id);
 
   ///start navigation with the selected route
   ///

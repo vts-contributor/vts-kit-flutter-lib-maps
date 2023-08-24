@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 class MapRoute {
-  final String id;
+  String id;
   final ViewPort? bounds;
   final String? copyrights;
   final List<LatLng>? points;

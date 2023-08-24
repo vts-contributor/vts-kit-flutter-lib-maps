@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:map_core_example/view_models/routing_view_model.dart';
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
+import 'package:maps_core/maps/models/auto_route.dart';
 import 'package:provider/provider.dart';
 
 class TestRoutingScreen extends StatefulWidget {
@@ -21,6 +22,9 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
   LatLng firstPoint = const LatLng(10.83581439676659, 106.67246659058827);
   LatLng secondPoint = const LatLng(10.844372, 106.673161);
 
+  LatLng firstPoint2 = const LatLng(10.83781439676659, 106.67346659058827);
+  LatLng secondPoint2 = const LatLng(10.846372, 106.675161);
+
   RoutingManager? _routingManager;
 
   CoreMapType _type = CoreMapType.viettel;
@@ -32,13 +36,23 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
         actions: [
           IconButton(
               onPressed: () async {
-                await _routingManager?.buildRoutes(RoutingOptions("49013166841fe36d7fa7f395fce4a663", points: [
-                  firstPoint,
-                  secondPoint,
-                ],
-                  alternatives: true,
-                ),
-                );
+                await _routingManager?.removeRoutes("1234");
+              },
+              icon: const Icon(Icons.delete)),
+          IconButton(
+              onPressed: () async {
+                await _routingManager?.clearAllRoutes();
+              },
+              icon: const Icon(Icons.delete)),
+          IconButton(
+              onPressed: () async {
+                await _routingManager?.addRoute(AutoRoute("1234", [firstPoint2, secondPoint2]));
+              },
+              icon: const Icon(Icons.swap_vert_circle)),
+          IconButton(
+              onPressed: () async {
+                await _routingManager?.addRoute(AutoRoute("123", [firstPoint, secondPoint]));
+                _routingManager?.selectRoute("123");
               },
               icon: const Icon(Icons.swap_vert_circle)),
           IconButton(

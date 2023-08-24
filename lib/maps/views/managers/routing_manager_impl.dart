@@ -4,6 +4,8 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   final _LocationManager _locationManager;
 
+  String? _token;
+
   CoreMapController? mapController;
 
   _RoutingManagerImpl(this._locationManager);
@@ -24,6 +26,10 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   final List<void Function(String id)> _routeSelectedListeners = [];
 
+  set token(String? value) {
+    _token = value;
+  }
+
   void updateColor(Color selected, Color unselected) {
     _selectedColor = selected;
     _unselectedColor = unselected;
@@ -35,8 +41,6 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     _unselectedWidth = unselected;
     //don't need to call notify listener here.
   }
-
-
 
   @override
   Future<void> buildListMapRoute(List<MapRoute>? routes) async {
@@ -189,6 +193,69 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     } else {
       Log.e(RoutingManager.logTag, "Can't draw a route with only 1 point");
     }
+  }
+
+  @override
+  Future<void> addRoute(AutoRoute autoRoute) async {
+    return _addRoute(autoRoute, true);
+  }
+
+  Future<void> _addRoute(AutoRoute autoRoute, bool shouldNotify) async {
+    Directions? directions = await _getDirections(autoRoute.id, autoRoute.waypoints);
+    MapRoute? mapRoute = directions?.routes?.trySelectShortestRoute();
+    if (mapRoute != null) {
+      mapRoute.id = autoRoute.id;
+
+      _routes ??= [];
+      _routes?.add(mapRoute);
+
+      if (shouldNotify) notifyListeners();
+    }
+  }
+
+  Future<Directions?> _getDirections(String id, List<LatLng> waypoints) async {
+    if (waypoints.length >= 2) {
+      return (await MapsAPIServiceImpl(key: _token).direction(
+        originLat: waypoints.first.latitude,
+        originLng: waypoints.first.longitude,
+        destLat: waypoints.last.latitude,
+        destLng: waypoints.last.longitude,
+        alternatives: true,
+        waypoints: waypoints,
+      ));
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> clearAllRoutes() async {
+    _clearOldDirections();
+    notifyListeners();
+  }
+
+  @override
+  Future<void> removeRoutes(String id) async {
+    bool removed = false;
+    _routes?.removeWhere((element) {
+      if (element.id == id) {
+        removed = true;
+        return true;
+      } else {
+        return false;
+      }
+    });
+    if (removed) notifyListeners();
+  }
+
+  @override
+  Future<void> addRoutes(List<AutoRoute> autoRoutes) async {
+    List<Future> futures = [];
+    for (AutoRoute autoRoute in autoRoutes) {
+      futures.add(_addRoute(autoRoute, false));
+    }
+    await Future.wait(futures);
+    notifyListeners();
   }
 
   // bool _buildRouteNative(RoutingOptions options) {
