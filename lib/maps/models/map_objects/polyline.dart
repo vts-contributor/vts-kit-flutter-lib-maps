@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:io';
+
 import 'package:flutter/foundation.dart'
     show immutable, listEquals, VoidCallback;
 import 'package:flutter/material.dart' show Color, Colors;
@@ -179,7 +181,7 @@ class Polyline implements MapObject<Polyline> {
     return vtmap.LineOptions(
       geometry: points.toViettel(),
       lineWidth: width.toDouble(),
-      lineColor: color.toRGBA(),
+      lineColor: Platform.isAndroid? color.toRGBA(): color.toHex(),
       lineJoin: jointType.toViettel(),
       lineOpacity: color.opacity,
     );

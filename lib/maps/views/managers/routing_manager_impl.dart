@@ -201,7 +201,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   Future<void> _addRoute(AutoRoute autoRoute, bool shouldNotify) async {
-    Directions? directions = await _getDirections(autoRoute.id, autoRoute.waypoints);
+    Directions? directions = await _getDirections(autoRoute.id, autoRoute.waypoints, autoRoute.routeType);
     MapRoute? mapRoute = directions?.routes?.trySelectShortestRoute();
     if (mapRoute != null) {
       mapRoute.id = autoRoute.id;
@@ -213,7 +213,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     }
   }
 
-  Future<Directions?> _getDirections(String id, List<LatLng> waypoints) async {
+  Future<Directions?> _getDirections(String id, List<LatLng> waypoints, RouteType type) async {
     if (waypoints.length >= 2) {
       return (await MapsAPIServiceImpl(key: _token).direction(
         originLat: waypoints.first.latitude,
