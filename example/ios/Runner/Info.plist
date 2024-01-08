@@ -45,7 +45,11 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>VTMapAccessToken</key>
+	<string>49013166841fe36d7fa7f395fce4a663</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Xcode dbrr</string>
 </dict>
 </plist>

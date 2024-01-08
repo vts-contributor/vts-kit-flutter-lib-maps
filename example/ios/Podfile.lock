@@ -1,0 +1,105 @@
+PODS:
+  - Flutter (1.0.0)
+  - google_maps_flutter_ios (0.0.1):
+    - Flutter
+    - GoogleMaps (< 8.0)
+  - GoogleMaps (5.2.0):
+    - GoogleMaps/Maps (= 5.2.0)
+  - GoogleMaps/Base (5.2.0)
+  - GoogleMaps/Maps (5.2.0):
+    - GoogleMaps/Base
+  - location (0.0.1):
+    - Flutter
+  - Polyline (4.2.1)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - Solar (2.1.0)
+  - Turf (0.3.0)
+  - ViettelMapAnnotationExtension (0.0.1):
+    - ViettelMapSDK (~> 1.0.1)
+  - ViettelMapCoreNavigation (1.0.3):
+    - Turf (~> 0.3.0)
+    - ViettelMapDirections (~> 1.0.3)
+    - ViettelMapMobileEvents
+    - ViettelMapNavigationNative (~> 6.2.1)
+  - ViettelMapDirections (1.0.3):
+    - Polyline (~> 4.2)
+  - ViettelMapGeocoder (1.0.19):
+    - ViettelMapSDK (~> 1.0.3)
+  - ViettelMapMobileEvents (0.0.1)
+  - ViettelMapNavigation (1.0.3):
+    - Solar (~> 2.1)
+    - ViettelMapCoreNavigation (= 1.0.3)
+    - ViettelMapSDK (~> 1.0.3)
+    - ViettelMapSpeechSwift (~> 0.1.0)
+  - ViettelMapNavigationNative (6.2.1)
+  - ViettelMapSDK (1.0.3)
+  - ViettelMapSpeechSwift (0.1.0)
+  - vtmap_gl (0.0.1):
+    - Flutter
+    - ViettelMapAnnotationExtension (~> 0.0.1)
+    - ViettelMapDirections (~> 1.0.3)
+    - ViettelMapGeocoder (~> 1.0.19)
+    - ViettelMapNavigation
+    - ViettelMapSDK (~> 1.0.3)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
+  - location (from `.symlinks/plugins/location/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
+  - vtmap_gl (from `.symlinks/plugins/vtmap_gl/ios`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - GoogleMaps
+    - Polyline
+    - Solar
+    - Turf
+  https://github.com/vtmaps/pod_control.git:
+    - ViettelMapAnnotationExtension
+    - ViettelMapCoreNavigation
+    - ViettelMapDirections
+    - ViettelMapGeocoder
+    - ViettelMapMobileEvents
+    - ViettelMapNavigation
+    - ViettelMapNavigationNative
+    - ViettelMapSDK
+    - ViettelMapSpeechSwift
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  google_maps_flutter_ios:
+    :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
+  location:
+    :path: ".symlinks/plugins/location/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/ios"
+  vtmap_gl:
+    :path: ".symlinks/plugins/vtmap_gl/ios"
+
+SPEC CHECKSUMS:
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  google_maps_flutter_ios: abdac20d6ce8931f6ebc5f46616df241bfaa2cfd
+  GoogleMaps: 025272d5876d3b32604e5c080dc25eaf68764693
+  location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
+  Polyline: 0e9890790292741c8186201a536b6bb6a78d02dd
+  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
+  Solar: 2dc6e7cc39186cb0c8228fa08df76fb50c7d8f24
+  Turf: c6bdf62d6a70c647874f295dd1cf4eefc0c3e9e6
+  ViettelMapAnnotationExtension: c880a0848fd6137ea8fb13213d41f2b731fc62df
+  ViettelMapCoreNavigation: bb959064c0a79c683bc6ab028abeeba5f558463d
+  ViettelMapDirections: 2cf4f4084cd35137c84f84387a9f45093f1605c7
+  ViettelMapGeocoder: 23e5d341455ae5da052f31bef3e2e26b6f4356c3
+  ViettelMapMobileEvents: dd95a00320bf287cf1b11bc2c4e22b5977e61d9f
+  ViettelMapNavigation: 4ec5e869dd3dc01f23e4b7ab1af9b7b0360d3f3a
+  ViettelMapNavigationNative: 190a7f8e52b2c99d0c0bec9ec6160b11cdf82e33
+  ViettelMapSDK: a01fb60d9466c29bab129dc3bc84a64b20646116
+  ViettelMapSpeechSwift: 21f6cac0203f6c508152cfa2e635a405bde2cc6c
+  vtmap_gl: 6ffe1d6ee5aedab4300ecbb7c0996b1b5119dcd2
+
+PODFILE CHECKSUM: f3496c22bebe34da0afd912d32f1aef41d703e99
+
+COCOAPODS: 1.12.1
