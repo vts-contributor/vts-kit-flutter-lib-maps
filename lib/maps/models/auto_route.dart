@@ -5,10 +5,10 @@ class AutoRoute {
   final List<LatLng> waypoints;
   late final RouteType routeType;
 
-  AutoRoute(this.id, this.waypoints, [this.routeType = RouteType.wayPoints]);
+  AutoRoute(this.id, this.waypoints, [this.routeType = RouteType.line]);
 }
 
 enum RouteType {
-  wayPoints,
+  auto,
   line,
 }

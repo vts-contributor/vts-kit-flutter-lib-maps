@@ -214,17 +214,26 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   Future<Directions?> _getDirections(String id, List<LatLng> waypoints, RouteType type) async {
-    if (waypoints.length >= 2) {
-      return (await MapsAPIServiceImpl(key: _token).direction(
-        originLat: waypoints.first.latitude,
-        originLng: waypoints.first.longitude,
-        destLat: waypoints.last.latitude,
-        destLng: waypoints.last.longitude,
-        alternatives: true,
-        waypoints: waypoints,
-      ));
-    } else {
-      return null;
+    switch (type) {
+      case RouteType.auto:
+        if (waypoints.length >= 2) {
+          return (await MapsAPIServiceImpl(key: _token).direction(
+            originLat: waypoints.first.latitude,
+            originLng: waypoints.first.longitude,
+            destLat: waypoints.last.latitude,
+            destLng: waypoints.last.longitude,
+            alternatives: true,
+            waypoints: waypoints,
+          ));
+        } else {
+          return null;
+        }
+      case RouteType.line:
+        return Directions(
+          routes: [
+            MapRoute(id: id, points: waypoints)
+          ]
+        );
     }
   }
 
