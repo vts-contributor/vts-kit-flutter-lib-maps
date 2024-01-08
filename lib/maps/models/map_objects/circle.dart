@@ -193,7 +193,7 @@ class Circle implements MapObject<Circle> {
     return vtmap.LineOptions(
       geometry: points.toViettel(),
       lineWidth: (strokeWidth * Constant.vtStrokeWidthMultiplier).toDouble(),
-      lineColor: strokeColor.toRGBA(),
+      lineColor: strokeColor.toViettel(),
       lineOpacity: strokeColor.opacity,
       lineJoin: "round",
     );

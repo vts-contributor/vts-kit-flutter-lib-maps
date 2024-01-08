@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,10 @@ extension ColorConvert on Color {
   
   String toRGBA() {
     return "rgba($red, $green, $blue, $opacity)";
+  }
+
+  String? toViettel() {
+    return Platform.isAndroid? toRGBA(): toHex();
   }
 }
 

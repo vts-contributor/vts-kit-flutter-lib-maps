@@ -234,7 +234,7 @@ class Polygon implements MapObject<Polygon> {
     return vtmap.LineOptions(
       geometry: points.map((e) => e.toViettel()).toList(),
       lineWidth: strokeWidth * Constant.vtStrokeWidthMultiplier,
-      lineColor: strokeColor.toRGBA(),
+      lineColor: strokeColor.toViettel(),
       lineOpacity: strokeColor.opacity,
       lineJoin: "round",
     );

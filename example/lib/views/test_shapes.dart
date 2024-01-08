@@ -30,7 +30,7 @@ Polygon polygon1() {
           const LatLng(9.683279273763315, 105.85380206186403)
         ],
       ],
-      fillColor: Colors.black,
+      fillColor: Colors.red,
       strokeColor: Colors.yellow,
       onTap: () {
         Log.d("Polygon", "onTap");

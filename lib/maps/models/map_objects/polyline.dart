@@ -181,7 +181,7 @@ class Polyline implements MapObject<Polyline> {
     return vtmap.LineOptions(
       geometry: points.toViettel(),
       lineWidth: width.toDouble(),
-      lineColor: Platform.isAndroid? color.toRGBA(): color.toHex(),
+      lineColor: color.toViettel(),
       lineJoin: jointType.toViettel(),
       lineOpacity: color.opacity,
     );
