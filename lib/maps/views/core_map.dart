@@ -232,7 +232,8 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           double? lat = _locationManager._userLocation?.latitude;
           double? lng = _locationManager._userLocation?.longitude;
           if (lat != null && lng != null) {
-            _controller?.animateCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
+            double zoom = max(_controller?.getCurrentPosition().zoom ?? 0, 17);
+            _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), zoom));
           }
         },
         child: Ink(
