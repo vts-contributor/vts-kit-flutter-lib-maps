@@ -32,6 +32,7 @@ class CoreMapData {
     this.zoomOutButtonData,
     this.zoomButtonDividerColor = Colors.grey,
     this.zoomButtonDividerThickness = 1,
+    this.markerAllowOverlap = false,
   });
 
   ///should be removed, use file instead
@@ -168,6 +169,9 @@ class CoreMapData {
   /// set this = 0 to disable the divider
   final double zoomButtonDividerThickness;
 
+  ///true means markers won't be grouped when zooming out
+  final bool markerAllowOverlap;
+
   ///copy data with new parameters
   CoreMapData copyWith({
     String? accessToken,
@@ -196,6 +200,7 @@ class CoreMapData {
     CoreMapButtonCustomizeData? zoomOutButtonData,
     Color? zoomButtonDividerColor,
     double? zoomButtonDividerThickness,
+    bool? markerAllowOverlap,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -224,6 +229,7 @@ class CoreMapData {
       zoomOutButtonData: zoomOutButtonData ?? this.zoomOutButtonData,
       zoomButtonDividerColor: zoomButtonDividerColor ?? this.zoomButtonDividerColor,
       zoomButtonDividerThickness: zoomButtonDividerThickness ?? this.zoomButtonDividerThickness,
+      markerAllowOverlap: markerAllowOverlap ?? this.markerAllowOverlap,
     );
   }
 }

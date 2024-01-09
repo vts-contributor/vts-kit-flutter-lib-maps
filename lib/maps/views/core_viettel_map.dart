@@ -28,11 +28,17 @@ class _CoreViettelMapState extends State<_CoreViettelMap> {
   void didUpdateWidget(covariant _CoreViettelMap oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    _updateMapData();
+
     _updateUserLocationDrawOptions();
 
     _updateCallbacks();
 
     _updateShapes();
+  }
+
+  void _updateMapData() {
+    _controller?.updateMarkerOverlap(widget.data.markerAllowOverlap);
   }
 
   void _updateCallbacks() {

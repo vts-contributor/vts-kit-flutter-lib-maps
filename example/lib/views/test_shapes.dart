@@ -133,12 +133,12 @@ Marker marker() => Marker(
       color: Colors.red,
     )
   ),
-  icon: MarkerIcon.fromWidget("widget1", Container(
-    color: Colors.blue,
-    child: Image.asset("assets/custom_marker.png"),
-    height: 100,
-    width: 100,
-  )),
+  // icon: MarkerIcon.fromWidget("widget1", Container(
+  //   color: Colors.blue,
+  //   child: Image.asset("assets/custom_marker.png"),
+  //   height: 100,
+  //   width: 100,
+  // )),
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
   // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
 );
@@ -146,7 +146,7 @@ Marker marker() => Marker(
 Marker marker2() => Marker(
   id: const MarkerId("test2"),
   // position: LatLng(10.625380787927542, 105.051574201898),
-  position: const LatLng(8.848028919141523, 104.96513564005897),
+  position: const LatLng(8.848028919141523, 104.86513564005897),
   alpha: 1,
   zIndex: 0,
   draggable: true,
@@ -158,12 +158,12 @@ Marker marker2() => Marker(
         color: Colors.red,
       )
   ),
-  icon: MarkerIcon.fromWidget("widget1", Container(
-    color: Colors.blue,
-    child: Image.asset("assets/custom_marker.png"),
-    height: 100,
-    width: 100,
-  )),
+  // icon: MarkerIcon.fromWidget("widget1", Container(
+  //   color: Colors.blue,
+  //   child: Image.asset("assets/custom_marker.png"),
+  //   height: 100,
+  //   width: 100,
+  // )),
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
   // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
 );

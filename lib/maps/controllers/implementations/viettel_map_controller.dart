@@ -62,6 +62,10 @@ class _ViettelMapController extends BaseCoreMapController {
     await _loadNewMapObjects(oldShapes, shapes.toSet());
   }
 
+  void updateMarkerOverlap(bool allowOverlap) async {
+    _controller.setSymbolIconAllowOverlap(allowOverlap);
+  }
+
   Future<void> _validateMarkerBitmaps(Set<Marker> markers) async {
     List<String> validNames = _originalShapes.markers.map((e) => e.icon.data.name).toList();
     List<String> invalidNames = _addedMarkerIconNames.where((element) => !validNames.contains(element)).toList();
