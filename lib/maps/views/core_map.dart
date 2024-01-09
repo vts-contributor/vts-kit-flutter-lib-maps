@@ -116,21 +116,21 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           shapes: _routingManager.combineShape(widget.shapes),
           callbacks: callbacks.copyWith(
             onMapCreated: (controller) {
-              _controller = controller;
-              widget.callbacks?.onMapCreated?.call(controller);
+            _controller = controller;
+            widget.callbacks?.onMapCreated?.call(controller);
 
-              _locationManager.notifyRebuildUserLocationMapObject();
+            _locationManager.notifyRebuildUserLocationMapObject();
 
-              _infoWindowManager.updateController(controller);
-              _routingManager.mapController = controller;
+            _infoWindowManager.updateController(controller);
+            _routingManager.mapController = controller;
 
-              widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
-            },
+            widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
+          },
             onCameraMove: (pos) {
-              widget.callbacks?.onCameraMove?.call(pos);
+            widget.callbacks?.onCameraMove?.call(pos);
 
-              _infoWindowManager.notifyCameraMove();
-            }
+            _infoWindowManager.notifyCameraMove();
+          }
           ),
         ),
         ..._buildButtons(context),
@@ -196,8 +196,8 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
     double locationButtonPaddingSize =
         hasZoomButton && widget.data.myLocationButtonAlignment == widget.data.zoomButtonAlignment
-            ? zoomButtonPadding.horizontal + Constant.buttonDistance + Constant.zoomButtonSize
-            : Constant.defaultButtonPadding;
+        ? zoomButtonPadding.horizontal + Constant.buttonDistance + Constant.zoomButtonSize
+        : Constant.defaultButtonPadding;
     EdgeInsets locationButtonPadding = widget.data.myLocationButtonPadding ??
         EdgeInsets.symmetric(
             horizontal: locationButtonPaddingSize, vertical: Constant.defaultButtonPadding);
@@ -232,7 +232,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           double? lat = _locationManager._userLocation?.latitude;
           double? lng = _locationManager._userLocation?.longitude;
           if (lat != null && lng != null) {
-            double zoom = max(_controller?.getCurrentPosition().zoom ?? 0, 17);
+            double zoom = 17;
             _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), zoom));
           }
         },
