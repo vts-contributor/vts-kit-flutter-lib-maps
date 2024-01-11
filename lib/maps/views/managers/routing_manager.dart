@@ -43,6 +43,12 @@ abstract class RoutingManager {
   ///have to buildDirections first or else this always return false
   bool selectRoute(String id);
 
+  // set start location of a route with icon
+  void setStartLocation(LatLng position, [Widget? icon]);
+  
+  // set end location of a route with icon
+  void setEndLocation(LatLng position, [Widget? icon]);
+
   ///get current selected route if possible
   MapRoute? get selectedRoute;
 }
@@ -118,28 +124,28 @@ class RoutingOptions {
 
   RoutingOptions(this.apiKey, {
     required this.points,
-    this.alternatives = false,
-    this.mode = TravelMode.driving,
-    this.initialLatitude,
-    this.initialLongitude,
-    this.language,
-    this.zoom,
-    this.bearing,
-    this.tilt,
-    this.allowsUTurnAtWayPoints,
-    this.enableRefresh,
-    this.voiceInstructionsEnabled,
-    this.bannerInstructionsEnabled,
-    this.longPressDestinationEnabled,
-    this.simulateRoute,
-    this.isOptimized,
-    this.mapStyleUrlDay,
-    this.mapStyleUrlNight,
-    this.enableFreeDriveMode,
-    this.animateBuildRoute,
-    this.padding =
-    const EdgeInsets.only(left: 50, top: 100, right: 50, bottom: 100),
-    this.startIndex = 0
+      this.alternatives = false,
+      this.mode = TravelMode.driving,
+      this.initialLatitude,
+      this.initialLongitude,
+      this.language,
+      this.zoom,
+      this.bearing,
+      this.tilt,
+      this.allowsUTurnAtWayPoints,
+      this.enableRefresh,
+      this.voiceInstructionsEnabled,
+      this.bannerInstructionsEnabled,
+      this.longPressDestinationEnabled,
+      this.simulateRoute,
+      this.isOptimized,
+      this.mapStyleUrlDay,
+      this.mapStyleUrlNight,
+      this.enableFreeDriveMode,
+      this.animateBuildRoute,
+      this.padding =
+          const EdgeInsets.only(left: 50, top: 100, right: 50, bottom: 100),
+      this.startIndex = 0
   });
 
   vt.VTMapOptions toViettelMapOptions() {

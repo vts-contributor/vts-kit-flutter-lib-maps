@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:map_core_example/view_models/routing_view_model.dart';
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/models/auto_route.dart';
 import 'package:provider/provider.dart';
 
 class TestRoutingScreen extends StatefulWidget {
@@ -66,8 +65,10 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
           IconButton(
               onPressed: () async {
                 final directions = await Provider.of<RoutingViewModel>(context, listen: false)
-                    .downloadDirections(firstPoint, secondPoint);
+                        .downloadDirections(firstPoint, secondPoint);
                 _routingManager?.buildListMapRoute(directions.routes);
+                _routingManager?.setStartLocation(firstPoint);
+                _routingManager?.setEndLocation(secondPoint);
               },
               icon: const Icon(Icons.download))
         ],
@@ -75,11 +76,13 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
       body: CoreMap(
         type: _type,
         data: CoreMapData(
-            accessToken: "49013166841fe36d7fa7f395fce4a663",
-            initialCameraPosition: CameraPosition(target: firstPoint, zoom: 15),
-            compassEnabled: true,
-            myLocationEnabled: true,
-            myLocationButtonAlignment: Alignment.bottomRight,),
+          accessToken: "49013166841fe36d7fa7f395fce4a663",
+          initialCameraPosition: CameraPosition(target: firstPoint, zoom: 15),
+          compassEnabled: true,
+          myLocationEnabled: true,
+          myLocationButtonAlignment: Alignment.bottomRight,
+          markerAllowOverlap: true,
+        ),
         callbacks: CoreMapCallbacks(onRoutingManagerReady: (manager) {
           _routingManager = manager;
           _routingManager?.addRouteTapListener((id) {

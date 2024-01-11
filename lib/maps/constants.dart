@@ -6,6 +6,18 @@ class Constant {
   ///default asset name for Marker's icon
   static const String markerDefaultName = "default_08506dfjlsdp42odfo_marker_2432023";
 
+  ///asset path for start marker
+  static const String markerStartAssetPath = "packages/maps_core/assets/start_marker.png";
+
+  ///asset name for start marker
+  static const String markerStartName = "start_129nasdfkb44bhzdf_marker_11012024";
+
+    ///asset path for end marker
+  static const String markerEndAssetPath = "packages/maps_core/assets/end_marker.png";
+
+  ///asset name for end marker
+  static const String markerEndName = "end_35asdff123fa2356sfs_marker_11012024";
+
   ///the lowest zoom level that maps should support
   static const double zoomLevelLowerBound = 1.0;
 

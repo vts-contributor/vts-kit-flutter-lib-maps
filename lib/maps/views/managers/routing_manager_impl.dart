@@ -12,6 +12,10 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   List<MapRoute>? _routes;
 
+  Marker? _startMarker;
+
+  Marker? _endMarker;
+
   String? _currentSelectedId;
 
   Color _selectedColor = Colors.blueAccent;
@@ -95,6 +99,16 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     List<MapRoute>? routes = _routes;
     if (routes != null) {
       shapes.polylines.addAll(_buildPolylinesFromDirections(routes));
+
+      Marker? startMarker = _startMarker;
+      if (startMarker != null) {
+        shapes.markers.add(startMarker);
+      }
+
+      Marker? endMarker = _endMarker;
+      if (endMarker != null) {
+        shapes.markers.add(endMarker);
+      }
     }
 
     return shapes;
@@ -107,17 +121,17 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   Polyline _buildPolylineFromRoute(MapRoute route, bool isSelected) {
     return Polyline(
-      id: PolylineId(route.id),
-      points: route.tryGetNonNullOrEmptyPoints() ?? [],
-      color: isSelected? _selectedColor: _unselectedColor,
-      zIndex: isSelected? 6: 5,
-      jointType: JointType.round,
-      width: (isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth,
-      onTap: () {
-        Log.d("ROUTING", "ontap");
-        _setSelectedId(route.id);
-        notifyRouteTapListeners(route.id);
-      }
+        id: PolylineId(route.id),
+        points: route.tryGetNonNullOrEmptyPoints() ?? [],
+        color: isSelected? _selectedColor: _unselectedColor,
+        zIndex: isSelected? 6: 5,
+        jointType: JointType.round,
+        width: (isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth,
+        onTap: () {
+          Log.d("ROUTING", "ontap");
+          _setSelectedId(route.id);
+          notifyRouteTapListeners(route.id);
+        }
     );
   }
 
@@ -265,6 +279,28 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     }
     await Future.wait(futures);
     notifyListeners();
+  }
+
+  @override
+  void setEndLocation(LatLng position, [Widget? icon]) {
+    String id = "${position}start";
+    _startMarker = Marker(
+        id: MarkerId(id),
+        position: position,
+        icon: icon != null
+            ? MarkerIcon.fromWidget(id, icon)
+            : MarkerIcon.endIcon);
+  }
+
+  @override
+  void setStartLocation(LatLng position, [Widget? icon]) {
+    String id = "$position-end";
+    _endMarker = Marker(
+        id: MarkerId(id),
+        position: position,
+        icon: icon != null
+            ? MarkerIcon.fromWidget(id, icon)
+            : MarkerIcon.startIcon);
   }
 
   // bool _buildRouteNative(RoutingOptions options) {

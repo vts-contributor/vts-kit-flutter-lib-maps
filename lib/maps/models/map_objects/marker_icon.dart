@@ -17,6 +17,12 @@ class MarkerIcon {
   static const MarkerIcon defaultIcon = MarkerIcon._(AssetMarkerIconData(
       Constant.markerDefaultName, Constant.markerDefaultAssetPath));
 
+  static const MarkerIcon startIcon = MarkerIcon._(AssetMarkerIconData(
+      Constant.markerStartName, Constant.markerStartAssetPath));
+
+   static const MarkerIcon endIcon = MarkerIcon._(AssetMarkerIconData(
+      Constant.markerEndName, Constant.markerEndAssetPath));    
+
   static MarkerIcon fromAsset(
     final String name,
     final String assetPath, {
