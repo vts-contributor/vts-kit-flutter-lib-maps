@@ -134,7 +134,7 @@ class MapsAPIDirectionsParser extends MapsAPIResponseParser {
     } else {
       status = null;
     }
-    if (bodyJson.containsKey('routes')) {
+    if (bodyJson.containsKey('routes') || bodyJson.containsKey("rows")) {
       return PlaceResponse(
         content: bodyJson,
         errorCode: response.statusCode,
@@ -144,3 +144,4 @@ class MapsAPIDirectionsParser extends MapsAPIResponseParser {
     return nextParse(response);
   }
 }
+

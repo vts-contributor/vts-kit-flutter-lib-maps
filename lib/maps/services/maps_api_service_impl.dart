@@ -212,4 +212,41 @@ class MapsAPIServiceImpl extends MapsAPIService {
       );
     }
   }
+
+  @override
+  Future<DistanceMatrix> getDistanceMatrix({
+    RouteTravelMode? travelMode = RouteTravelMode.bycycling,
+    required List<LatLng> origins,
+    required List<LatLng> destinations,
+    Map<String, String>? paramsKeyMapper,
+    CustomCancelToken? cancelToken,
+    String? id,
+  }) async {
+    final keyOrigins = paramsKeyMapper.valueOrKey(MapsAPIConst.kOrigins);
+    final keyDestinations =
+    paramsKeyMapper.valueOrKey(MapsAPIConst.kDestinations);
+    final keyMode = paramsKeyMapper.valueOrKey(MapsAPIConst.kMode);
+    final params = {
+      keyOrigins: origins.map((e) => "${e.latitude},${e.longitude}").join(";"),
+      keyDestinations:  destinations.map((e) => "${e.latitude},${e.longitude}").join(";"),
+      keyMode: travelMode == RouteTravelMode.bycycling? "cycling": travelMode?.name,
+    };
+
+    final response = await get<PlaceResponse>(
+      config.distanceMatrixPath,
+      params: params,
+      cancelToken: cancelToken,
+    );
+    if (response.content is Map<String, dynamic>) {
+      final result = DistanceMatrix.fromJson(
+        response.content as Map<String, dynamic>,
+      );
+      result.id = id;
+      return result;
+    } else {
+      throw ImplicitServerResponseError(
+        rootCause: Exception('API Maps directions response content is null'),
+      );
+    }
+  }
 }

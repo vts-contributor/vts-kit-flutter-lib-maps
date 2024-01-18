@@ -9,9 +9,11 @@ import 'package:flutter/services.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/map_objects/lat_lng.dart';
 import '../models/network/language.dart';
 import '../models/network/token.dart';
 import '../models/route.dart';
+import '../models/viewport.dart';
 
 
 typedef LetCallback<T, R> = R Function(T it);
@@ -245,5 +247,24 @@ extension RouteLegExtension on List<RouteLeg> {
     //error value detected in distances list, return null
     if (distances.contains(null)) return null;
     return distances.whereNotNull().sum;
+  }
+}
+
+extension ListLatLngUtils on List<LatLng> {
+  ///return [southwest, northeast]
+  ViewPort getBounds() {
+    List<double> latitudes = map((e) => e.latitude).toList();
+    List<double> longitudes = map((e) => e.longitude).toList();
+
+    double maxLat = latitudes.max;
+    double minLat = latitudes.min;
+
+    double maxLng = longitudes.max;
+    double minLng = longitudes.min;
+
+    return ViewPort(
+      northeast: LatLng(maxLat, maxLng),
+      southwest: LatLng(minLat, minLng),
+    );
   }
 }

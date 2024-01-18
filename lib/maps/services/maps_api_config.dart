@@ -6,10 +6,11 @@ class MapAPIConfig {
   final String autocompleteSearchPath;
   final String nearbySearchPath;
   final String directionPath;
+  final String distanceMatrixPath;
   String? key;
 
   String hostOf(String path) {
-    if (path == directionPath) {
+    if (path == directionPath  || path == distanceMatrixPath) {
       return routeHost;
     } else {
       return placeHost;
@@ -26,5 +27,6 @@ class MapAPIConfig {
     this.autocompleteSearchPath = 'autocomplete',
     this.nearbySearchPath = 'nearbysearch',
     this.directionPath = 'directions',
+    this.distanceMatrixPath = 'distancematrix'
   });
 }

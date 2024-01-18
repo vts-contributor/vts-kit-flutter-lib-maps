@@ -48,6 +48,11 @@ class LatLng {
   @override
   String toString() => '{lat:$latitude, lng:$longitude}';
 
+  factory LatLng.fromString(String value) {
+      List<String> latLng = value.replaceAll(RegExp("{lat:| lng:|}"), "").split(",");
+      return LatLng(double.parse(latLng.first), double.parse(latLng.last));
+  }
+
   Map<String, dynamic> toJson() {
     return {
       "lat": latitude,

@@ -52,4 +52,12 @@ abstract class MapsAPIService extends MapsAPIAbstractService {
     int? routePointsSkipStep,
     CustomCancelToken? cancelToken,
   });
+
+  Future<DistanceMatrix> getDistanceMatrix({
+    RouteTravelMode travelMode = RouteTravelMode.bycycling,
+    required List<LatLng> origins,
+    required List<LatLng> destinations,
+    Map<String, String>? paramsKeyMapper,
+    CustomCancelToken? cancelToken,
+  });
 }

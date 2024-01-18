@@ -19,4 +19,6 @@ abstract class MapsAPIConst {
   static const kRankBy = 'rankby';
   static const kNextPageToken = 'next_page_token';
   static const kWayPoints = "waypoints";
+  static const kOrigins = 'origins';
+  static const kDestinations = 'destinations';
 }

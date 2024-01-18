@@ -33,6 +33,7 @@ class CoreMapData {
     this.zoomButtonDividerColor = Colors.grey,
     this.zoomButtonDividerThickness = 1,
     this.markerAllowOverlap = false,
+    this.defaultTravelMode = RouteTravelMode.bycycling,
   });
 
   ///should be removed, use file instead
@@ -172,6 +173,9 @@ class CoreMapData {
   ///true means markers won't be grouped when zooming out
   final bool markerAllowOverlap;
 
+  ///default travel mode for routing
+  final RouteTravelMode defaultTravelMode;
+
   ///copy data with new parameters
   CoreMapData copyWith({
     String? accessToken,
@@ -201,6 +205,7 @@ class CoreMapData {
     Color? zoomButtonDividerColor,
     double? zoomButtonDividerThickness,
     bool? markerAllowOverlap,
+    RouteTravelMode? defaultTravelMode,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -230,6 +235,7 @@ class CoreMapData {
       zoomButtonDividerColor: zoomButtonDividerColor ?? this.zoomButtonDividerColor,
       zoomButtonDividerThickness: zoomButtonDividerThickness ?? this.zoomButtonDividerThickness,
       markerAllowOverlap: markerAllowOverlap ?? this.markerAllowOverlap,
+      defaultTravelMode: defaultTravelMode ?? this.defaultTravelMode,
     );
   }
 }

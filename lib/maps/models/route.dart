@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
@@ -12,6 +13,7 @@ class MapRoute {
   final List<String>? warning;
   final List<String>? waypointOrder;
   final List<RouteLeg>? legs;
+  RouteConfig? config;
 
   List<LatLng>? shortenedPoints(int step) {
     return points?.whereIndexed((i, point) => i % step == 0).toList();
@@ -25,7 +27,8 @@ class MapRoute {
     this.summary,
     this.warning,
     this.waypointOrder,
-    this.legs
+    this.legs,
+    this.config,
   });
 
   factory MapRoute.fromJson(Map<String, dynamic>? json, {int? pointsSkipStep}) {

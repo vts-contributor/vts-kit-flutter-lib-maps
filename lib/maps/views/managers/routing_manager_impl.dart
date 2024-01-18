@@ -2,6 +2,8 @@ part of core_map;
 
 class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
+  static const int MAX_DESTINATION_FOR_DISTANCE_MATRIX = 45;
+
   final _LocationManager _locationManager;
 
   String? _token;
@@ -30,6 +32,8 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   final List<void Function(String id)> _routeSelectedListeners = [];
 
+  RouteTravelMode? _defaultTravelMode;
+
   set token(String? value) {
     _token = value;
   }
@@ -44,6 +48,10 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     _selectedWidth = selected;
     _unselectedWidth = unselected;
     //don't need to call notify listener here.
+  }
+
+  void updateDefaultTravelMode(RouteTravelMode travelMode) {
+    _defaultTravelMode = travelMode;
   }
 
   @override
@@ -88,7 +96,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     if (northeast != null && southwest != null) {
       await mapController?.animateCamera(CameraUpdate.newLatLngBounds(
           LatLngBounds(southwest: southwest, northeast: northeast),
-          40));
+          1));
     }
   }
 
@@ -123,10 +131,10 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     return Polyline(
         id: PolylineId(route.id),
         points: route.tryGetNonNullOrEmptyPoints() ?? [],
-        color: isSelected? _selectedColor: _unselectedColor,
+        color: route.config?.color ?? (isSelected? _selectedColor: _unselectedColor),
         zIndex: isSelected? 6: 5,
         jointType: JointType.round,
-        width: (isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth,
+        width: route.config?.width ?? ((isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth),
         onTap: () {
           Log.d("ROUTING", "ontap");
           _setSelectedId(route.id);
@@ -210,45 +218,179 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   @override
-  Future<void> addRoute(AutoRoute autoRoute) async {
-    return _addRoute(autoRoute, true);
+  Future<void> addRoute(RouteConfig routeConfig) async {
+    return _addRoute(routeConfig, true);
   }
 
-  Future<void> _addRoute(AutoRoute autoRoute, bool shouldNotify) async {
-    Directions? directions = await _getDirections(autoRoute.id, autoRoute.waypoints, autoRoute.routeType);
+  Future<void> _addRoute(RouteConfig routeConfig, bool shouldNotify) async {
+    Directions? directions = await _getDirections(routeConfig.waypoints,
+        routeConfig.routeType, routeConfig.travelMode);
     MapRoute? mapRoute = directions?.routes?.trySelectShortestRoute();
     if (mapRoute != null) {
-      mapRoute.id = autoRoute.id;
+      mapRoute.id = routeConfig.id;
+      mapRoute.config = routeConfig;
 
       _routes ??= [];
+
       _routes?.add(mapRoute);
 
       if (shouldNotify) notifyListeners();
     }
   }
 
-  Future<Directions?> _getDirections(String id, List<LatLng> waypoints, RouteType type) async {
+  Future<Directions?> _getDirections(List<LatLng> waypoints, RouteType type, RouteTravelMode? travelMode) async {
     switch (type) {
       case RouteType.auto:
-        if (waypoints.length >= 2) {
-          return (await MapsAPIServiceImpl(key: _token).direction(
-            originLat: waypoints.first.latitude,
-            originLng: waypoints.first.longitude,
-            destLat: waypoints.last.latitude,
-            destLng: waypoints.last.longitude,
-            alternatives: true,
-            waypoints: waypoints,
-          ));
-        } else {
-          return null;
-        }
+      case RouteType.autoSort:
+        return _getAutoRoutesDirection(waypoints, type, travelMode);
       case RouteType.line:
         return Directions(
           routes: [
-            MapRoute(id: id, points: waypoints)
+            MapRoute(id: "", points: waypoints)
           ]
         );
     }
+  }
+
+  Future<Directions?> _getAutoRoutesDirection(List<LatLng> waypoints, RouteType type, RouteTravelMode? travelMode) async {
+    if (type == RouteType.autoSort) {
+      waypoints = await sortWaypoints(waypoints, travelMode);
+    }
+
+    if (waypoints.length < 2) {
+      return Future.value(null);
+    }
+
+    return await MapsAPIServiceImpl(key: _token).direction(
+      originLat: waypoints.first.latitude,
+      originLng: waypoints.first.longitude,
+      destLat: waypoints.last.latitude,
+      destLng: waypoints.last.longitude,
+      alternatives: true,
+      waypoints: waypoints,
+      mode: (travelMode ?? _defaultTravelMode)?.name
+    );
+  }
+
+  Future<List<LatLng>> sortWaypoints(List<LatLng> points, RouteTravelMode? travelMode) async {
+    if (points.length <= 2) {
+      return points;
+    }
+
+    Map<String, Map<String, DistanceMatrixElement>>? distanceMap = await _getDistanceMapping(points, travelMode);
+
+    if (distanceMap == null) {
+      return points;
+    }
+
+    for (Map<String, DistanceMatrixElement> distanceMapOfPoint in distanceMap.values) {
+
+    }
+
+    List<LatLng> sortedPoints = [];
+    sortedPoints.add(points.first);
+    while (true) {
+      LatLng currentPoint = sortedPoints.last;
+
+      Map<String, DistanceMatrixElement>? map = distanceMap[currentPoint.toString()];
+      if (map == null) {
+        break;
+      }
+
+      Map<double, String> reverseDistanceMap = {};
+      double? smallestDistance;
+      String? nextPoint;
+      for (MapEntry<String, DistanceMatrixElement> mapEntry in map.entries) {
+        //if current point doesn't exist in sortedPoints
+        if (sortedPoints.where((element) => element.toString().compareTo(mapEntry.key) == 0).isEmpty) {
+          double? distance = mapEntry.value.distance?.value;
+          if (smallestDistance == null) {
+            smallestDistance = distance;
+            nextPoint = mapEntry.key;
+          } else {
+            if (distance != null) {
+              if (distance < smallestDistance) {
+                smallestDistance = distance;
+                nextPoint = mapEntry.key;
+              }
+            }
+          }
+        }
+      }
+
+      if (nextPoint != null) {
+        sortedPoints.add(LatLng.fromString(nextPoint));
+      } else {
+        break;
+      }
+
+      if (sortedPoints.length > points.length) {
+        Log.e("AUTO SORT ROUTING ERROR", "Sorting number of points becomes larger than original points");
+        return points;
+      }
+    }
+
+    return sortedPoints;
+  }
+
+  Future<Map<String, Map<String, DistanceMatrixElement>>?> _getDistanceMapping(List<LatLng> points, RouteTravelMode? travelMode) async{
+    try {
+      List<List<LatLng>> slices = points.slices(MAX_DESTINATION_FOR_DISTANCE_MATRIX).toList();
+
+      List<Future<DistanceMatrix>> listFuture = [];
+
+      for (int i = 0; i < slices.length; i++) {
+        for (int j = 0; j < slices.length; j++) {
+          listFuture.add(MapsAPIServiceImpl(key: _token).getDistanceMatrix(
+              origins: slices[i],
+              destinations: slices[j],
+              travelMode: (travelMode ?? _defaultTravelMode),
+              id: "$i/$j"
+          ));
+        }
+      }
+
+      List<DistanceMatrix> listMatrix = await Future.wait(listFuture);
+
+      Map<String, Map<String, DistanceMatrixElement>> mapDistance = {};
+      for (DistanceMatrix matrix in listMatrix) {
+
+        List<String>? ids = matrix.id?.split("/");
+        if ((ids?.length ?? 0) < 2) {
+          continue;
+        }
+
+        int? originId = int.tryParse(ids?[0] ?? "-1");
+        int? destinationId = int.tryParse(ids?[1] ?? "-1");
+
+        if (originId != null && originId >= 0 && destinationId != null && destinationId >= 0) {
+          List<LatLng> originSlice = slices[originId];
+          List<LatLng> destinationSlice = slices[destinationId];
+
+          for (int i = 0; i < originSlice.length; i++) {
+
+            List<DistanceMatrixElement>? row = matrix.rows?[i];
+            if (row != null) {
+              String key = originSlice[i].toString();
+              Map<String, DistanceMatrixElement>? mapDistanceOfPoint = mapDistance[originSlice[i].toString()];
+              if (mapDistanceOfPoint == null) {
+                mapDistanceOfPoint = {};
+                mapDistance.putIfAbsent(key, () => mapDistanceOfPoint!);
+              }
+
+              for (int j = 0; j < destinationSlice.length; j++) {
+                mapDistanceOfPoint.putIfAbsent(destinationSlice[j].toString(), () => row[j]);
+              }
+            }
+          }
+        }
+      }
+
+      return mapDistance;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
   }
 
   @override
@@ -272,10 +414,10 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   @override
-  Future<void> addRoutes(List<AutoRoute> autoRoutes) async {
+  Future<void> addRoutes(List<RouteConfig> routeConfigs) async {
     List<Future> futures = [];
-    for (AutoRoute autoRoute in autoRoutes) {
-      futures.add(_addRoute(autoRoute, false));
+    for (RouteConfig routeConfig in routeConfigs) {
+      futures.add(_addRoute(routeConfig, false));
     }
     await Future.wait(futures);
     notifyListeners();

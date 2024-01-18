@@ -7,19 +7,14 @@ extension ZoomHelperExtension on CoreMapController {
   ///animate camera to center of these points with zoom level to see all of these points
   Future<void> animateCameraToCenterOfPoints(List<LatLng> points, double padding, {int? duration}) async {
     if (points.isEmpty) return;
-
-    List<double> latitudes = points.map((e) => e.latitude).toList();
-    List<double> longitudes = points.map((e) => e.longitude).toList();
-
-    double maxLat = latitudes.max;
-    double minLat = latitudes.min;
-
-    double maxLng = longitudes.max;
-    double minLng = longitudes.min;
-
-    animateCamera(CameraUpdate.newLatLngBounds(LatLngBounds(
-      northeast: LatLng(maxLat, maxLng),
-      southwest: LatLng(minLat, minLng),
-    ), padding), duration: duration);
+    ViewPort viewPort = points.getBounds();
+    LatLng? southwest = viewPort.southwest;
+    LatLng? northeast = viewPort.northeast;
+    if (southwest != null && northeast != null) {
+      animateCamera(CameraUpdate.newLatLngBounds(LatLngBounds(
+        northeast: northeast,
+        southwest: southwest,
+      ), padding), duration: duration);
+    }
   }
 }

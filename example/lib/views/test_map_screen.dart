@@ -62,7 +62,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
-                  _controller?.animateCamera(CameraUpdate.newLatLng(LatLng(13.199416385789831, 108.46161682049204)), duration: 1);
+                  _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(10.867235213747376, 106.63784199919601), 20), duration: 1);
             },
           ),
         ],

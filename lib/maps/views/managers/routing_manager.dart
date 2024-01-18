@@ -16,11 +16,11 @@ abstract class RoutingManager {
   ///options
   Future<void> buildRoutes(RoutingOptions options);
 
-  ///add a route go that will go through waypoints (limit of waypoint's length is around 25)
-  Future<void> addRoute(AutoRoute autoRoute);
+  ///add a route go that will go through waypoints 
+  Future<void> addRoute(RouteConfig routeConfig);
 
   ///add multiple routes
-  Future<void> addRoutes(List<AutoRoute> autoRoutes);
+  Future<void> addRoutes(List<RouteConfig> routeConfigs);
 
   ///clear all routes
   Future<void> clearAllRoutes();

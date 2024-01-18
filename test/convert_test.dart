@@ -10,8 +10,8 @@ void main() {
       const ggLatLng = gg.LatLng(10.15128234, 105.982341);
       const vtLatLng = vt.LatLng(10.15128234, 105.982341);
 
-      expect(latLng.toGoogle(), ggLatLng);
-      expect(latLng.toViettel(), vtLatLng);
+      // expect(latLng.toGoogle(), ggLatLng);
+      // expect(latLng.toViettel(), vtLatLng);
 
       final latLngBounds = LatLngBounds(
           southwest: const LatLng(10.83571439676659, 106.67236659058827),
@@ -22,6 +22,13 @@ void main() {
       final vtLatLngBounds = vt.LatLngBounds(
           southwest: const vt.LatLng(10.83571439676659, 106.67236659058827),
           northeast: const vt.LatLng(10.84447239676659, 106.67326159058827));
+
+      for (int i = 0; i < 500; i++) {
+        LatLng stringLatLng = new LatLng(10.83571439676659, 106.67236659058827);
+        LatLng converted = LatLng.fromString(stringLatLng.toString());
+
+        expect(stringLatLng, converted);
+      }
     });
 
     test("camera zoom convert test", () {

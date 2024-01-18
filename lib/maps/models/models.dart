@@ -24,3 +24,4 @@ export 'camera_position.dart';
 export 'camera_update.dart';
 export 'ui.dart';
 export 'auto_route.dart';
+export 'distance_matrix.dart';
