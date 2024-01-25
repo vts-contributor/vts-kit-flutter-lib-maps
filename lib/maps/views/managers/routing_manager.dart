@@ -41,7 +41,9 @@ abstract class RoutingManager {
 
   ///select a route with id,
   ///have to buildDirections first or else this always return false
-  bool selectRoute(String id);
+  bool selectRoute(String id, {
+    bool zoomToRoute = true,
+  });
 
   // set start location of a route with icon
   void setStartLocation(LatLng position, [Widget? icon]);

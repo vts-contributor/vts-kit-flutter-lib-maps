@@ -182,12 +182,13 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
                   LatLng(10.950305387234123, 106.63943723003548),
                   LatLng(10.960305387234123, 106.63943723003548),
                 ], routeType: RouteType.autoSort, color: Colors.blueAccent));
+                _routingManager?.selectRoute("1234", zoomToRoute: true);
               },
               icon: const Icon(Icons.swap_vert_circle)),
           IconButton(
               onPressed: () async {
                 await _routingManager?.addRoute(RouteConfig("123", [firstPoint, secondPoint], color: Colors.black));
-                _routingManager?.selectRoute("123");
+                _routingManager?.selectRoute("123", zoomToRoute: true);
               },
               icon: const Icon(Icons.swap_vert_circle)),
           IconButton(

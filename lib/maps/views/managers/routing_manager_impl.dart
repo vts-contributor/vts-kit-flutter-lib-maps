@@ -137,7 +137,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         width: route.config?.width ?? ((isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth),
         onTap: () {
           Log.d("ROUTING", "ontap");
-          _setSelectedId(route.id);
+          selectRoute(route.id);
           notifyRouteTapListeners(route.id);
         }
     );
@@ -167,7 +167,9 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   @override
-  bool selectRoute(String id) {
+  bool selectRoute(String id, {
+    bool zoomToRoute = true,
+  }) {
     if (_routes == null) {
       Log.e(RoutingManager.logTag, "Can't select route when directions are null");
       return false;
@@ -177,6 +179,13 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     if (route == null) return false;
 
     _setSelectedId(id);
+
+    if (_routes != null && zoomToRoute) {
+      List<LatLng>? points = route.tryGetNonNullOrEmptyPoints();
+      if (points != null && points.isNotEmpty) {
+        mapController?.animateCameraToCenterOfPoints(points, 10, duration: 1);
+      }
+    }
 
     return true;
   }
