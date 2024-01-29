@@ -1,5 +1,11 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
 ///constants used by the lib
 class Constant {
+  Constant._();
+
   ///default asset path for Marker's icon
   static const String markerDefaultAssetPath = "packages/maps_core/assets/default_marker.png";
 
@@ -36,4 +42,13 @@ class Constant {
 
   ///default padding of buttons
   static const double defaultButtonPadding = 10;
+
+  ///default button color
+  static final Color defaultButtonColor = Colors.white.withOpacity(0.5);
+
+  ///default button icon color
+  static final Color defaultButtonIconColor = Colors.black.withOpacity(0.6);
+
+  ///full screen button size
+  static const double fullScreenButtonSize = 36;
 }

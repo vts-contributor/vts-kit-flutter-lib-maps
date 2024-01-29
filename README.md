@@ -60,7 +60,6 @@ Có 2 cách để lưu các controller và manager trên:
 - Đơn giản hơn bạn có thể dùng biến nullable thay vì Completer nếu muốn.
 
 #### a) CoreMapController
-Lưu ý *onMapCreated* sẽ được gọi mỗi khi type của CoreMap thay đổi.
 
 Dùng để di chuyển camera, lấy vị trí trên màn hình, trên bản đồ, show/hide info window của marker,...
 

@@ -64,7 +64,10 @@ class _CoreViettelMapState extends State<_CoreViettelMap> {
       onStyleLoadedCallback: () {
         _ViettelMapController? controller = _controller;
         if (controller != null) {
-          controller.onStyleLoaded(widget.shapes);
+          controller.onStyleLoaded(
+            shapes: widget.shapes,
+            markerAllowOverlap: widget.data.markerAllowOverlap,
+          );
           controller.updateUserLocationShape(widget.userLocationDrawOptions);
           widget.callbacks?.onMapCreated?.call(controller);
         }

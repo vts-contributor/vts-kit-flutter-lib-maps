@@ -18,7 +18,7 @@ class CoreMapData {
     this.tiltGesturesEnabled = true,
     this.myLocationEnabled = false,
     this.myLocationButtonEnabled = true,
-    this.myLocationButtonAlignment = Alignment.topRight,
+    this.myLocationButtonAlignment = Alignment.bottomRight,
     this.selectedRouteColor = Colors.blueAccent,
     this.unselectedRouteColor = Colors.grey,
     this.selectedRouteWidth,
@@ -34,6 +34,10 @@ class CoreMapData {
     this.zoomButtonDividerThickness = 1,
     this.markerAllowOverlap = false,
     this.defaultTravelMode = RouteTravelMode.bycycling,
+    this.fullScreenButtonEnabled = true,
+    this.fullScreenButtonPadding,
+    this.fullScreenButtonAlignment = Alignment.topRight,
+    this.fullScreenButtonData,
   });
 
   ///should be removed, use file instead
@@ -176,6 +180,18 @@ class CoreMapData {
   ///default travel mode for routing
   final RouteTravelMode defaultTravelMode;
 
+  ///has full screen button
+  final bool fullScreenButtonEnabled;
+
+  ///padding for full screen button
+  final EdgeInsets? fullScreenButtonPadding;
+
+  ///alignment of the full screen button
+  final Alignment fullScreenButtonAlignment;
+
+  ///custom full screen button.
+  final CoreMapButtonCustomizeData? fullScreenButtonData;
+
   ///copy data with new parameters
   CoreMapData copyWith({
     String? accessToken,
@@ -206,6 +222,10 @@ class CoreMapData {
     double? zoomButtonDividerThickness,
     bool? markerAllowOverlap,
     RouteTravelMode? defaultTravelMode,
+    bool? fullScreenButtonEnabled,
+    EdgeInsets? fullScreenButtonPadding,
+    Alignment? fullScreenButtonAlignment,
+    CoreMapButtonCustomizeData? fullScreenButtonData,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -236,6 +256,10 @@ class CoreMapData {
       zoomButtonDividerThickness: zoomButtonDividerThickness ?? this.zoomButtonDividerThickness,
       markerAllowOverlap: markerAllowOverlap ?? this.markerAllowOverlap,
       defaultTravelMode: defaultTravelMode ?? this.defaultTravelMode,
+      fullScreenButtonEnabled: fullScreenButtonEnabled ?? this.fullScreenButtonEnabled,
+      fullScreenButtonPadding: fullScreenButtonPadding ?? this.fullScreenButtonPadding,
+      fullScreenButtonAlignment: fullScreenButtonAlignment ?? this.fullScreenButtonAlignment,
+      fullScreenButtonData: fullScreenButtonData ?? this.fullScreenButtonData,
     );
   }
 }

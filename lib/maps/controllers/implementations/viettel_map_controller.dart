@@ -56,6 +56,9 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> loadNewShapes(CoreMapShapes shapes) async {
+    if (!_styleLoaded) {
+      return;
+    }
     final oldShapes = _originalShapes.toSet();
     _originalShapes = shapes.clone();
     await _validateMarkerBitmaps(_originalShapes.markers);
@@ -63,6 +66,9 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   void updateMarkerOverlap(bool allowOverlap) async {
+    if (!_styleLoaded) {
+      return;
+    }
     _controller.setSymbolIconAllowOverlap(allowOverlap);
   }
 
@@ -351,9 +357,13 @@ class _ViettelMapController extends BaseCoreMapController {
     _controller.dispose();
   }
 
-  Future<void> onStyleLoaded(CoreMapShapes shapes) async {
+  Future<void> onStyleLoaded({
+    required CoreMapShapes shapes,
+    required bool markerAllowOverlap,
+  }) async {
     _styleLoaded = true;
     loadNewShapes(shapes);
+    updateMarkerOverlap(markerAllowOverlap);
   }
 
   @override

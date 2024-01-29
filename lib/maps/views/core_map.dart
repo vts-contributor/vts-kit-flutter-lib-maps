@@ -22,7 +22,9 @@ class CoreMap extends StatefulWidget {
 }
 
 class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
-  CoreMapController? _controller;
+  CoreMapControllerWrapper? _controller;
+  CoreMapController? _fullScreenController;
+  CoreMapController? _normalController;
 
   late final _LocationManager _locationManager = _LocationManager(widget.callbacks);
 
@@ -31,6 +33,10 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   late final _InfoWindowManagerImpl _infoWindowManager = _InfoWindowManagerImpl(widget.shapes?.markers, _markerIconDataFactory);
 
   final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
+
+  bool _isFullScreen = false;
+
+  OverlayEntry? _mapOverlay;
 
   @override
   void initState() {
@@ -104,39 +110,48 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    CoreMapCallbacks callbacks = widget.callbacks ?? CoreMapCallbacks();
-
     return Stack(
       fit: StackFit.loose,
       children: [
-        _buildMap(
-          type: widget.type,
-          data: widget.data.copyWith(
-              initialCameraPosition:
-                  _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition),
-          shapes: _routingManager.combineShape(widget.shapes),
-          callbacks: callbacks.copyWith(
-            onMapCreated: (controller) {
-            _controller = controller;
-            widget.callbacks?.onMapCreated?.call(controller);
-
-            _locationManager.notifyRebuildUserLocationMapObject();
-
-            _infoWindowManager.updateController(controller);
-            _routingManager.mapController = controller;
-
-            widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
-          },
-            onCameraMove: (pos) {
-            widget.callbacks?.onCameraMove?.call(pos);
-
-            _infoWindowManager.notifyCameraMove();
-          }
-          ),
-        ),
+        _buildMapFullParams(),
         ..._buildButtons(context),
         ..._infoWindowManager.getInfoWindows(context),
       ],
+    );
+  }
+
+  Widget _buildMapFullParams() {
+    return _buildMap(
+        type: widget.type,
+        data: widget.data.copyWith(
+            initialCameraPosition:
+            _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition),
+        shapes: _routingManager.combineShape(widget.shapes),
+        callbacks: (widget.callbacks ?? CoreMapCallbacks()).copyWith(
+            onMapCreated: (controller) {
+              CoreMapControllerWrapper controllerWrapper = (_controller ??= CoreMapControllerWrapper());
+              if (_isFullScreen) {
+                _fullScreenController = controller;
+              } else {
+                _normalController = controller;
+              }
+              controllerWrapper.innerController = controller;
+
+              widget.callbacks?.onMapCreated?.call(controllerWrapper);
+
+              _locationManager.notifyRebuildUserLocationMapObject();
+
+              _infoWindowManager.updateController(controllerWrapper);
+              _routingManager.mapController = controllerWrapper;
+
+              widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
+            },
+            onCameraMove: (pos) {
+              widget.callbacks?.onCameraMove?.call(pos);
+
+              _infoWindowManager.notifyCameraMove();
+            }
+        )
     );
   }
 
@@ -187,23 +202,47 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     }
   }
 
+  double _getAvoidZoomButtonHorizontalPadding(Alignment buttonAlignment, EdgeInsets zoomButtonPadding) {
+    return widget.data.zoomButtonEnabled && buttonAlignment == widget.data.zoomButtonAlignment
+        ? zoomButtonPadding.horizontal + Constant.buttonDistance + Constant.zoomButtonSize: Constant.defaultButtonPadding;
+  }
+
   List<Widget> _buildButtons(BuildContext context) {
     bool hasLocationButton = widget.data.myLocationEnabled && widget.data.myLocationEnabled;
     bool hasZoomButton = widget.data.zoomButtonEnabled;
+    bool hasFullScreenButton = widget.data.fullScreenButtonEnabled;
 
     EdgeInsets zoomButtonPadding = hasZoomButton
         ? (widget.data.zoomButtonPadding ?? const EdgeInsets.all(Constant.defaultButtonPadding))
         : EdgeInsets.zero;
 
-    double locationButtonPaddingSize =
-        hasZoomButton && widget.data.myLocationButtonAlignment == widget.data.zoomButtonAlignment
-        ? zoomButtonPadding.horizontal + Constant.buttonDistance + Constant.zoomButtonSize
-        : Constant.defaultButtonPadding;
+    double locationButtonPaddingHorizontal = _getAvoidZoomButtonHorizontalPadding(
+        widget.data.myLocationButtonAlignment, zoomButtonPadding);
+
     EdgeInsets locationButtonPadding = widget.data.myLocationButtonPadding ??
         EdgeInsets.symmetric(
-            horizontal: locationButtonPaddingSize, vertical: Constant.defaultButtonPadding);
+            horizontal: locationButtonPaddingHorizontal, vertical: Constant.defaultButtonPadding);
+
+    double fullScreenButtonPaddingSizeHorizontal = _getAvoidZoomButtonHorizontalPadding(
+        widget.data.fullScreenButtonAlignment, zoomButtonPadding);
+    double fullScreenButtonPaddingSizeVertical = widget.data.myLocationButtonEnabled &&
+        widget.data.myLocationButtonAlignment == widget.data.fullScreenButtonAlignment?
+        locationButtonPadding.vertical + Constant.buttonDistance + Constant.myLocationButtonSize:
+        Constant.defaultButtonPadding;
+
+    EdgeInsets fullScreenButtonPadding = widget.data.fullScreenButtonPadding ??
+        EdgeInsets.symmetric(
+            horizontal: fullScreenButtonPaddingSizeHorizontal, vertical: fullScreenButtonPaddingSizeVertical);
 
     return [
+      if (hasFullScreenButton)
+        Align(
+          alignment: widget.data.fullScreenButtonAlignment,
+          child: Padding(
+            padding: fullScreenButtonPadding,
+            child: _buildFullScreenButton(context),
+          ),
+        ),
       if (hasLocationButton)
         Align(
           alignment: widget.data.myLocationButtonAlignment,
@@ -226,34 +265,17 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   Widget _buildUserLocationButton(BuildContext context) {
     const buttonSize = Constant.myLocationButtonSize;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          double? lat = _locationManager._userLocation?.latitude;
-          double? lng = _locationManager._userLocation?.longitude;
-          if (lat != null && lng != null) {
-            double zoom = 17;
-            _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), zoom));
-          }
-        },
-        child: Ink(
-          height: widget.data.myLocationButtonData?.height ?? buttonSize,
-          width: widget.data.myLocationButtonData?.width ?? buttonSize,
-          decoration: BoxDecoration(
-            color: widget.data.myLocationButtonData?.color ?? Colors.white.withOpacity(0.5),
-            borderRadius: widget.data.myLocationButtonData?.borderRadius,
-            border: Border.fromBorderSide(widget.data.myLocationButtonData?.borderSide ?? BorderSide.none),
-          ),
-          child: Center(
-            child: widget.data.myLocationButtonData?.icon ??
-                Icon(
-                  Icons.my_location_outlined,
-                  color: Colors.black.withOpacity(0.6),
-                ),
-          ),
-        ),
-      ),
+    return _buildButton(context,
+      icon: Icons.my_location_outlined,
+      buttonSize: buttonSize,
+      onTap: () {
+        double? lat = _locationManager._userLocation?.latitude;
+        double? lng = _locationManager._userLocation?.longitude;
+        if (lat != null && lng != null) {
+          double zoom = 17;
+          _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), zoom));
+        }
+      },
     );
   }
 
@@ -285,27 +307,89 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     CameraUpdate cameraUpdate = zoomIn ? CameraUpdate.zoomIn() : CameraUpdate.zoomOut();
     CoreMapButtonCustomizeData? buttonData =
         zoomIn ? widget.data.zoomInButtonData : widget.data.zoomOutButtonData;
+    return _buildButton(context,
+      buttonData: buttonData,
+      onTap: () async {
+        await _controller?.animateCamera(cameraUpdate);
+      },
+      icon: zoomIn ? Icons.add : Icons.remove,
+      buttonSize: buttonSize,
+    );
+  }
+
+  Widget _buildButton(BuildContext context, {
+    CoreMapButtonCustomizeData? buttonData,
+    void Function()? onTap,
+    double? buttonSize,
+    Color? buttonColor,
+    required IconData icon,
+    Color? buttonIconColor,
+  }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () async {
-          await _controller?.animateCamera(cameraUpdate);
-        },
+        onTap: onTap,
         child: Ink(
           height: buttonData?.height ?? buttonSize,
           width: buttonData?.width ?? buttonSize,
           decoration: BoxDecoration(
-            color: buttonData?.color ?? Colors.white.withOpacity(0.5),
+            color: buttonData?.color ?? buttonColor ?? Constant.defaultButtonColor,
             borderRadius: buttonData?.borderRadius,
             border: Border.fromBorderSide(buttonData?.borderSide ?? BorderSide.none),
           ),
           child: buttonData?.icon ??
               Icon(
-                zoomIn ? Icons.add : Icons.remove,
-                color: Colors.black.withOpacity(0.6),
+                icon,
+                color: buttonIconColor ?? Constant.defaultButtonIconColor,
               ),
         ),
       ),
+    );
+  }
+
+  Widget _buildFullScreenButton(BuildContext context) {
+    return _buildButton(context,
+      onTap: () {
+        bool wasFullScreen = _isFullScreen;
+        _isFullScreen = !_isFullScreen;
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: wasFullScreen? SystemUiOverlay.values: []);
+
+        CoreMapController? controller;
+        controller = wasFullScreen? _normalController: _fullScreenController;
+        if (controller != null) {
+          _controller?.innerController = controller;
+        }
+
+        if (wasFullScreen) {
+          _mapOverlay?.remove();
+          _mapOverlay = null;
+
+          CameraPosition? newCameraPosition = _fullScreenController?.getCurrentPosition();
+          if (newCameraPosition != null) {
+            _normalController?.animateCamera(CameraUpdate.newCameraPosition(newCameraPosition), duration: 1);
+          }
+
+          _fullScreenController = null;
+
+          setState(() {
+          });
+        } else {
+          _openMapFullScreen(context);
+        }
+      },
+      buttonData: widget.data.fullScreenButtonData,
+      buttonSize: Constant.fullScreenButtonSize,
+      icon: _isFullScreen? Icons.fullscreen_exit: Icons.fullscreen,
+    );
+  }
+
+  void _openMapFullScreen(BuildContext context) {
+    OverlayEntry overlayEntry = OverlayEntry(builder: (context) {
+      return build(context);
+    });
+    _mapOverlay = overlayEntry;
+    Overlay.of(context)?.insert(
+      overlayEntry,
     );
   }
 }

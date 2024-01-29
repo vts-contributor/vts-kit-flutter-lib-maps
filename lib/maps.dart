@@ -6,6 +6,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:maps_core/log/log.dart';
 
