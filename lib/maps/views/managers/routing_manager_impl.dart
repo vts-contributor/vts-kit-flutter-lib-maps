@@ -14,6 +14,8 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   List<MapRoute>? _routes;
 
+  Map<String, MapRoute?> _cachedRoute = {};
+
   Marker? _startMarker;
 
   Marker? _endMarker;
@@ -124,23 +126,28 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   Set<Polyline> _buildPolylinesFromDirections(List<MapRoute> routes) {
     String? selectedId = _currentSelectedId;
-    return routes.map((e) => _buildPolylineFromRoute(e, e.id == selectedId)).toSet();
+    return routes.map((e) => _buildPolylineFromRoute(e, e.id == selectedId)).whereNotNull().toSet();
   }
 
-  Polyline _buildPolylineFromRoute(MapRoute route, bool isSelected) {
-    return Polyline(
-        id: PolylineId(route.id),
-        points: route.tryGetNonNullOrEmptyPoints() ?? [],
-        color: route.config?.color ?? (isSelected? _selectedColor: _unselectedColor),
-        zIndex: isSelected? 6: 5,
-        jointType: JointType.round,
-        width: route.config?.width ?? ((isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth),
-        onTap: () {
-          Log.d("ROUTING", "ontap");
-          selectRoute(route.id);
-          notifyRouteTapListeners(route.id);
-        }
-    );
+  Polyline? _buildPolylineFromRoute(MapRoute route, bool isSelected) {
+    List<LatLng>? listPoint = route.tryGetNonNullOrEmptyPoints();
+    if (listPoint != null) {
+      return Polyline(
+          id: PolylineId(route.id),
+          points: listPoint,
+          color: route.config?.color ?? (isSelected? _selectedColor: _unselectedColor),
+          zIndex: isSelected? 6: 5,
+          jointType: JointType.round,
+          width: route.config?.width ?? ((isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth),
+          onTap: () {
+            Log.d("ROUTING", "ontap");
+            selectRoute(route.id);
+            notifyRouteTapListeners(route.id);
+          }
+      );
+    } else {
+      return null;
+    }
   }
 
   void _setSelectedId(String id) {
@@ -232,9 +239,28 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   Future<void> _addRoute(RouteConfig routeConfig, bool shouldNotify) async {
-    Directions? directions = await _getDirections(routeConfig.waypoints,
-        routeConfig.routeType, routeConfig.travelMode);
-    MapRoute? mapRoute = directions?.routes?.trySelectShortestRoute();
+    if (_routes?.where((element) => element.id == routeConfig.id).isNotEmpty ?? false) {
+      return;
+    }
+
+    MapRoute placeHolder = MapRoute(id: routeConfig.id);
+    (_routes ??= []).add(placeHolder);
+
+    MapRoute? mapRoute;
+    if (routeConfig.cached) {
+      mapRoute = _cachedRoute[routeConfig.id];
+    } else {
+      _cachedRoute.remove(routeConfig.id);
+    }
+
+    if (mapRoute == null) {
+      Directions? directions = await _getDirections(routeConfig.waypoints,
+          routeConfig.routeType, routeConfig.travelMode);
+      mapRoute = directions?.routes?.trySelectShortestRoute();
+    }
+
+    _routes?.remove(placeHolder);
+
     if (mapRoute != null) {
       mapRoute.id = routeConfig.id;
       mapRoute.config = routeConfig;
@@ -242,6 +268,10 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       _routes ??= [];
 
       _routes?.add(mapRoute);
+
+      if (routeConfig.cached) {
+        _cachedRoute.putIfAbsent(routeConfig.id, () => mapRoute);
+      }
 
       if (shouldNotify) notifyListeners();
     }

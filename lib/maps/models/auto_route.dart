@@ -31,11 +31,15 @@ class RouteConfig {
   ///same [id] can use different [travelMode]
   final RouteTravelMode? travelMode;
 
+  ///true if you want to cache route with the same ID
+  final bool cached;
+
   RouteConfig(this.id, this.waypoints, {
     this.routeType = RouteType.auto,
     this.color,
     this.width,
     this.travelMode,
+    this.cached = false,
   });
 }
 

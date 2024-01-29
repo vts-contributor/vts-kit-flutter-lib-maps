@@ -181,8 +181,8 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
                   LatLng(10.940305387234123, 106.63943723003548),
                   LatLng(10.950305387234123, 106.63943723003548),
                   LatLng(10.960305387234123, 106.63943723003548),
-                ], routeType: RouteType.autoSort, color: Colors.blueAccent));
-                _routingManager?.selectRoute("1234", zoomToRoute: true);
+                ], routeType: RouteType.autoSort, color: Colors.blueAccent, cached: true));
+                _routingManager?.selectRoute("1234", zoomToRoute: false);
               },
               icon: const Icon(Icons.swap_vert_circle)),
           IconButton(
@@ -214,7 +214,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
         type: _type,
         data: CoreMapData(
           accessToken: "49013166841fe36d7fa7f395fce4a663",
-          initialCameraPosition: CameraPosition(target: firstPoint, zoom: 15),
+          initialCameraPosition: CameraPosition(target: LatLng(10.888305387234123, 106.63943723003548), zoom: 15),
           compassEnabled: true,
           myLocationEnabled: true,
           myLocationButtonAlignment: Alignment.bottomRight,
