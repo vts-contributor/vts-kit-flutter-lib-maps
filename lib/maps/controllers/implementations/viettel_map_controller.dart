@@ -8,6 +8,8 @@ class _ViettelMapController extends BaseCoreMapController {
 
   final CameraPosition _initialCameraPosition;
 
+  final Map<String, Completer> _mapSymbolCompleter = {};
+
   //Store core map shape id to vtmap shape mapping so that we can remove them later
   final Map<String, ViettelPolygon> _viettelPolygonMap = {};
   final Map<String, vt.Line> _viettelPolylineMap = {};
@@ -307,15 +309,20 @@ class _ViettelMapController extends BaseCoreMapController {
     _viettelMarkerMap.putIfAbsent(
         marker.id.value, () => vt.Symbol("dummy", const vt.SymbolOptions()));
 
+    Completer<void> addSymbolCompleter = Completer();
+    _mapSymbolCompleter.putIfAbsent(marker.id.value, () => addSymbolCompleter);
     //marker resource must has been initialized before being added to the map
     await _tryAddMarkerIconData(marker);
 
     final symbol = await _controller.addSymbol(marker.toSymbolOptions());
+    addSymbolCompleter.complete();
 
     _viettelMarkerMap.update(marker.id.value, (_) => symbol);
   }
 
   Future<void> _removeMarker(String markerId) async {
+    _mapSymbolCompleter.remove(markerId);
+
     if (_viettelMarkerMap.containsKey(markerId)) {
       final marker = _viettelMarkerMap[markerId];
 
@@ -333,14 +340,11 @@ class _ViettelMapController extends BaseCoreMapController {
       return;
     }
 
+    await _mapSymbolCompleter[marker.id.value]?.future;
+
     await _tryAddMarkerIconData(marker);
 
-    try {
-      _controller.updateSymbol(updatingMarker, marker.toSymbolOptions());
-    } catch (e) {
-      _controller.removeSymbol(updatingMarker);
-      _controller.addSymbol(marker.toSymbolOptions());
-    }
+    _controller.updateSymbol(updatingMarker, marker.toSymbolOptions());
   }
 
 

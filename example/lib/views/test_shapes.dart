@@ -133,7 +133,7 @@ Marker marker() => Marker(
       color: Colors.red,
     )
   ),
-  // icon: MarkerIcon.fromWidget("widget1", Container(
+  // icon: MarkerIcon.fromWidget("widget112", Container(
   //   color: Colors.blue,
   //   child: Image.asset("assets/custom_marker.png"),
   //   height: 100,
