@@ -329,9 +329,9 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       return points;
     }
 
-    for (Map<String, DistanceMatrixElement> distanceMapOfPoint in distanceMap.values) {
-
-    }
+    // for (Map<String, DistanceMatrixElement> distanceMapOfPoint in distanceMap.values) {
+    //
+    // }
 
     List<LatLng> sortedPoints = [];
     sortedPoints.add(points.first);
@@ -500,7 +500,11 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     if (mapRoute == null) {
       return null;
     }
-    return RouteInfo(List.from(mapRoute.sortedWaypoints ?? []));
+    return RouteInfo(mapRoute.id,
+      List.from(mapRoute.sortedWaypoints ?? []),
+      mapRoute.config?.routeType == RouteType.line? mapRoute.points?.getTotalDistance()
+          : mapRoute.legs?.getDistance(),
+    );
   }
 
   @override
