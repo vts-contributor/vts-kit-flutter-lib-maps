@@ -484,14 +484,18 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
             : MarkerIcon.startIcon);
   }
 
-  // bool _buildRouteNative(RoutingOptions options) {
-  //   if (mapController is _ViettelMapController?) {
-  //     (mapController as _ViettelMapController?)?._controller.buildRoute(
-  //         wayPoints: options.getViettelWaypoints(),
-  //         options: options.toViettelMapOptions(),
-  //     );
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  @override
+  RouteInfo? getRouteInfo(String id) {
+    return getRouteInfoFromMapRoute(_routes?.where((element) => element.id == id).firstOrNull);
+  }
+
+  RouteInfo? getRouteInfoFromMapRoute(MapRoute? mapRoute) {
+    if (mapRoute == null) {
+      return null;
+    }
+
+    List<LatLng>? points = mapRoute.points;
+
+    return RouteInfo(points?.firstOrNull, points?.lastOrNull);
+  }
 }

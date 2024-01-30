@@ -54,3 +54,10 @@ enum RouteTravelMode {
   bycycling,
   walking
 }
+
+class RouteInfo {
+  final LatLng? start;
+  final LatLng? end;
+
+  RouteInfo(this.start, this.end);
+}

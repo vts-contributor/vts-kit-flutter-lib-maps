@@ -53,6 +53,9 @@ abstract class RoutingManager {
 
   ///get current selected route if possible
   MapRoute? get selectedRoute;
+
+  ///get [RouteInfo] of route with [id]
+  RouteInfo? getRouteInfo(String id);
 }
 
 class RoutingOptions {
