@@ -335,7 +335,12 @@ class _ViettelMapController extends BaseCoreMapController {
 
     await _tryAddMarkerIconData(marker);
 
-    _controller.updateSymbol(updatingMarker, marker.toSymbolOptions());
+    try {
+      _controller.updateSymbol(updatingMarker, marker.toSymbolOptions());
+    } catch (e) {
+      _controller.removeSymbol(updatingMarker);
+      _controller.addSymbol(marker.toSymbolOptions());
+    }
   }
 
 
