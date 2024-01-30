@@ -187,14 +187,18 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
     _setSelectedId(id);
 
-    if (_routes != null && zoomToRoute) {
-      List<LatLng>? points = route.tryGetNonNullOrEmptyPoints();
-      if (points != null && points.isNotEmpty) {
-        mapController?.animateCameraToCenterOfPoints(points, 10, duration: 1);
-      }
+    if (zoomToRoute) {
+      _viewRoutes([route]);
     }
 
     return true;
+  }
+
+  void _viewRoutes(List<MapRoute> routes) {
+    List<LatLng> points = routes.map((e) => e.tryGetNonNullOrEmptyPoints() ?? []).flattened.toList();
+    if (points.isNotEmpty) {
+      mapController?.animateCameraToCenterOfPoints(points, 10, duration: 1);
+    }
   }
 
   @override
@@ -497,5 +501,15 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     List<LatLng>? points = mapRoute.points;
 
     return RouteInfo(points?.firstOrNull, points?.lastOrNull);
+  }
+
+  @override
+  void viewAllRoutes() {
+    _viewRoutes(_routes ?? []);
+  }
+
+  @override
+  void viewListRoutes(List<String> ids) {
+    _viewRoutes(_routes?.where((element) => ids.contains(element.id)).toList() ?? []);
   }
 }
