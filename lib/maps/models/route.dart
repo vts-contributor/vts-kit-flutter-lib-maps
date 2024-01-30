@@ -13,7 +13,9 @@ class MapRoute {
   final List<String>? warning;
   final List<String>? waypointOrder;
   final List<RouteLeg>? legs;
+
   RouteConfig? config;
+  List<LatLng>? sortedWaypoints;
 
   List<LatLng>? shortenedPoints(int step) {
     return points?.whereIndexed((i, point) => i % step == 0).toList();

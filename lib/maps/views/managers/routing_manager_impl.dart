@@ -258,9 +258,16 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     }
 
     if (mapRoute == null) {
-      Directions? directions = await _getDirections(routeConfig.waypoints,
-          routeConfig.routeType, routeConfig.travelMode);
+      List<LatLng> waypoints;
+      if (routeConfig.routeType == RouteType.autoSort) {
+        waypoints = await sortWaypoints(routeConfig.waypoints, routeConfig.travelMode);
+      } else {
+        waypoints = routeConfig.waypoints;
+      }
+
+      Directions? directions = await _getDirections(waypoints, routeConfig.routeType, routeConfig.travelMode);
       mapRoute = directions?.routes?.trySelectShortestRoute();
+      mapRoute?.sortedWaypoints = waypoints;
     }
 
     _routes?.remove(placeHolder);
@@ -285,7 +292,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     switch (type) {
       case RouteType.auto:
       case RouteType.autoSort:
-        return _getAutoRoutesDirection(waypoints, type, travelMode);
+        return _getAutoRoutesDirection(waypoints, travelMode);
       case RouteType.line:
         return Directions(
           routes: [
@@ -295,11 +302,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     }
   }
 
-  Future<Directions?> _getAutoRoutesDirection(List<LatLng> waypoints, RouteType type, RouteTravelMode? travelMode) async {
-    if (type == RouteType.autoSort) {
-      waypoints = await sortWaypoints(waypoints, travelMode);
-    }
-
+  Future<Directions?> _getAutoRoutesDirection(List<LatLng> waypoints, RouteTravelMode? travelMode) async {
     if (waypoints.length < 2) {
       return Future.value(null);
     }
@@ -498,7 +501,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       return null;
     }
 
-    List<LatLng>? points = mapRoute.points;
+    List<LatLng>? points = mapRoute.sortedWaypoints;
 
     return RouteInfo(points?.firstOrNull, points?.lastOrNull);
   }
