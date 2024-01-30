@@ -500,10 +500,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     if (mapRoute == null) {
       return null;
     }
-
-    List<LatLng>? points = mapRoute.sortedWaypoints;
-
-    return RouteInfo(points?.firstOrNull, points?.lastOrNull);
+    return RouteInfo(List.from(mapRoute.sortedWaypoints ?? []));
   }
 
   @override

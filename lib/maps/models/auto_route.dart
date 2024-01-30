@@ -56,8 +56,7 @@ enum RouteTravelMode {
 }
 
 class RouteInfo {
-  final LatLng? start;
-  final LatLng? end;
+  final List<LatLng>? waypoints;
 
-  RouteInfo(this.start, this.end);
+  RouteInfo(this.waypoints);
 }
