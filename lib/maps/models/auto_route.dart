@@ -56,7 +56,10 @@ enum RouteTravelMode {
 }
 
 class RouteInfo {
+  final String id;
   final List<LatLng>? waypoints;
+  ///total distance (Kilometers)
+  final double? totalDistance;
 
-  RouteInfo(this.waypoints);
+  RouteInfo(this.id, this.waypoints, this.totalDistance);
 }

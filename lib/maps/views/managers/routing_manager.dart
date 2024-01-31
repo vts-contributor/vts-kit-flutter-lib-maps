@@ -58,10 +58,10 @@ abstract class RoutingManager {
   RouteInfo? getRouteInfo(String id);
 
   ///move camera to view all routes
-  void viewAllRoutes();
+  void viewAllRoutes([double? padding]);
 
   ///view routes whose id is in [ids]
-  void viewListRoutes(List<String> ids);
+  void viewListRoutes(List<String> ids, [double? padding]);
 }
 
 class RoutingOptions {

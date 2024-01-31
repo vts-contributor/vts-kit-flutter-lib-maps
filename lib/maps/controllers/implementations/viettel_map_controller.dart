@@ -315,9 +315,10 @@ class _ViettelMapController extends BaseCoreMapController {
     await _tryAddMarkerIconData(marker);
 
     final symbol = await _controller.addSymbol(marker.toSymbolOptions());
-    addSymbolCompleter.complete();
 
     _viettelMarkerMap.update(marker.id.value, (_) => symbol);
+
+    addSymbolCompleter.complete();
   }
 
   Future<void> _removeMarker(String markerId) async {
@@ -335,12 +336,16 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _updateMarker(Marker marker) async {
-    vt.Symbol? updatingMarker = _viettelMarkerMap[marker.id.value];
-    if (updatingMarker == null) {
+    if (!_viettelMarkerMap.containsKey(marker.id.value)) {
       return;
     }
 
     await _mapSymbolCompleter[marker.id.value]?.future;
+
+    vt.Symbol? updatingMarker = _viettelMarkerMap[marker.id.value];
+    if (updatingMarker == null) {
+      return;
+    }
 
     await _tryAddMarkerIconData(marker);
 
