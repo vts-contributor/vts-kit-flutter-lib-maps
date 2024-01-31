@@ -186,7 +186,7 @@ extension DioImageDownload on Dio {
     if (response.data != null) {
       return Uint8List.fromList(response.data!);
     } else {
-      throw NullThrownError();
+      throw Exception("Download image with DIO: Error network response");
     }
   }
 }
