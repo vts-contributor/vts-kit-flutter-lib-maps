@@ -322,9 +322,11 @@ class _ViettelMapController extends BaseCoreMapController {
   }
 
   Future<void> _removeMarker(String markerId) async {
-    _mapSymbolCompleter.remove(markerId);
-
     if (_viettelMarkerMap.containsKey(markerId)) {
+      await _mapSymbolCompleter[markerId]?.future;
+
+      _mapSymbolCompleter.remove(markerId);
+
       final marker = _viettelMarkerMap[markerId];
 
       if (marker != null) {

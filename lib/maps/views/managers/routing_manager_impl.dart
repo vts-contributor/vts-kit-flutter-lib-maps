@@ -257,20 +257,24 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       _cachedRoute.remove(routeConfig.id);
     }
 
-    if (mapRoute == null) {
-      List<LatLng> waypoints;
-      if (routeConfig.routeType == RouteType.autoSort) {
-        waypoints = await sortWaypoints(routeConfig.waypoints, routeConfig.travelMode);
-      } else {
-        waypoints = routeConfig.waypoints;
+    try {
+      if (mapRoute == null) {
+        List<LatLng> waypoints;
+        if (routeConfig.routeType == RouteType.autoSort) {
+          waypoints = await sortWaypoints(routeConfig.waypoints, routeConfig.travelMode);
+        } else {
+          waypoints = routeConfig.waypoints;
+        }
+
+        Directions? directions = await _getDirections(waypoints, routeConfig.routeType, routeConfig.travelMode);
+        mapRoute = directions?.routes?.trySelectShortestRoute();
+        mapRoute?.sortedWaypoints = waypoints;
       }
-
-      Directions? directions = await _getDirections(waypoints, routeConfig.routeType, routeConfig.travelMode);
-      mapRoute = directions?.routes?.trySelectShortestRoute();
-      mapRoute?.sortedWaypoints = waypoints;
+      _routes?.remove(placeHolder);
+    } catch (e, s) {
+      _routes?.remove(placeHolder);
+      rethrow;
     }
-
-    _routes?.remove(placeHolder);
 
     if (mapRoute != null) {
       mapRoute.id = routeConfig.id;
