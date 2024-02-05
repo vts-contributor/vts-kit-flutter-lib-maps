@@ -11,7 +11,7 @@ Thư viện maps_core là wrapper cho 2 thư viện bản đồ [Google Map](htt
 Thư viện này sử dụng cách thiết kế của Google map (widget based thay vì controller based), cho nên các loại shape như Maker, Polyline,... sẽ được update theo cơ chế: thay đổi dữ liệu -> rebuild widget.
 
 ## Điều kiện
-Để sử dụng thư viện này cần phiên bản Flutter <= 3.3.10 (do thư viện Viettel Map chưa update)
+Để sử dụng thư viện này cần phiên bản Flutter <= 3.7.10 
 
 Truy cập được vào gitlab private (Thư viện sẽ được publish lên pub.dev sau)
 
@@ -97,3 +97,7 @@ Mặc định, onTap của marker sẽ chỉnh camera về vị trí marker và 
 #### b) Các loại hình khác:
 
 Các loại hình khác trên bản đồ tương đối đơn giản, xem comment trong thư viện để sử dụng các hình này (lưu ý một số tham số sẽ không hoạt động khi dùng loại Viettel Map)
+
+
+## Một số lỗi thường gặp
+https://stackoverflow.com/questions/75273823/java-lang-incompatibleclasschangeerror-found-interface-com-google-android-gms-l

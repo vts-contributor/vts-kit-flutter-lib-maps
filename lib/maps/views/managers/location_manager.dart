@@ -4,18 +4,18 @@ part of core_map;
 class _LocationManager extends ChangeNotifier {
   static const String logTag = "LOCATION MANAGER";
 
-  void Function(LocationData userLocation)? _onUserLocationUpdated;
+  void Function(Position userLocation)? _onUserLocationUpdated;
 
-  StreamSubscription<LocationData>? _locationStreamSubscription;
+  StreamSubscription<Position>? _locationStreamSubscription;
 
   //customize handle errors
   late Future<bool> Function() _onServiceDisabled;
   late Future<bool> Function() _onPermissionDenied;
   Future<bool> Function()? _onPermissionDeniedForever;
 
-  final Location _location = Location();
+  final Geolocator _location = Geolocator();
 
-  LocationData? _userLocation;
+  Position? _userLocation;
 
   bool _enabled = false;
 
@@ -79,17 +79,17 @@ class _LocationManager extends ChangeNotifier {
 
   Future<bool> _validateLocationPermission() async {
     bool serviceEnabled;
-    PermissionStatus permissionStatus;
+    LocationPermission permissionStatus;
 
-    serviceEnabled = await _location.serviceEnabled();
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return await _onServiceDisabled();
     }
 
-    permissionStatus = await _location.hasPermission();
-    if (permissionStatus == PermissionStatus.denied) {
+    permissionStatus = await Geolocator.checkPermission();
+    if (permissionStatus == LocationPermission.denied) {
       return await _onPermissionDenied();
-    } else if (permissionStatus == PermissionStatus.deniedForever) {
+    } else if (permissionStatus == LocationPermission.deniedForever) {
       return await _onPermissionDeniedForever?.call() ?? false;
     }
 
@@ -98,29 +98,34 @@ class _LocationManager extends ChangeNotifier {
 
   ///check without asking for permissions
   Future<bool> get _locationIsAvailable async {
-    bool serviceEnabled = await _location.serviceEnabled();
-    PermissionStatus permissionStatus = await _location.hasPermission();
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    LocationPermission permissionStatus = await Geolocator.checkPermission();
 
-    return (permissionStatus == PermissionStatus.grantedLimited
-        || permissionStatus == PermissionStatus.granted) && serviceEnabled;
+    return (permissionStatus == LocationPermission.always
+        || permissionStatus == LocationPermission.whileInUse) && serviceEnabled;
   }
 
   void _startLocationListener() {
-    _locationStreamSubscription ??= _location.onLocationChanged.listen((event) {
+    _locationStreamSubscription ??= Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        distanceFilter: 10,
+      )
+    ).listen((event) {
         // Log.d(logTag, "onLocationChanged ${event.latitude} ${event.longitude}");
         _updateUserLocation(event);
+        Log.e(logTag, "update user location");
         _onUserLocationUpdated?.call(event);
       })..onError((object, stack) {
         Log.e(logTag, "listen to stream error");
       });
   }
 
-  void _updateUserLocation(LocationData data) {
+  void _updateUserLocation(Position data) {
     _checkRedrawUserLocationOnMap(_userLocation, data);
     _userLocation = data;
   }
 
-  void _checkRedrawUserLocationOnMap(LocationData? oldData, LocationData newData) {
+  void _checkRedrawUserLocationOnMap(Position? oldData, Position newData) {
     if (oldData == null) {
       notifyListeners();
       return;
@@ -154,14 +159,14 @@ class _LocationManager extends ChangeNotifier {
 
   Future<bool> _defaultRequestService() async {
     Log.d(logTag, "Request service");
-    return await _location.requestService();
+    return await Geolocator.isLocationServiceEnabled();
   }
 
   Future<bool> _defaultRequestPermission() async {
     Log.d(logTag, "Request permission");
-    final permissionStatus = await _location.requestPermission();
-    return permissionStatus == PermissionStatus.granted ||
-        permissionStatus == PermissionStatus.grantedLimited;
+    final permissionStatus = await Geolocator.requestPermission();
+    return permissionStatus == LocationPermission.always ||
+        permissionStatus == LocationPermission.whileInUse;
   }
 
   ///Enable listeners. You should check for permission first then call this.
