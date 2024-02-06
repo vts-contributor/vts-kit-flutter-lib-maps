@@ -185,7 +185,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   ///for pseudo user location icon on the vt map because currently, vt map's
   ///location feature is broken
-  vt.CircleOptions? getViettelUserLocationDrawOptions(LocationData? userLocation) {
+  vt.CircleOptions? getViettelUserLocationDrawOptions(Position? userLocation) {
     double? lat = userLocation?.latitude;
     double? lng = userLocation?.longitude;
 

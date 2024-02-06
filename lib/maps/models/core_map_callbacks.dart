@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:maps_core/maps.dart';
 
 class CoreMapCallbacks {
@@ -36,7 +37,7 @@ class CoreMapCallbacks {
   final void Function(LatLng latLng)? onLongPress;
 
   ///This will be called periodically even if [userLocation] doesn't change.
-  final void Function(LocationData userLocation)? onUserLocationUpdated;
+  final void Function(Position userLocation)? onUserLocationUpdated;
 
   ///override default handler when location service is disabled.
   final Future<bool> Function()? onLocationServiceDisabled;
@@ -57,7 +58,7 @@ class CoreMapCallbacks {
     final VoidCallback? onCameraIdle,
     final void Function(LatLng latLng)? onTap,
     final void Function(LatLng latLng)? onLongPress,
-    final void Function(LocationData userLocation)? onUserLocationUpdated,
+    final void Function(Position userLocation)? onUserLocationUpdated,
     final Future<bool> Function()? onLocationServiceDisabled,
     final Future<bool> Function()? onLocationPermissionDenied,
     final Future<bool> Function()? onLocationPermissionDeniedForever,

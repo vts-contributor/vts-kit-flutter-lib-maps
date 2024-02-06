@@ -7,7 +7,7 @@ import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:maps_core/log/log.dart';
 
 import 'package:maps_core/maps.dart';
@@ -27,7 +27,6 @@ export 'maps/controllers/controllers.dart';
 export 'maps/extensions/extensions.dart';
 export 'maps/services/services.dart';
 export 'maps/views/managers/managers.dart';
-export 'package:location/location.dart' show LocationData;
 export 'maps/utils/utils.dart';
 
 part 'maps/views/core_map.dart';
