@@ -267,4 +267,17 @@ extension ListLatLngUtils on List<LatLng> {
       southwest: LatLng(minLat, minLng),
     );
   }
+
+  LatLng? getCentroid() {
+    if (isEmpty) {
+      return null;
+    }
+    double totalLat = 0;
+    double totalLng = 0;
+    for (LatLng point in this) {
+      totalLat += point.latitude;
+      totalLng += point.longitude;
+    }
+    return LatLng(totalLat / length, totalLng / length);
+  }
 }

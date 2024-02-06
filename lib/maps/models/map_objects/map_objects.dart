@@ -9,3 +9,8 @@ export 'screen_coordinate.dart';
 export 'map_object.dart';
 export 'viettel/viettel_map_objects.dart';
 export 'map_object_updates.dart';
+export 'cluster.dart';
+export 'bound_maker.dart';
+export 'cluster_data.dart';
+export 'marker_cover.dart';
+export 'point.dart';

@@ -37,6 +37,10 @@ part 'maps/views/managers/location_manager.dart';
 part 'maps/views/managers/routing_manager_impl.dart';
 part 'maps/views/managers/info_window_manager_impl.dart';
 part 'maps/views/managers/info_window_manager.dart';
+part 'maps/views/managers/cluster_manager_internal.dart';
+part 'maps/views/managers/cluster_manager_internal_impl.dart';
+part 'maps/views/managers/cluster_manager.dart';
+part 'maps/views/managers/default_cluster_manager_impl.dart';
 
 part 'maps/controllers/implementations/google_map_controller.dart';
 part 'maps/controllers/implementations/viettel_map_controller.dart';

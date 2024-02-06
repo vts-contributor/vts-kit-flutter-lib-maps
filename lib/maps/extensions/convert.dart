@@ -93,3 +93,58 @@ extension ZoomLevelConvert on double {
     return validCoreZoomLevel;
   }
 }
+
+double mWorldWidth = 1;
+
+extension LatLngConvert on LatLng {
+  PointMarker toPoint() {
+    final double x = longitude / 360 + .5;
+    final double siny = sin(latitude * pi / 180);
+    final double y = 0.5 * log((1 + siny) / (1 - siny)) / -(2 * pi) + .5;
+
+    return PointMarker(x * mWorldWidth, y * mWorldWidth);
+  }
+}
+
+extension PointConvert on PointMarker {
+  LatLng toLatLng() {
+    final double a = x / mWorldWidth - 0.5;
+    final double lng = a * 360;
+
+    double b = .5 - (y / mWorldWidth);
+    final double lat = 90 - (atan(exp(-b * 2 * pi)) * 2 * 180 / pi);
+
+    return LatLng(lat, lng);
+  }
+
+  BoundMarker toBoundFromSpan(double span) {
+    double halfSpan = span / 2;
+
+    return BoundMarker(x - halfSpan, x + halfSpan, y - halfSpan, y + halfSpan);
+  }
+}
+
+extension MarkerConvert on Marker {
+  MarkerCover toMarkerCover() {
+    MarkerCover markerCover = MarkerCover(
+      id: id,
+      position: position,
+      alpha: alpha,
+      anchor: anchor,
+      draggable: draggable,
+      flat: flat,
+      icon: icon,
+      infoWindow: infoWindow,
+      onDrag: onDrag,
+      onDragEnd: onDragEnd,
+      onDragStart: onDragStart,
+      onTap: onTap,
+      rotation: rotation,
+      visible: visible,
+      zIndex: zIndex,
+      positionMarkerCover: position,
+    );
+
+    return markerCover;
+  }
+}

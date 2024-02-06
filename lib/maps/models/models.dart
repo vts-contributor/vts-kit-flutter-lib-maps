@@ -25,3 +25,4 @@ export 'camera_update.dart';
 export 'ui.dart';
 export 'auto_route.dart';
 export 'distance_matrix.dart';
+export 'core_map_customs.dart';

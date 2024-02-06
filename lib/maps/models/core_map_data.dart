@@ -38,6 +38,7 @@ class CoreMapData {
     this.fullScreenButtonPadding,
     this.fullScreenButtonAlignment = Alignment.topRight,
     this.fullScreenButtonData,
+    this.isUseCluster = false,
   });
 
   ///should be removed, use file instead
@@ -192,6 +193,9 @@ class CoreMapData {
   ///custom full screen button.
   final CoreMapButtonCustomizeData? fullScreenButtonData;
 
+  ///has use cluster marker
+  final bool isUseCluster;
+
   ///copy data with new parameters
   CoreMapData copyWith({
     String? accessToken,
@@ -226,6 +230,7 @@ class CoreMapData {
     EdgeInsets? fullScreenButtonPadding,
     Alignment? fullScreenButtonAlignment,
     CoreMapButtonCustomizeData? fullScreenButtonData,
+    bool? isUseClusterData,
   }) {
     return CoreMapData(
       accessToken: accessToken ?? this.accessToken,
@@ -260,6 +265,7 @@ class CoreMapData {
       fullScreenButtonPadding: fullScreenButtonPadding ?? this.fullScreenButtonPadding,
       fullScreenButtonAlignment: fullScreenButtonAlignment ?? this.fullScreenButtonAlignment,
       fullScreenButtonData: fullScreenButtonData ?? this.fullScreenButtonData,
+      isUseCluster: isUseClusterData ?? isUseCluster,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:map_core_example/view_models/routing_view_model.dart';
 import 'package:map_core_example/views/test_google_map_screen.dart';
 import 'package:map_core_example/views/test_map_screen.dart';
 import 'package:map_core_example/views/test_routing_screen.dart';
+import 'package:map_core_example/views/test_shared_marker.dart';
 import 'package:map_core_example/views/test_vt_map_screen.dart';
 import 'package:maps_core/maps.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
           create: (_) => RoutingViewModel(MapsAPIServiceImpl(key: "49013166841fe36d7fa7f395fce4a663")),
           child: const TestRoutingScreen(),
         ),
+        TestSharedMarkerScreen.routeName:(context) => const TestSharedMarkerScreen()
       },
     );
   }
@@ -124,6 +126,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestRoutingScreen.routeName),
               child: const Text("Test routing map"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(
+                  context, TestSharedMarkerScreen.routeName),
+              child: const Text('Test shared marker'),
             ),
           ],
         ),

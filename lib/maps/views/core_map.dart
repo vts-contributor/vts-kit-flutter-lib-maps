@@ -9,12 +9,15 @@ class CoreMap extends StatefulWidget {
 
   final CoreMapCallbacks? callbacks;
 
+  final CoreMapCustoms? custom;
+
   const CoreMap({
     super.key,
     this.type = CoreMapType.viettel,
     this.callbacks,
     required this.data,
     this.shapes,
+      this.custom
   });
 
   @override
@@ -34,9 +37,16 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
 
+  late final _ClusterManagerImpl _clusterManager = _ClusterManagerImpl(
+    widget.shapes?.markers,
+    widget.custom?.clusterManager,
+  );
+
   bool _isFullScreen = false;
 
   OverlayEntry? _mapOverlay;
+
+  double zoomLevel = 0;
 
   @override
   void initState() {
@@ -45,6 +55,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     _initLocationManager();
     _initRoutingManager();
     _initInfoWindowManager();
+    _initClusterManager();
   }
 
   @override
@@ -76,6 +87,12 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     });
   }
 
+  void _initClusterManager() {
+    _clusterManager.addListener(() {
+      setState(() {});
+    });
+  }
+
   @override
   void didUpdateWidget(covariant CoreMap oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -83,6 +100,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     _updateLocationManager();
     _updateRoutingManager();
     _updateInfoWindowManager();
+    _updateClusterManager();
   }
 
   void _updateLocationManager() {
@@ -99,6 +117,14 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   void _updateInfoWindowManager() {
     _infoWindowManager.updateMarkers(widget.shapes?.markers);
+  }
+
+  void _updateClusterManager() {
+    if (widget.data.isUseCluster) {
+      _clusterManager._updateMarkers(widget.shapes?.markers);
+      _clusterManager
+          ._updateCustomClusterManager(widget.custom?.clusterManager);
+    }
   }
 
   @override
@@ -126,7 +152,11 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         data: widget.data.copyWith(
             initialCameraPosition:
             _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition),
-        shapes: _routingManager.combineShape(widget.shapes),
+        shapes: _routingManager.combineShape(
+          widget.data.isUseCluster
+              ? _clusterManager._filterCluster(widget.shapes)
+              : widget.shapes,
+        ),
         callbacks: (widget.callbacks ?? CoreMapCallbacks()).copyWith(
             onMapCreated: (controller) {
               CoreMapControllerWrapper controllerWrapper = (_controller ??= CoreMapControllerWrapper());
@@ -144,13 +174,25 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
               _infoWindowManager.updateController(controllerWrapper);
               _routingManager.mapController = controllerWrapper;
 
+            if (widget.data.isUseCluster) {
+              _clusterManager.mapController = controllerWrapper;
+            }
+
               widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
             },
             onCameraMove: (pos) {
               widget.callbacks?.onCameraMove?.call(pos);
 
               _infoWindowManager.notifyCameraMove();
+
+            zoomLevel = pos.zoom;
+          },
+          onCameraIdle: () {
+            if (widget.data.isUseCluster) {
+              _clusterManager.notifyCameraIdle(
+                  zoomLevel, widget.shapes?.markers);
             }
+          },
         )
     );
   }

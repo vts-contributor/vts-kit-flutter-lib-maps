@@ -121,7 +121,7 @@ Circle circle() => Circle(
 Marker marker() => Marker(
   id: const MarkerId("test1"),
   // position: LatLng(10.625380787927542, 105.051574201898),
-  position: const LatLng(8.848028919141523, 104.96513564005897),
+  position: const LatLng(10.885305387234123, 106.63943723003548),
   alpha: 1,
   zIndex: 0,
   draggable: true,
@@ -146,7 +146,24 @@ Marker marker() => Marker(
 Marker marker2() => Marker(
   id: const MarkerId("test2"),
   // position: LatLng(10.625380787927542, 105.051574201898),
-  position: const LatLng(8.848028919141523, 104.86513564005897),
+  position: const LatLng(10.950305387234123, 106.63943723003548),
+  alpha: 1,
+  zIndex: 0,
+  draggable: true,
+  infoWindow: InfoWindow(
+      widget: Container(
+        child: Text("123"),
+        height: 50,
+        width: 50,
+        color: Colors.red,
+      )
+  ),
+);
+
+Marker marker3() => Marker(
+  id: const MarkerId("test3"),
+  // position: LatLng(10.625380787927542, 105.051574201898),
+  position: const LatLng(10.550306387234123, 106.33943423003548),
   alpha: 1,
   zIndex: 0,
   draggable: true,
