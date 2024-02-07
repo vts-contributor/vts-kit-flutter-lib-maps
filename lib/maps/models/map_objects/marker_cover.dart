@@ -20,7 +20,8 @@ class MarkerCover extends Marker {
     this.bound,
     this.point,
     this.isClustered = false,
-    required this.positionMarkerCover
+    required this.positionMarkerCover,
+    super.isCanCluster = true,
   }) {
     setPosition(position);
   }

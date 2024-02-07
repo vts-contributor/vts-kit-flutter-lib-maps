@@ -174,9 +174,9 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
               _infoWindowManager.updateController(controllerWrapper);
               _routingManager.mapController = controllerWrapper;
 
-            if (widget.data.isUseCluster) {
-              _clusterManager.mapController = controllerWrapper;
-            }
+              if (widget.data.isUseCluster) {
+                _clusterManager.mapController = controllerWrapper;
+              }
 
               widget.callbacks?.onRoutingManagerReady?.call(_routingManager);
             },

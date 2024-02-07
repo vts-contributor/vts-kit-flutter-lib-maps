@@ -99,7 +99,7 @@ class _ClusterManagerImpl extends ChangeNotifier
 
     // search markers overlap and group them into cluster
     for (int i = 0; i < _markers.length - 1; i++) {
-      if (_markers.elementAt(i).isClustered) {
+      if (!_markers.elementAt(i).isCanCluster || _markers.elementAt(i).isClustered) {
         continue;
       }
 
@@ -111,7 +111,7 @@ class _ClusterManagerImpl extends ChangeNotifier
 
       // search markers overlap
       for (int j = i + 1; j < _markers.length; j++) {
-        if (_markers.elementAt(j).isClustered) {
+        if (!_markers.elementAt(j).isCanCluster || _markers.elementAt(j).isClustered) {
           continue;
         }
 

@@ -143,6 +143,7 @@ extension MarkerConvert on Marker {
       visible: visible,
       zIndex: zIndex,
       positionMarkerCover: position,
+      isCanCluster: isCanCluster,
     );
 
     return markerCover;

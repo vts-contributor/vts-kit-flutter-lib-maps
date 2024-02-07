@@ -188,6 +188,7 @@ class Marker implements MapObject<Marker> {
     this.onDrag,
     this.onDragStart,
     this.onDragEnd,
+    this.isCanCluster = true,
   }) : assert((0.0 <= alpha && alpha <= 1.0));
 
   /// Uniquely identifies a [Marker].
@@ -247,6 +248,9 @@ class Marker implements MapObject<Marker> {
   /// Signature reporting the new [LatLng] during the drag event.
   final ValueChanged<LatLng>? onDrag;
 
+  /// Decide whether the marker can form a cluster or not
+  final bool isCanCluster;
+
   /// Creates a new [Marker] object whose values are the same as this instance,
   /// unless overwritten by the specified parameters.
   Marker copyWith({
@@ -264,6 +268,7 @@ class Marker implements MapObject<Marker> {
     ValueChanged<LatLng>? onDragStartParam,
     ValueChanged<LatLng>? onDragParam,
     ValueChanged<LatLng>? onDragEndParam,
+    bool? isCanClusterParam,
   }) {
     return Marker(
       id: id,
@@ -281,6 +286,7 @@ class Marker implements MapObject<Marker> {
       onDragStart: onDragStartParam ?? onDragStart,
       onDrag: onDragParam ?? onDrag,
       onDragEnd: onDragEndParam ?? onDragEnd,
+      isCanCluster: isCanClusterParam ?? isCanCluster
     );
   }
 
