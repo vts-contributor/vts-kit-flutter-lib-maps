@@ -184,3 +184,56 @@ Marker marker3() => Marker(
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
   // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
 );
+
+Marker marker4() => Marker(
+  id: const MarkerId("test4"),
+  // position: LatLng(10.625380787927542, 105.051574201898),
+  position: const LatLng(10.960305387234123, 106.33943723003548),
+  alpha: 1,
+  zIndex: 0,
+  draggable: true,
+  infoWindow: InfoWindow(
+      widget: Container(
+        child: Text("123"),
+        height: 50,
+        width: 50,
+        color: Colors.red,
+      )
+  ),
+  isCanCluster: false,
+);
+
+Marker marker5() => Marker(
+  id: const MarkerId("test5"),
+  // position: LatLng(10.625380787927542, 105.051574201898),
+  position: const LatLng(10.250305387234123, 106.03943723003548),
+  alpha: 1,
+  zIndex: 0,
+  draggable: true,
+  infoWindow: InfoWindow(
+      widget: Container(
+        child: Text("123"),
+        height: 50,
+        width: 50,
+        color: Colors.red,
+      )
+  ),
+  isCanCluster: false,
+);
+
+Marker marker6() => Marker(
+  id: const MarkerId("test6"),
+  // position: LatLng(10.625380787927542, 105.051574201898),
+  position: const LatLng(10.5550305387234123, 106.83943723003548),
+  alpha: 1,
+  zIndex: 0,
+  draggable: true,
+  infoWindow: InfoWindow(
+      widget: Container(
+        child: Text("123"),
+        height: 50,
+        width: 50,
+        color: Colors.red,
+      )
+  ),
+);

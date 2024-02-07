@@ -84,7 +84,7 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
             },
           ),
           shapes: CoreMapShapes(
-            markers: {marker(), marker2(), marker3()},
+            markers: {marker(), marker2(), marker3(), marker4(), marker5(), marker6()},
           ),
           custom: CoreMapCustoms(),
         ),

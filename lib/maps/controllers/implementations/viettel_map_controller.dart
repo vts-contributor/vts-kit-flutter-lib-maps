@@ -29,6 +29,8 @@ class _ViettelMapController extends BaseCoreMapController {
 
   bool _styleLoaded = false;
 
+  final Lock _loadMapObjectLock = Lock();
+
   _ViettelMapController(this._controller, {
         required CoreMapData data,
         CoreMapCallbacks? callbacks,
@@ -93,9 +95,20 @@ class _ViettelMapController extends BaseCoreMapController {
       Set<MapObject> oldObjects, Set<MapObject> newObjects) async {
     final mapObjectUpdates = MapObjectUpdates.from(oldObjects, newObjects);
 
-    _updateMapObjects(mapObjectUpdates.updateObjects);
-    await _removeMapObjects(mapObjectUpdates.removeObjects);
-    _addMapObjectsInZIndexOrder(mapObjectUpdates.addObjects);
+    _loadMapObjectLock.synchronized(() async {
+      await _synchronizeLoadNewMapObjects(mapObjectUpdates);
+    });
+  }
+
+  Future<void> _synchronizeLoadNewMapObjects(MapObjectUpdates mapObjectUpdates) async {
+    // await _updateMapObjects(mapObjectUpdates.updateObjects);
+    // await _removeMapObjects(mapObjectUpdates.removeObjects);
+    // await _addMapObjectsInZIndexOrder(mapObjectUpdates.addObjects);
+    await Future.wait([
+      _updateMapObjects(mapObjectUpdates.updateObjects),
+      _removeMapObjects(mapObjectUpdates.removeObjects),
+      _addMapObjectsInZIndexOrder(mapObjectUpdates.addObjects)
+    ]);
   }
 
   ///add objects by zIndex ASC order
@@ -334,6 +347,8 @@ class _ViettelMapController extends BaseCoreMapController {
 
         _viettelMarkerMap.removeWhere((key, value) => key == markerId);
       }
+    } else {
+      Log.e("DEBUGGING", "remove not in map");
     }
   }
 
