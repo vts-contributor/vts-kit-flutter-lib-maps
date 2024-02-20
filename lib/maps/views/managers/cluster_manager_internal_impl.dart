@@ -218,6 +218,6 @@ class _ClusterManagerImpl extends ChangeNotifier
       return;
     }
 
-    mapController?.animateCameraToCenterOfPoints(listPositionMarker, 150, duration: 1);
+    mapController?.animateCameraToCenterOfPoints(listPositionMarker, 150, duration: 500);
   }
 }
