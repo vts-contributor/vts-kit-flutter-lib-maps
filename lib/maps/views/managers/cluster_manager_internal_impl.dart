@@ -33,6 +33,7 @@ class _ClusterManagerImpl extends ChangeNotifier
 
   void _updateMarkers(Set<Marker>? markers) {
     _initSetMarker(markers);
+    createClusters(lastZoomLevel, markers);
   }
 
   void _updateCustomClusterManager(ClusterManager? clusterManager) {
