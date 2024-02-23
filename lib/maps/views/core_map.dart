@@ -310,12 +310,16 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     return _buildButton(context,
       icon: Icons.my_location_outlined,
       buttonSize: buttonSize,
-      onTap: () {
+      onTap: () async {
+        double zoom = 17;
         double? lat = _locationManager._userLocation?.latitude;
         double? lng = _locationManager._userLocation?.longitude;
         if (lat != null && lng != null) {
-          double zoom = 17;
           _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), zoom));
+        } else {
+          Position position = await Geolocator.getCurrentPosition(timeLimit: const Duration(seconds: 10));
+          _locationManager._updateUserLocation(position);
+          _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(position.latitude, position.longitude), zoom));
         }
       },
     );
