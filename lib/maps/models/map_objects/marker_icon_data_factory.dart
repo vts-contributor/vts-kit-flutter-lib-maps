@@ -82,7 +82,7 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   @override
   Future<Uint8List> processWidgetMarkerIcon(WidgetMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
-      return await WidgetConverter().widgetToBitmap(markerIconData.value);
+      return await WidgetConverter().widgetToBitmap(markerIconData.value, delay: markerIconData.delay);
     });
   }
 

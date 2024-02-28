@@ -71,7 +71,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            accessToken: "49013166841fe36d7fa7f395fce4 a663",
+            accessToken: "49013166841fe36d7fa7f395fce4a663",
             markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(
                 target: const LatLng(9.85419858085518, 105.49970250115466),
@@ -119,7 +119,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           shapes: CoreMapShapes(
             polygons: {polygon1()},
             circles: {circle()},
-            markers: showMarker? {marker(), marker2()}: {},
+            markers: showMarker? {marker(), marker2(), marker3()}: {},
             polylines: {polyline(), polyline2()},
           ),
         ),

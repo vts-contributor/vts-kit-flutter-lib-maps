@@ -38,8 +38,10 @@ class MarkerIcon {
   static MarkerIcon fromBitmap(final String name, final Uint8List bitmap) =>
       MarkerIcon._(BitmapMarkerIconData(name, bitmap));
 
-  static MarkerIcon fromWidget(final String name, final Widget widget) {
-    return  MarkerIcon._(WidgetMarkerIconData(name, widget));
+  static MarkerIcon fromWidget(final String name, final Widget widget, {
+    Duration delay = const Duration(milliseconds: 1),
+  }) {
+    return  MarkerIcon._(WidgetMarkerIconData(name, widget, delay));
   }
 
   @override
@@ -143,7 +145,8 @@ class BitmapMarkerIconData extends MarkerIconData<Uint8List> {
 }
 
 class WidgetMarkerIconData extends MarkerIconData<Widget> {
-  WidgetMarkerIconData(super.name, super.value);
+  final Duration delay;
+  WidgetMarkerIconData(super.name, super.value, this.delay);
 
   @override
   Future<Uint8List> initResource(MarkerIconDataProcessor processor) async {
