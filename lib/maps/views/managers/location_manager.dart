@@ -131,25 +131,17 @@ class _LocationManager extends ChangeNotifier {
       return;
     }
 
-    double? oldLat = oldData.latitude;
-    double? oldLng = oldData.longitude;
-    double? newLat = newData.latitude;
-    double? newLng = newData.longitude;
+    double oldLat = oldData.latitude;
+    double oldLng = oldData.longitude;
+    double newLat = newData.latitude;
+    double newLng = newData.longitude;
 
-    if (newLat != null && newLng != null) {
-      bool latChanged = false, lngChanged = false;
-      if (oldLat != null) {
-        latChanged = oldLat.compareAsFixed(newLat, _updatePrecision) != 0;
-      }
-      if (oldLng != null) {
-        lngChanged = oldLng.compareAsFixed(oldLng, _updatePrecision) != 0;
-      }
+    bool latChanged = false, lngChanged = false;
+    latChanged = oldLat.compareAsFixed(newLat, _updatePrecision) != 0;
+    lngChanged = oldLng.compareAsFixed(newLng, _updatePrecision) != 0;
 
-      if (latChanged || lngChanged) {
-        notifyListeners();
-      }
-    } else {
-      return;
+    if (latChanged || lngChanged) {
+      notifyListeners();
     }
   }
 
@@ -187,8 +179,7 @@ class _LocationManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    super.dispose();
-
     _locationStreamSubscription?.cancel();
+    super.dispose();
   }
 }

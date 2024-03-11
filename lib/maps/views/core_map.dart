@@ -317,9 +317,14 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         if (lat != null && lng != null) {
           _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), zoom));
         } else {
-          Position position = await Geolocator.getCurrentPosition(timeLimit: const Duration(seconds: 10));
-          _locationManager._updateUserLocation(position);
-          _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(position.latitude, position.longitude), zoom));
+          try {
+            Position position = await Geolocator.getCurrentPosition(timeLimit: const Duration(seconds: 10));
+            _locationManager._updateUserLocation(position);
+            _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(position.latitude, position.longitude), zoom));
+          } catch (e, s) {
+            debugPrint(e.toString());
+            debugPrintStack(stackTrace: s);
+          }
         }
       },
     );
