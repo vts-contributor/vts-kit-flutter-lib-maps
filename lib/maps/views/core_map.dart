@@ -439,7 +439,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
       return build(context);
     });
     _mapOverlay = overlayEntry;
-    Overlay.of(context)?.insert(
+    Overlay.of(context).insert(
       overlayEntry,
     );
   }
