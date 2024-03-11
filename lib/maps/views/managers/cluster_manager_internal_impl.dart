@@ -10,12 +10,17 @@ class _ClusterManagerImpl extends ChangeNotifier
 
   CoreMapController? mapController;
 
-  _ClusterManagerImpl(Set<Marker>? markers, [ClusterManager? clusterManager]) {
+  VoidCallback? _callback;
+
+  _ClusterManagerImpl(Set<Marker>? markers,
+      [ClusterManager? clusterManager, VoidCallback? callback]) {
     _initSetMarker(markers);
 
     if (clusterManager != null) {
       _clusterManager = clusterManager;
     }
+
+    _callback = callback;
   }
 
   void _initSetMarker(Set<Marker>? markers) {
@@ -148,7 +153,8 @@ class _ClusterManagerImpl extends ChangeNotifier
         );
 
         // get custom data
-        ClusterData? clusterData = getCustomClusterData(cluster, markerSet);
+        ClusterData? clusterData =
+            getCustomClusterData(cluster, markerSet, zoom);
 
         if (clusterData != null) {
           cluster = cluster.copyFromCLusterData(clusterData);
@@ -162,8 +168,16 @@ class _ClusterManagerImpl extends ChangeNotifier
       }
     }
 
+    bool isExtractCluster = _tryBreakApartClusters(zoom);
+
+    if (isExtractCluster) {
+      isChange = true;
+    }
+
     if (isChange) {
       notifyListeners();
+
+      _callback?.call();
     }
   }
 
@@ -185,12 +199,12 @@ class _ClusterManagerImpl extends ChangeNotifier
     return shapes;
   }
 
-  // custom cluster data
-  @override
   ClusterData? getCustomClusterData(
-      Cluster cluster, Set<MarkerCover> setMarker) {
+      Cluster cluster, Set<MarkerCover> setMarker, double zoomLevel) {
     return _clusterManager.customCluster(
-        cluster, _getAllMarkerFromSetMarkerCover(setMarker));
+      cluster: cluster,
+      setAllMarkerOfCluster: _getAllMarkerFromSetMarkerCover(setMarker),
+    );
   }
 
   Set<Marker> _getAllMarkerFromSetMarkerCover(Set<MarkerCover> setMarker) {
@@ -220,5 +234,35 @@ class _ClusterManagerImpl extends ChangeNotifier
     }
 
     mapController?.animateCameraToCenterOfPoints(listPositionMarker, 150, duration: 500);
+  }
+
+  // try breaking apart the cluster to see the markers inside when the markers still overlap even at maximum zoom
+  bool _tryBreakApartClusters(double zoomLevel) {
+    bool isExtract = false;
+
+    if (_clusterManager.isTryBreakCluster && zoomLevel >= Constant.maxZoomLevel) {
+      for (int i = 0; i < _markers.length; i ++) {
+        MarkerCover marker = _markers.elementAt(i);
+        if (marker is Cluster && marker.isClustered == false) {
+          isExtract = true;
+          int markerSetLength = marker.markerSet.length;
+          for (int j = 0; j < markerSetLength; j++) {
+            MarkerCover markerChild = marker.markerSet.elementAt(j);
+            markerChild = markerChild.copyWith(
+              positionParam: LatLng(
+                // make markers have position appear around cluster
+                markerChild.position.latitude + 0.0000015 * cos(2 * pi * j / markerSetLength),
+                markerChild.position.longitude + 0.0000015 * sin(2 * pi * j / markerSetLength),
+              ),
+            );
+            markerChild.isClustered = false;
+            _markers.add(markerChild);
+          }
+          marker.isClustered = true;
+        }
+      }
+    }
+
+    return isExtract;
   }
 }

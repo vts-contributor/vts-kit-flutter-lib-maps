@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:maps_core/maps.dart';
 
 class MarkerCover extends Marker {
@@ -41,5 +42,76 @@ class MarkerCover extends Marker {
   void setPosition(LatLng positionValue) {
     positionMarkerCover = positionValue;
     point = positionMarkerCover.toPoint();
+  }
+
+  @override
+  MarkerCover copyWith({
+    double? alphaParam,
+    Anchor? anchorParam,
+    bool? draggableParam,
+    bool? flatParam,
+    MarkerIcon? iconParam,
+    InfoWindow? infoWindowParam,
+    LatLng? positionParam,
+    double? rotationParam,
+    bool? visibleParam,
+    int? zIndexParam,
+    VoidCallback? onTapParam,
+    ValueChanged<LatLng>? onDragStartParam,
+    ValueChanged<LatLng>? onDragParam,
+    ValueChanged<LatLng>? onDragEndParam,
+    BoundMarker? boundParam,
+    PointMarker? pointParam,
+    bool? isClusteredParam,
+    LatLng? positionMarkerCoverParam,
+    bool? isCanClusterParam,
+  }) {
+    return MarkerCover(
+      id: id,
+      alpha: alphaParam ?? alpha,
+      anchor: anchorParam ?? anchor,
+      draggable: draggableParam ?? draggable,
+      flat: flatParam ?? flat,
+      icon: iconParam ?? icon,
+      infoWindow: infoWindowParam ?? infoWindow,
+      position: positionParam ?? position,
+      rotation: rotationParam ?? rotation,
+      visible: visibleParam ?? visible,
+      zIndex: zIndexParam ?? zIndex,
+      onTap: onTapParam ?? onTap,
+      onDragStart: onDragStartParam ?? onDragStart,
+      onDrag: onDragParam ?? onDrag,
+      onDragEnd: onDragEndParam ?? onDragEnd,
+      bound: boundParam ?? bound,
+      point: pointParam ?? point,
+      isClustered: isClusteredParam ?? isClustered,
+      positionMarkerCover: positionMarkerCoverParam ?? positionMarkerCover,
+      isCanCluster: isCanClusterParam ?? isCanCluster,
+    );
+  }
+
+  MarkerCover copyFromCluster(Cluster cluster) {
+    return MarkerCover(
+      id: id,
+      alpha: cluster.alpha,
+      anchor: cluster.anchor,
+      draggable: cluster.draggable,
+      flat: cluster.flat,
+      icon: cluster.icon,
+      infoWindow: cluster.infoWindow,
+      position: cluster.position,
+      rotation: cluster.rotation,
+      visible: cluster.visible,
+      zIndex: cluster.zIndex,
+      onTap: cluster.onTap,
+      onDragStart: cluster.onDragStart,
+      onDrag: cluster.onDrag,
+      onDragEnd: cluster.onDragEnd,
+      bound: cluster.bound,
+      point: cluster.point,
+      isClustered: false,
+      positionMarkerCover: cluster.positionMarkerCover,
+      isCanCluster: cluster.isCanCluster,
+    );
   }
 }

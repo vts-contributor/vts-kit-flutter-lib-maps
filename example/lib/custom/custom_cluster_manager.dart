@@ -1,6 +1,9 @@
-part of core_map;
+import 'dart:developer';
 
-class _DefaultClusterManager implements ClusterManager {
+import 'package:flutter/material.dart';
+import 'package:maps_core/maps.dart';
+
+class CustomClusterManager implements ClusterManager {
   @override
   int maxDistanceAtZoom = 25;
 
@@ -32,18 +35,22 @@ class _DefaultClusterManager implements ClusterManager {
       ),
     );
 
+    log("custom cluster");
+
     return ClusterData(
       icon: MarkerIcon.fromWidget('${cluster.id}icon', custom),
       expandOnTap: true,
     );
   }
 
-  InfoWindow? customInfoWindowCluster(Set<MarkerCover> setMarker) {
+  InfoWindow? customInfoWindowCluster(Set<Marker> setMarker, double zoomLevel) {
+    log("zoom level: $zoomLevel");
+
     return InfoWindow(
       widget: Container(
         height: 50,
         width: 50,
-        color: Colors.red,
+        color: Colors.blue,
         child: const Text("123"),
       ),
     );

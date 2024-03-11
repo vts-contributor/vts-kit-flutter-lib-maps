@@ -51,4 +51,7 @@ class Constant {
 
   ///full screen button size
   static const double fullScreenButtonSize = 36;
+
+  ///max zoom level viettel map
+  static const double maxZoomLevel = 25.5;
 }

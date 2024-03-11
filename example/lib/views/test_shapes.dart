@@ -146,7 +146,7 @@ Marker marker() => Marker(
 Marker marker2() => Marker(
   id: const MarkerId("test2"),
   // position: LatLng(10.625380787927542, 105.051574201898),
-  position: const LatLng(10.950305387234123, 106.63943723003548),
+  position: const LatLng(10.885305387234123, 106.63943723003548),
   alpha: 1,
   zIndex: 0,
   draggable: true,
@@ -163,7 +163,7 @@ Marker marker2() => Marker(
 Marker marker3() => Marker(
   id: const MarkerId("test3"),
   // position: LatLng(10.625380787927542, 105.051574201898),
-  position: const LatLng(10.550306387234123, 106.33943423003548),
+  position: const LatLng(10.885305387234123, 106.63943723003548),
   alpha: 1,
   zIndex: 0,
   draggable: true,
@@ -200,7 +200,6 @@ Marker marker4() => Marker(
         color: Colors.red,
       )
   ),
-  isCanCluster: false,
 );
 
 Marker marker5() => Marker(
@@ -218,7 +217,6 @@ Marker marker5() => Marker(
         color: Colors.red,
       )
   ),
-  isCanCluster: false,
 );
 
 Marker marker6() => Marker(

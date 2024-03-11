@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:map_core_example/custom/custom_cluster_manager.dart';
 import 'package:map_core_example/views/test_shapes.dart';
 import 'package:maps_core/maps.dart';
 
@@ -39,7 +40,7 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
             // markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(
                 target: const LatLng(10.885305387234123, 106.63943723003548),
-                zoom: 10),
+                zoom: 15),
             compassEnabled: true,
             myLocationEnabled: true,
             zoomInButtonData: CoreMapButtonCustomizeData(
@@ -86,7 +87,7 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
           shapes: CoreMapShapes(
             markers: {marker(), marker2(), marker3(), marker4(), marker5(), marker6()},
           ),
-          custom: CoreMapCustoms(),
+          custom: CoreMapCustoms(clusterManager: CustomClusterManager()),
         ),
       ),
     );
