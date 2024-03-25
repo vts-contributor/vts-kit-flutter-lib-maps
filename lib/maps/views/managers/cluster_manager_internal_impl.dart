@@ -24,8 +24,8 @@ class _ClusterManagerImpl extends ChangeNotifier
   }
 
   void _initSetMarker(Set<Marker>? markers) {
+    _markers.clear();
     if (markers != null && markers.isNotEmpty) {
-      _markers.clear();
       _markers.addAll(markers.map((marker) {
         if (marker is MarkerCover) {
           return marker;
@@ -37,7 +37,6 @@ class _ClusterManagerImpl extends ChangeNotifier
   }
 
   void _updateMarkers(Set<Marker>? markers) {
-    _initSetMarker(markers);
     createClusters(lastZoomLevel, markers);
   }
 
@@ -59,6 +58,10 @@ class _ClusterManagerImpl extends ChangeNotifier
   void createClusters(double zoom, Set<Marker>? markers) {
     // check if has change in set marker
     bool isChange = false;
+
+    if (_markers.isNotEmpty && markers?.isEmpty == true) {
+      isChange = true;
+    }
 
     // init markers
     _initSetMarker(markers);
