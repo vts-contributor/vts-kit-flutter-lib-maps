@@ -30,19 +30,15 @@ class WidgetConverter {
   ///
   ///
   Future<Uint8List> widgetToBitmap(
-      Widget widget, {
-        Duration delay = const Duration(seconds: 1),
-        double? pixelRatio,
-        BuildContext? context,
-        Size? targetSize,
-      }) async {
+    Widget widget, {
+    Duration delay = const Duration(seconds: 1),
+    double? pixelRatio,
+    BuildContext? context,
+    Size? targetSize,
+  }) async {
     ui.Image image = await widgetToUiImage(widget,
-        delay: delay,
-        pixelRatio: pixelRatio,
-        context: context,
-        targetSize: targetSize);
-    final ByteData? byteData =
-    await image.toByteData(format: ui.ImageByteFormat.png);
+        delay: delay, pixelRatio: pixelRatio, context: context, targetSize: targetSize);
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     image.dispose();
 
     return byteData!.buffer.asUint8List();
@@ -50,12 +46,12 @@ class WidgetConverter {
 
   /// If you are building a desktop/web application that supports multiple view. Consider passing the [context] so that flutter know which view to capture.
   static Future<ui.Image> widgetToUiImage(
-      Widget widget, {
-        Duration delay = const Duration(seconds: 1),
-        double? pixelRatio,
-        BuildContext? context,
-        Size? targetSize,
-      }) async {
+    Widget widget, {
+    Duration delay = const Duration(seconds: 1),
+    double? pixelRatio,
+    BuildContext? context,
+    Size? targetSize,
+  }) async {
     ///
     ///Retry counter
     ///
@@ -81,17 +77,17 @@ class WidgetConverter {
     }
 
     final RenderRepaintBoundary repaintBoundary = RenderRepaintBoundary();
-    Size logicalSize = ui.window.physicalSize / ui.window.devicePixelRatio;
-    Size imageSize = ui.window.physicalSize;
+    final platformView = WidgetsBinding.instance.platformDispatcher.views;
+
+    Size logicalSize = platformView.first.physicalSize / platformView.first.devicePixelRatio;
+    Size imageSize = platformView.first.physicalSize;
 
     assert(logicalSize.aspectRatio.toStringAsPrecision(5) ==
-        imageSize.aspectRatio
-            .toStringAsPrecision(5)); // Adapted (toPrecision was not available)
+        imageSize.aspectRatio.toStringAsPrecision(5)); // Adapted (toPrecision was not available)
 
     final RenderView renderView = RenderView(
-      window: ui.window,
-      child: RenderPositionedBox(
-          alignment: Alignment.center, child: repaintBoundary),
+      view: platformView.first,
+      child: RenderPositionedBox(alignment: Alignment.center, child: repaintBoundary),
       configuration: ViewConfiguration(
         size: logicalSize,
         devicePixelRatio: pixelRatio ?? 1.0,
@@ -112,12 +108,12 @@ class WidgetConverter {
     renderView.prepareInitialFrame();
 
     final RenderObjectToWidgetElement<RenderBox> rootElement =
-    RenderObjectToWidgetAdapter<RenderBox>(
-        container: repaintBoundary,
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: child,
-        )).attachToRenderTree(
+        RenderObjectToWidgetAdapter<RenderBox>(
+            container: repaintBoundary,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: child,
+            )).attachToRenderTree(
       buildOwner,
     );
     ////
@@ -206,12 +202,12 @@ class WidgetConverter {
   ///
   ///
   Future<Uint8List> captureFromLongWidget(
-      Widget widget, {
-        Duration delay = const Duration(seconds: 1),
-        double? pixelRatio,
-        BuildContext? context,
-        BoxConstraints? constraints,
-      }) async {
+    Widget widget, {
+    Duration delay = const Duration(seconds: 1),
+    double? pixelRatio,
+    BuildContext? context,
+    BoxConstraints? constraints,
+  }) async {
     ui.Image image = await longWidgetToUiImage(
       widget,
       delay: delay,
@@ -219,8 +215,7 @@ class WidgetConverter {
       context: context,
       constraints: constraints ?? BoxConstraints(),
     );
-    final ByteData? byteData =
-    await image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     image.dispose();
 
     return byteData!.buffer.asUint8List();
@@ -228,17 +223,15 @@ class WidgetConverter {
 
   Future<ui.Image> longWidgetToUiImage(Widget widget,
       {Duration delay = const Duration(seconds: 1),
-        double? pixelRatio,
-        BuildContext? context,
-        BoxConstraints constraints = const BoxConstraints(
-          maxHeight: double.maxFinite,
-        )}) async {
+      double? pixelRatio,
+      BuildContext? context,
+      BoxConstraints constraints = const BoxConstraints(
+        maxHeight: double.maxFinite,
+      )}) async {
     final PipelineOwner pipelineOwner = PipelineOwner();
-    final _MeasurementView rootView =
-    pipelineOwner.rootNode = _MeasurementView(constraints);
+    final _MeasurementView rootView = pipelineOwner.rootNode = _MeasurementView(constraints);
     final BuildOwner buildOwner = BuildOwner(focusManager: FocusManager());
-    final RenderObjectToWidgetElement<RenderBox> element =
-    RenderObjectToWidgetAdapter<RenderBox>(
+    final RenderObjectToWidgetElement<RenderBox> element = RenderObjectToWidgetAdapter<RenderBox>(
       container: rootView,
       debugShortDescription: 'root_render_element_for_size_measurement',
       child: Directionality(
@@ -263,8 +256,7 @@ class WidgetConverter {
       );
     } finally {
       // Clean up.
-      element
-          .update(RenderObjectToWidgetAdapter<RenderBox>(container: rootView));
+      element.update(RenderObjectToWidgetAdapter<RenderBox>(container: rootView));
       buildOwner.finalizeTree();
     }
   }
@@ -277,8 +269,7 @@ extension Ex on double {
 ///
 /// RenderBox widget to calculate size.
 ///
-class _MeasurementView extends RenderBox
-    with RenderObjectWithChildMixin<RenderBox> {
+class _MeasurementView extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   final BoxConstraints boxConstraints;
   _MeasurementView(this.boxConstraints);
 
