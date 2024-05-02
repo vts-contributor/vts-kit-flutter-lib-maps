@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dio/adapter.dart';
+import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
 
 import '../models/network/custom_cancel_token.dart';
@@ -23,9 +23,9 @@ Future<V> get<V extends JsonResponse>(String host, String path,
     int connectTimeout = connectTimeout,
     required Function(Response res) parser}) async {
   final dio = prepareDio(interceptors: customInterceptors ?? interceptors);
-  dio.options.sendTimeout = sendTimeout;
-  dio.options.receiveTimeout = receiveTimeout;
-  dio.options.connectTimeout = connectTimeout;
+  dio.options.sendTimeout = Duration(milliseconds: sendTimeout);
+  dio.options.receiveTimeout = Duration(milliseconds: receiveTimeout);
+  dio.options.connectTimeout = Duration(milliseconds: connectTimeout);
   final response = await dio.get(
     '$host/$path',
     queryParameters: params,
@@ -48,9 +48,9 @@ Future<V> post<V extends JsonResponse>(
   required Function(Response res) parser,
 }) async {
   final dio = prepareDio(interceptors: customInterceptors ?? interceptors);
-  dio.options.connectTimeout = connectTimeout;
-  dio.options.receiveTimeout = receiveTimeout;
-  dio.options.sendTimeout = sendTimeout;
+  dio.options.sendTimeout = Duration(milliseconds: sendTimeout);
+  dio.options.receiveTimeout = Duration(milliseconds: receiveTimeout);
+  dio.options.connectTimeout = Duration(milliseconds: connectTimeout);
   final response = await dio.post(
     '$host/$path',
     data: body,
@@ -80,10 +80,9 @@ Future<File> download(
 
 Dio prepareDio({required InterceptorsWrapper interceptors}) {
   final dio = Dio()..interceptors.add(interceptors);
-  (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-      (HttpClient client) {
-    client.badCertificateCallback =
-        (X509Certificate cert, String host, int port) => true;
+  (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+    final HttpClient client = HttpClient(context: SecurityContext(withTrustedRoots: false));
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
     return client;
   };
   return dio;
