@@ -308,6 +308,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     const buttonSize = Constant.myLocationButtonSize;
 
     return _buildButton(context,
+      buttonData: widget.data.myLocationButtonData,
       icon: Icons.my_location_outlined,
       buttonSize: buttonSize,
       onTap: () async {
