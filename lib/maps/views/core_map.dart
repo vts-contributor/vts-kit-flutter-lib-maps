@@ -121,7 +121,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   void _updateClusterManager() {
     if (widget.data.isUseCluster) {
-      _clusterManager._updateMarkers(widget.shapes?.markers);
+      _clusterManager._updateMarkers(widget.shapes?.markers, Constant.getMaxZoomLevel(widget.type));
       _clusterManager
           ._updateCustomClusterManager(widget.custom?.clusterManager);
     }
@@ -190,7 +190,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           onCameraIdle: () {
             if (widget.data.isUseCluster) {
               _clusterManager.notifyCameraIdle(
-                  zoomLevel, widget.shapes?.markers);
+                  zoomLevel, widget.shapes?.markers, Constant.getMaxZoomLevel(widget.type));
             }
           },
         )

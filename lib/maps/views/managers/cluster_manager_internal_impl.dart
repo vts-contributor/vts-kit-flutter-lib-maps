@@ -36,8 +36,8 @@ class _ClusterManagerImpl extends ChangeNotifier
     }
   }
 
-  void _updateMarkers(Set<Marker>? markers) {
-    createClusters(lastZoomLevel, markers);
+  void _updateMarkers(Set<Marker>? markers, double maxZoomLevel) {
+    createClusters(lastZoomLevel, markers, maxZoomLevel);
   }
 
   void _updateCustomClusterManager(ClusterManager? clusterManager) {
@@ -47,15 +47,15 @@ class _ClusterManagerImpl extends ChangeNotifier
   }
 
   @override
-  void notifyCameraIdle(double zoom, Set<Marker>? markers) {
+  void notifyCameraIdle(double zoom, Set<Marker>? markers, double maxZoomLevel) {
     if (zoom != lastZoomLevel) {
-      createClusters(zoom, markers);
+      createClusters(zoom, markers, maxZoomLevel);
       lastZoomLevel = zoom;
     }
   }
 
   @override
-  void createClusters(double zoom, Set<Marker>? markers) {
+  void createClusters(double zoom, Set<Marker>? markers, double maxZoomLevel) {
     // check if has change in set marker
     bool isChange = false;
 
@@ -171,7 +171,7 @@ class _ClusterManagerImpl extends ChangeNotifier
       }
     }
 
-    bool isExtractCluster = _tryBreakApartClusters(zoom);
+    bool isExtractCluster = _tryBreakApartClusters(zoom, maxZoomLevel);
 
     if (isExtractCluster) {
       isChange = true;
@@ -240,10 +240,10 @@ class _ClusterManagerImpl extends ChangeNotifier
   }
 
   // try breaking apart the cluster to see the markers inside when the markers still overlap even at maximum zoom
-  bool _tryBreakApartClusters(double zoomLevel) {
+  bool _tryBreakApartClusters(double zoomLevel, double maxZoomLevel) {
     bool isExtract = false;
 
-    if (_clusterManager.isTryBreakCluster && zoomLevel >= Constant.maxZoomLevel) {
+    if (_clusterManager.isTryBreakCluster && zoomLevel >= maxZoomLevel) {
       for (int i = 0; i < _markers.length; i ++) {
         MarkerCover marker = _markers.elementAt(i);
         if (marker is Cluster && marker.isClustered == false) {
@@ -254,8 +254,8 @@ class _ClusterManagerImpl extends ChangeNotifier
             markerChild = markerChild.copyWith(
               positionParam: LatLng(
                 // make markers have position appear around cluster
-                markerChild.position.latitude + 0.0000015 * cos(2 * pi * j / markerSetLength),
-                markerChild.position.longitude + 0.0000015 * sin(2 * pi * j / markerSetLength),
+                markerChild.position.latitude + cos(2 * pi * j / markerSetLength) / _clusterManager.maxDistanceAtZoom / pow(2, zoomLevel) / 256 * 400000,
+                markerChild.position.longitude + sin(2 * pi * j / markerSetLength) / _clusterManager.maxDistanceAtZoom / pow(2, zoomLevel) / 256 * 400000,
               ),
             );
             markerChild.isClustered = false;

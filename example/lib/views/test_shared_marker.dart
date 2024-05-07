@@ -15,7 +15,7 @@ class TestSharedMarkerScreen extends StatefulWidget {
 }
 
 class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
-  final CoreMapType _type = CoreMapType.viettel;
+  CoreMapType _type = CoreMapType.viettel;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +27,16 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
             onPressed: () async {
               setState(() {
                 // showMarker = !showMarker;
+              });
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.swap_horiz),
+            onPressed: () async {
+              setState(() {
+                _type = _type == CoreMapType.viettel
+                    ? CoreMapType.google
+                    : CoreMapType.viettel;
               });
             },
           ),

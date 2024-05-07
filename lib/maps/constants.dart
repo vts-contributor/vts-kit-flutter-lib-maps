@@ -1,6 +1,6 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:maps_core/maps.dart';
 
 ///constants used by the lib
 class Constant {
@@ -53,5 +53,17 @@ class Constant {
   static const double fullScreenButtonSize = 36;
 
   ///max zoom level viettel map
-  static const double maxZoomLevel = 25.5;
+  static const double maxZoomLevelViettelMap = 25.5;
+
+  ///max zoom level google map
+  static const double maxZoomLevelGoogleMap = 20.0;
+
+  static double getMaxZoomLevel(CoreMapType type) {
+    switch (type) {
+      case CoreMapType.google:
+        return maxZoomLevelGoogleMap;
+      case CoreMapType.viettel:
+        return maxZoomLevelViettelMap;
+    }
+  }
 }

@@ -1,13 +1,14 @@
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:map_core_example/views/test_shapes.dart';
 import 'package:maps_core/log/log.dart';
-import 'package:maps_core/maps/extensions/extensions.dart';
+import 'package:maps_core/maps.dart' as mt;
+import 'package:maps_core/maps/models/map_objects/marker_icon_data_factory.dart';
 import 'package:vtmap_gl/vtmap_gl.dart';
 
 class TestVTMapScreen extends StatefulWidget {
-
   static String routeName = "/test-vt-map";
 
   const TestVTMapScreen({Key? key}) : super(key: key);
@@ -18,9 +19,12 @@ class TestVTMapScreen extends StatefulWidget {
 
 class _TestVTMapScreenState extends State<TestVTMapScreen> {
   MapboxMapController? controller;
-  LatLng firstPoint = const LatLng(8.848028919141523, 104.96513564005897);
+  LatLng firstPoint = const LatLng(10.844372, 106.673161);
   LatLng secondPoint = const LatLng(10.844372, 106.673161);
   double height = 400;
+
+  int count = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,48 +33,64 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           IconButton(
               icon: const Icon(Icons.add),
               onPressed: () async {
-                setState(() {
-                  height = 100;
+                controller?.addSymbol(marker().toSymbolOptions());
+                controller?.onSymbolTapped.add((argument) {
+                  log("on symbol tapped");
                 });
-                await Future.delayed(Duration(seconds: 1));
-                setState(() {
-                  height = 200;
-                });
-              }
-          )
+              })
         ],
       ),
-      body: SizedBox(
-        height: 100,
-        child: VTMap(
-          accessToken: "49013166841fe36d7fa7f395fce4a663",
-          initialCameraPosition:
-          CameraPosition(
-              target: firstPoint, zoom: 7),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 500,
+            child: VTMap(
+              initialCameraPosition:
+                  CameraPosition(target: firstPoint, zoom: 7),
+              onMapCreated: (controller) {
+                this.controller = controller;
+              },
+              onStyleLoadedCallback: () async {
+                mt.Marker marker1 = marker();
+                Uint8List bitmap = await marker1.icon.data
+                    .initResource(MarkerIconDataFactory());
+                controller?.addImage(marker1.icon.data.name, bitmap);
+                controller?.addSymbol(marker1.toSymbolOptions());
+                controller?.onSymbolTapped.add((argument) {
+                  Log.d("VTMAP", "onSymbol");
 
-          onMapCreated: (controller) {
-            this.controller = controller;
-          },
-          onCameraTrackingChanged: (mode) {
-            Log.d("VTMAP", "onCameraTrackingChanged: ${mode.toString()}");
-          },
-          onCameraMovingStarted: () {
-            Log.d("VTMAP", "onCameraMovingStarted: ${controller?.cameraPosition?.target.toString()}");
-          },
-          onCameraIdle: () {
-            Log.d("VTMAP", "onCameraIdle: ${controller?.cameraPosition?.target.toString()}");
-          },
-          onCameraTrackingDismissed: () {
-            Log.d("VTMAP", "onCameraTrackingDismissed: ${controller?.cameraPosition?.target.toString()}");
-          },
-          myLocationEnabled: true,
-          myLocationRenderMode: MyLocationRenderMode.NORMAL,
-          myLocationTrackingMode: MyLocationTrackingMode.None,
-          gpsControlEnable: true,
-          trackCameraPosition: false,
-          compassEnabled: false,
-          logoEnabled: false,
-        ),
+                  setState(() {
+                    count++;
+                  });
+                });
+              },
+              onCameraTrackingChanged: (mode) {
+                Log.d("VTMAP", "onCameraTrackingChanged: ${mode.toString()}");
+              },
+              onCameraMovingStarted: () {
+                Log.d("VTMAP",
+                    "onCameraMovingStarted: ${controller?.cameraPosition?.target.toString()}");
+              },
+              onCameraIdle: () {
+                Log.d("VTMAP",
+                    "onCameraIdle: ${controller?.cameraPosition?.target.toString()}");
+              },
+              onCameraTrackingDismissed: () {
+                Log.d("VTMAP",
+                    "onCameraTrackingDismissed: ${controller?.cameraPosition?.target.toString()}");
+              },
+              myLocationEnabled: false,
+              myLocationRenderMode: MyLocationRenderMode.NORMAL,
+              myLocationTrackingMode: MyLocationTrackingMode.None,
+              gpsControlEnable: false,
+              trackCameraPosition: false,
+              compassEnabled: false,
+              logoEnabled: false,
+            ),
+          ),
+          const SizedBox(height: 50),
+          Text("On tap marker: $count"),
+        ],
       ),
     );
   }
@@ -97,8 +117,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
         options: VTMapOptions(
             access_token: '49013166841fe36d7fa7f395fce4a663',
             alternatives: true,
-            mode:
-            VTMapNavigationMode.cycling,
+            mode: VTMapNavigationMode.cycling,
             simulateRoute: true,
             language: "vi"));
   }

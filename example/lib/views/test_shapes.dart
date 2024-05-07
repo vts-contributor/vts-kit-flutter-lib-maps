@@ -121,17 +121,17 @@ Circle circle() => Circle(
 Marker marker() => Marker(
   id: const MarkerId("test1"),
   // position: LatLng(10.625380787927542, 105.051574201898),
-  position: const LatLng(10.885305387234123, 106.63943723003548),
+  position: const LatLng(10.844372, 106.673161),
   alpha: 1,
   zIndex: 0,
   draggable: true,
   infoWindow: InfoWindow(
-    widget: Container(
-      child: Text("123"),
-      height: 50,
-      width: 50,
-      color: Colors.red,
-    )
+      widget: Container(
+        child: Text("123"),
+        height: 50,
+        width: 50,
+        color: Colors.red,
+      )
   ),
   // icon: MarkerIcon.fromWidget("widget112", Container(
   //   color: Colors.blue,
@@ -139,7 +139,7 @@ Marker marker() => Marker(
   //   height: 100,
   //   width: 100,
   // )),
-  // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
+  // icon: MarkerIcon.fromAsset("marker icon", "assets/default_marker.png"),
   // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
 );
 
