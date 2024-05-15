@@ -192,7 +192,7 @@ class _ClusterManagerImpl extends ChangeNotifier
   }
 
   CoreMapShapes _filterCluster(CoreMapShapes? originalShape) {
-    CoreMapShapes shapes = originalShape ?? CoreMapShapes();
+    CoreMapShapes shapes = originalShape?.clone() ?? CoreMapShapes();
 
     if (_markers.isNotEmpty) {
       shapes.markers.clear();

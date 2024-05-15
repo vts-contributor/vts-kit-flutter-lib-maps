@@ -104,7 +104,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   ///combine [originalShape] with routing shapes
   CoreMapShapes combineShape(CoreMapShapes? originalShape) {
-    CoreMapShapes shapes = originalShape ?? CoreMapShapes();
+    CoreMapShapes shapes = originalShape?.clone() ?? CoreMapShapes();
 
     List<MapRoute>? routes = _routes;
     if (routes != null) {
