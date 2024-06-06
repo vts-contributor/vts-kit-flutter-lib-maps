@@ -62,6 +62,12 @@ abstract class RoutingManager {
 
   ///view routes whose id is in [ids]
   void viewListRoutes(List<String> ids, [double? padding]);
+
+  ///set [RouteCachingStrategy] for routing manager. set null means no caching strategy
+  ///
+  /// This is different from [RouteConfig.cached]. This will save cache in storage,
+  /// while [RouteConfig.cached] will save cache using class's object
+  void setCachingStrategy(RouteCachingStrategy? cachingStrategy);
 }
 
 class RoutingOptions {
@@ -184,4 +190,9 @@ class RoutingOptions {
   List<vt.WayPoint> getViettelWaypoints() {
     return points.map((e) => vt.WayPoint(latitude: e.latitude, longitude: e.longitude, name: e.toString())).toList();
   }
+}
+
+abstract class RouteCachingStrategy {
+  Future<void> save(String key, String content);
+  Future<String?> get(String key);
 }

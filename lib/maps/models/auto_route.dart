@@ -31,7 +31,7 @@ class RouteConfig {
   ///same [id] can use different [travelMode]
   final RouteTravelMode? travelMode;
 
-  ///true if you want to cache route with the same ID
+  ///true if you want to cache route with the same ID, does not work between two different map view
   final bool cached;
 
   RouteConfig(this.id, this.waypoints, {

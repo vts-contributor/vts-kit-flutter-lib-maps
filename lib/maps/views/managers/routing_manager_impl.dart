@@ -14,7 +14,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   List<MapRoute>? _routes;
 
-  Map<String, MapRoute?> _cachedRoute = {};
+  final Map<String, MapRoute?> _localCachedRoute = {};
 
   Marker? _startMarker;
 
@@ -35,6 +35,8 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   final List<void Function(String id)> _routeSelectedListeners = [];
 
   RouteTravelMode? _defaultTravelMode;
+
+  RouteCachingStrategy? _cachingStrategy = _DefaultRouteCachingStrategy();
 
   set token(String? value) {
     _token = value;
@@ -252,9 +254,9 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
     MapRoute? mapRoute;
     if (routeConfig.cached) {
-      mapRoute = _cachedRoute[routeConfig.id];
+      mapRoute = _localCachedRoute[routeConfig.id];
     } else {
-      _cachedRoute.remove(routeConfig.id);
+      _localCachedRoute.remove(routeConfig.id);
     }
 
     try {
@@ -285,7 +287,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       _routes?.add(mapRoute);
 
       if (routeConfig.cached) {
-        _cachedRoute.putIfAbsent(routeConfig.id, () => mapRoute);
+        _localCachedRoute.putIfAbsent(routeConfig.id, () => mapRoute);
       }
 
       if (shouldNotify) notifyListeners();
@@ -311,15 +313,35 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       return Future.value(null);
     }
 
-    return await MapsAPIServiceImpl(key: _token).direction(
-      originLat: waypoints.first.latitude,
-      originLng: waypoints.first.longitude,
-      destLat: waypoints.last.latitude,
-      destLng: waypoints.last.longitude,
-      alternatives: true,
-      waypoints: waypoints,
-      mode: (travelMode ?? _defaultTravelMode)?.name
-    );
+    travelMode ??= _defaultTravelMode;
+
+    String cachingKey = _getDirectionCachingKey(waypoints, travelMode);
+    String? jsonString = await _cachingStrategy?.get(cachingKey);
+
+    Directions? directions;
+    if (jsonString == null) {
+      directions = await MapsAPIServiceImpl(key: _token).direction(
+        originLat: waypoints.first.latitude,
+        originLng: waypoints.first.longitude,
+        destLat: waypoints.last.latitude,
+        destLng: waypoints.last.longitude,
+        alternatives: true,
+        waypoints: waypoints,
+        mode: travelMode?.name,
+        onReceiveJson: (json) {
+          _cachingStrategy?.save(cachingKey, jsonEncode(json));
+        },
+      );
+    } else {
+      directions = Directions.fromJson(jsonDecode(jsonString));
+    }
+
+    return directions;
+  }
+
+  String _getDirectionCachingKey(List<LatLng> waypoints, RouteTravelMode? travelMode) {
+    String encodedPolyline = PolylineCodec.encode(waypoints);
+    return "$encodedPolyline ${travelMode?.toString()}";
   }
 
   Future<List<LatLng>> sortWaypoints(List<LatLng> points, RouteTravelMode? travelMode) async {
@@ -519,5 +541,22 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   @override
   void viewListRoutes(List<String> ids, [double? padding]) {
     _viewRoutes(_routes?.where((element) => ids.contains(element.id)).toList() ?? [], padding);
+  }
+
+  @override
+  void setCachingStrategy(RouteCachingStrategy? cachingStrategy) {
+    _cachingStrategy = cachingStrategy;
+  }
+}
+
+class _DefaultRouteCachingStrategy implements RouteCachingStrategy {
+  @override
+  Future<String?> get(String key) async {
+    return (await SharedPreferences.getInstance()).getString(key);
+  }
+
+  @override
+  Future<bool> save(String key, String content) async {
+    return (await SharedPreferences.getInstance()).setString(key, content);
   }
 }
