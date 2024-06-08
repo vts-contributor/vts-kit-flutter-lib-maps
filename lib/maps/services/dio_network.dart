@@ -11,7 +11,7 @@ part 'dio_interceptors.dart';
 
 const int sendTimeout = 60000;
 const int receiveTimeout = 60000;
-const int connectTimeout = 60000;
+const int connectTimeout = 10000;
 
 Future<V> get<V extends JsonResponse>(String host, String path,
     {Map<String, String>? headers,

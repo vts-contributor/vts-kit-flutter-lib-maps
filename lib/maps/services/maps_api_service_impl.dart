@@ -180,6 +180,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     int? routePointsSkipStep,
     List<LatLng>? waypoints,
     CustomCancelToken? cancelToken,
+    Function(Map<String, dynamic> json)? onReceiveJson
   }) async {
     final keyOrigin = paramsKeyMapper.valueOrKey(MapsAPIConst.kOrigin);
     final keyDestination =
@@ -201,6 +202,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
       cancelToken: cancelToken,
     );
     if (response.content is Map<String, dynamic>) {
+      onReceiveJson?.call(response.content as Map<String, dynamic>);
       final result = Directions.fromJson(
         response.content as Map<String, dynamic>,
         routePointsSkipStep: routePointsSkipStep,
@@ -221,6 +223,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     Map<String, String>? paramsKeyMapper,
     CustomCancelToken? cancelToken,
     String? id,
+    Function(Map<String, dynamic> json)? onReceiveJson,
   }) async {
     final keyOrigins = paramsKeyMapper.valueOrKey(MapsAPIConst.kOrigins);
     final keyDestinations =
@@ -238,6 +241,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
       cancelToken: cancelToken,
     );
     if (response.content is Map<String, dynamic>) {
+      onReceiveJson?.call(response.content as Map<String, dynamic>);
       final result = DistanceMatrix.fromJson(
         response.content as Map<String, dynamic>,
       );

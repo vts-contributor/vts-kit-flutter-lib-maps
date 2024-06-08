@@ -14,7 +14,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   List<MapRoute>? _routes;
 
-  Map<String, MapRoute?> _cachedRoute = {};
+  final Map<String, MapRoute?> _localCachedRoute = {};
 
   Marker? _startMarker;
 
@@ -35,6 +35,8 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   final List<void Function(String id)> _routeSelectedListeners = [];
 
   RouteTravelMode? _defaultTravelMode;
+
+  RouteCachingStrategy? _cachingStrategy = _DefaultRouteCachingStrategy();
 
   set token(String? value) {
     _token = value;
@@ -136,12 +138,14 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
           id: PolylineId(route.id),
           points: listPoint,
           color: route.config?.color ?? (isSelected? _selectedColor: _unselectedColor),
-          zIndex: isSelected? 6: 5,
+          zIndex: route.config?.zIndex ?? (isSelected? 6: 5),
           jointType: JointType.round,
           width: route.config?.width ?? ((isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth),
           onTap: () {
             Log.d("ROUTING", "ontap");
-            selectRoute(route.id);
+            if (route.config?.selectOnTap == true) {
+              selectRoute(route.id);
+            }
             notifyRouteTapListeners(route.id);
           }
       );
@@ -252,9 +256,9 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
     MapRoute? mapRoute;
     if (routeConfig.cached) {
-      mapRoute = _cachedRoute[routeConfig.id];
+      mapRoute = _localCachedRoute[routeConfig.id];
     } else {
-      _cachedRoute.remove(routeConfig.id);
+      _localCachedRoute.remove(routeConfig.id);
     }
 
     try {
@@ -285,7 +289,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       _routes?.add(mapRoute);
 
       if (routeConfig.cached) {
-        _cachedRoute.putIfAbsent(routeConfig.id, () => mapRoute);
+        _localCachedRoute.putIfAbsent(routeConfig.id, () => mapRoute);
       }
 
       if (shouldNotify) notifyListeners();
@@ -311,15 +315,35 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       return Future.value(null);
     }
 
-    return await MapsAPIServiceImpl(key: _token).direction(
-      originLat: waypoints.first.latitude,
-      originLng: waypoints.first.longitude,
-      destLat: waypoints.last.latitude,
-      destLng: waypoints.last.longitude,
-      alternatives: true,
-      waypoints: waypoints,
-      mode: (travelMode ?? _defaultTravelMode)?.name
-    );
+    travelMode ??= _defaultTravelMode;
+
+    String cachingKey = _getDirectionCachingKey(waypoints, travelMode);
+    String? jsonString = await _cachingStrategy?.get(cachingKey);
+
+    Directions? directions;
+    if (jsonString == null) {
+      directions = await MapsAPIServiceImpl(key: _token).direction(
+        originLat: waypoints.first.latitude,
+        originLng: waypoints.first.longitude,
+        destLat: waypoints.last.latitude,
+        destLng: waypoints.last.longitude,
+        alternatives: true,
+        waypoints: waypoints,
+        mode: travelMode?.name,
+        onReceiveJson: (json) {
+          _cachingStrategy?.save(cachingKey, jsonEncode(json));
+        },
+      );
+    } else {
+      directions = Directions.fromJson(jsonDecode(jsonString));
+    }
+
+    return directions;
+  }
+
+  String _getDirectionCachingKey(List<LatLng> waypoints, RouteTravelMode? travelMode) {
+    String encodedPolyline = PolylineCodec.encode(waypoints);
+    return "$encodedPolyline ${travelMode?.toString()}";
   }
 
   Future<List<LatLng>> sortWaypoints(List<LatLng> points, RouteTravelMode? travelMode) async {
@@ -385,22 +409,58 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   Future<Map<String, Map<String, DistanceMatrixElement>>?> _getDistanceMapping(List<LatLng> points, RouteTravelMode? travelMode) async{
     try {
+
+      points = _sortListPoints(points);
+
+      String cachingKey = _getDistanceMatrixCachingKey(points);
+      String? jsonString = await _cachingStrategy?.get(cachingKey);
+      String listDivider = '\$';
+      String itemDivider = '!';
+
       List<List<LatLng>> slices = points.slices(MAX_DESTINATION_FOR_DISTANCE_MATRIX).toList();
+      
+      List<DistanceMatrix> listMatrix;
 
-      List<Future<DistanceMatrix>> listFuture = [];
+      if (jsonString == null) {
+        StringBuffer newJsonString = StringBuffer();
 
-      for (int i = 0; i < slices.length; i++) {
-        for (int j = 0; j < slices.length; j++) {
-          listFuture.add(MapsAPIServiceImpl(key: _token).getDistanceMatrix(
-              origins: slices[i],
-              destinations: slices[j],
+        List<Future<DistanceMatrix>> listFuture = [];
+
+        for (int i = 0; i < slices.length; i++) {
+          for (int j = 0; j < slices.length; j++) {
+            List<LatLng> origins = slices[i];
+            List<LatLng> destinations = slices[j];
+
+            String id = "$i/$j";
+
+            listFuture.add(MapsAPIServiceImpl(key: _token).getDistanceMatrix(
+              origins: origins,
+              destinations: destinations,
               travelMode: (travelMode ?? _defaultTravelMode),
-              id: "$i/$j"
-          ));
+              id: id,
+              onReceiveJson: (json) {
+                newJsonString.write("${jsonEncode(json)}$itemDivider$id$listDivider");
+              },
+            ));
+          }
+        }
+
+        listMatrix = await Future.wait(listFuture);
+
+        _cachingStrategy?.save(cachingKey, newJsonString.toString());
+      } else {
+        listMatrix = List.empty(growable: true);
+
+        List<String> matrixItemsCache = jsonString.split(listDivider);
+
+        for (String matrixItemCache in matrixItemsCache) {
+          if (matrixItemCache.isNullOrEmpty) {
+            continue;
+          }
+          List<String> matrixItem = matrixItemCache.split(itemDivider);
+          listMatrix.add(DistanceMatrix.fromJson(jsonDecode(matrixItem.first))..id = matrixItem.last);
         }
       }
-
-      List<DistanceMatrix> listMatrix = await Future.wait(listFuture);
 
       Map<String, Map<String, DistanceMatrixElement>> mapDistance = {};
       for (DistanceMatrix matrix in listMatrix) {
@@ -441,6 +501,21 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       debugPrint(e.toString());
     }
     return null;
+  }
+
+  String _getDistanceMatrixCachingKey(List<LatLng> points) {
+    return "${PolylineCodec.encode(points)}}";
+  }
+
+  List<LatLng> _sortListPoints(List<LatLng> points) {
+    return points.sorted((a, b) {
+      int condition1 = a.latitude.compareTo(b.latitude);
+      if (condition1 == 0) {
+        return b.longitude.compareTo(b.longitude);
+      } else {
+        return condition1;
+      }
+    });
   }
 
   @override
@@ -519,5 +594,22 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   @override
   void viewListRoutes(List<String> ids, [double? padding]) {
     _viewRoutes(_routes?.where((element) => ids.contains(element.id)).toList() ?? [], padding);
+  }
+
+  @override
+  void setCachingStrategy(RouteCachingStrategy? cachingStrategy) {
+    _cachingStrategy = cachingStrategy;
+  }
+}
+
+class _DefaultRouteCachingStrategy implements RouteCachingStrategy {
+  @override
+  Future<String?> get(String key) async {
+    return (await SharedPreferences.getInstance()).getString(key);
+  }
+
+  @override
+  Future<bool> save(String key, String content) async {
+    return (await SharedPreferences.getInstance()).setString(key, content);
   }
 }
