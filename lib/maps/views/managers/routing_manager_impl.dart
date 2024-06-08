@@ -138,12 +138,14 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
           id: PolylineId(route.id),
           points: listPoint,
           color: route.config?.color ?? (isSelected? _selectedColor: _unselectedColor),
-          zIndex: isSelected? 6: 5,
+          zIndex: route.config?.zIndex ?? (isSelected? 6: 5),
           jointType: JointType.round,
           width: route.config?.width ?? ((isSelected? _selectedWidth: _unselectedWidth) ?? _defaultWidth),
           onTap: () {
             Log.d("ROUTING", "ontap");
-            selectRoute(route.id);
+            if (route.config?.selectOnTap == true) {
+              selectRoute(route.id);
+            }
             notifyRouteTapListeners(route.id);
           }
       );
@@ -407,22 +409,58 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   Future<Map<String, Map<String, DistanceMatrixElement>>?> _getDistanceMapping(List<LatLng> points, RouteTravelMode? travelMode) async{
     try {
+
+      points = _sortListPoints(points);
+
+      String cachingKey = _getDistanceMatrixCachingKey(points);
+      String? jsonString = await _cachingStrategy?.get(cachingKey);
+      String listDivider = '\$';
+      String itemDivider = '!';
+
       List<List<LatLng>> slices = points.slices(MAX_DESTINATION_FOR_DISTANCE_MATRIX).toList();
+      
+      List<DistanceMatrix> listMatrix;
 
-      List<Future<DistanceMatrix>> listFuture = [];
+      if (jsonString == null) {
+        StringBuffer newJsonString = StringBuffer();
 
-      for (int i = 0; i < slices.length; i++) {
-        for (int j = 0; j < slices.length; j++) {
-          listFuture.add(MapsAPIServiceImpl(key: _token).getDistanceMatrix(
-              origins: slices[i],
-              destinations: slices[j],
+        List<Future<DistanceMatrix>> listFuture = [];
+
+        for (int i = 0; i < slices.length; i++) {
+          for (int j = 0; j < slices.length; j++) {
+            List<LatLng> origins = slices[i];
+            List<LatLng> destinations = slices[j];
+
+            String id = "$i/$j";
+
+            listFuture.add(MapsAPIServiceImpl(key: _token).getDistanceMatrix(
+              origins: origins,
+              destinations: destinations,
               travelMode: (travelMode ?? _defaultTravelMode),
-              id: "$i/$j"
-          ));
+              id: id,
+              onReceiveJson: (json) {
+                newJsonString.write("${jsonEncode(json)}$itemDivider$id$listDivider");
+              },
+            ));
+          }
+        }
+
+        listMatrix = await Future.wait(listFuture);
+
+        _cachingStrategy?.save(cachingKey, newJsonString.toString());
+      } else {
+        listMatrix = List.empty(growable: true);
+
+        List<String> matrixItemsCache = jsonString.split(listDivider);
+
+        for (String matrixItemCache in matrixItemsCache) {
+          if (matrixItemCache.isNullOrEmpty) {
+            continue;
+          }
+          List<String> matrixItem = matrixItemCache.split(itemDivider);
+          listMatrix.add(DistanceMatrix.fromJson(jsonDecode(matrixItem.first))..id = matrixItem.last);
         }
       }
-
-      List<DistanceMatrix> listMatrix = await Future.wait(listFuture);
 
       Map<String, Map<String, DistanceMatrixElement>> mapDistance = {};
       for (DistanceMatrix matrix in listMatrix) {
@@ -463,6 +501,21 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       debugPrint(e.toString());
     }
     return null;
+  }
+
+  String _getDistanceMatrixCachingKey(List<LatLng> points) {
+    return "${PolylineCodec.encode(points)}}";
+  }
+
+  List<LatLng> _sortListPoints(List<LatLng> points) {
+    return points.sorted((a, b) {
+      int condition1 = a.latitude.compareTo(b.latitude);
+      if (condition1 == 0) {
+        return b.longitude.compareTo(b.longitude);
+      } else {
+        return condition1;
+      }
+    });
   }
 
   @override

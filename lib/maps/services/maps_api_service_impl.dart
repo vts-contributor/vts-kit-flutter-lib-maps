@@ -223,6 +223,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     Map<String, String>? paramsKeyMapper,
     CustomCancelToken? cancelToken,
     String? id,
+    Function(Map<String, dynamic> json)? onReceiveJson,
   }) async {
     final keyOrigins = paramsKeyMapper.valueOrKey(MapsAPIConst.kOrigins);
     final keyDestinations =
@@ -240,6 +241,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
       cancelToken: cancelToken,
     );
     if (response.content is Map<String, dynamic>) {
+      onReceiveJson?.call(response.content as Map<String, dynamic>);
       final result = DistanceMatrix.fromJson(
         response.content as Map<String, dynamic>,
       );
