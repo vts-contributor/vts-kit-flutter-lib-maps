@@ -26,7 +26,12 @@ class _ClusterManagerImpl extends ChangeNotifier
   void _initSetMarker(Set<Marker>? markers) {
     _markers.clear();
     if (markers != null && markers.isNotEmpty) {
-      _markers.addAll(markers.map((marker) {
+      Map<MarkerId, Marker> distinctMarkers = {};
+      for (Marker marker in markers) {
+        distinctMarkers.putIfAbsent(marker.id, () => marker);
+      }
+
+      _markers.addAll(distinctMarkers.values.map((marker) {
         if (marker is MarkerCover) {
           return marker;
         } else {
