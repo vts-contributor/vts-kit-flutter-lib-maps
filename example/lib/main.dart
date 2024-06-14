@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         TestGoogleMapScreen.routeName: (_) => const TestGoogleMapScreen(),
         TestVTMapScreen.routeName: (_) => const TestVTMapScreen(),
         TestRoutingScreen.routeName: (_) => ChangeNotifierProvider(
-          create: (_) => RoutingViewModel(MapsAPIServiceImpl(key: "49013166841fe36d7fa7f395fce4a663")),
+          create: (_) => RoutingViewModel(MapsAPIServiceImpl(key: "")),
           child: const TestRoutingScreen(),
         ),
         TestSharedMarkerScreen.routeName:(context) => const TestSharedMarkerScreen()
