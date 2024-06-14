@@ -45,7 +45,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           SizedBox(
             height: 500,
             child: VTMap(
-              accessToken: "49013166841fe36d7fa7f395fce4a663",
+              accessToken: "",
               initialCameraPosition:
                   CameraPosition(target: firstPoint, zoom: 7),
               onMapCreated: (controller) {
@@ -116,7 +116,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
     controller?.buildRoute(
         wayPoints: wayPoints,
         options: VTMapOptions(
-            access_token: '49013166841fe36d7fa7f395fce4a663',
+            access_token: '',
             alternatives: true,
             mode: VTMapNavigationMode.cycling,
             simulateRoute: true,

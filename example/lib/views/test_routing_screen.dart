@@ -213,7 +213,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
       body: CoreMap(
         type: _type,
         data: CoreMapData(
-          accessToken: "49013166841fe36d7fa7f395fce4a663",
+          accessToken: "",
           initialCameraPosition: CameraPosition(target: LatLng(10.888305387234123, 106.63943723003548), zoom: 15),
           compassEnabled: true,
           myLocationEnabled: true,
