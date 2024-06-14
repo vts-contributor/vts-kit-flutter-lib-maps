@@ -72,6 +72,8 @@ abstract class MarkerIconData<T> {
 
   T get value => _value;
 
+  String get originalName => _name;
+
   const MarkerIconData(this._name, this._value);
 
   Future<Uint8List> initResource(MarkerIconDataProcessor processor);

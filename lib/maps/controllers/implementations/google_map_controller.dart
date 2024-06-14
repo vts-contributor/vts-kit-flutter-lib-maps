@@ -57,7 +57,7 @@ class _GoogleMapController extends BaseCoreMapController
 
   Future<void> updateMarkers(Set<Marker> newMarkers) async {
     List<Future> markerFutures = [];
-    bitmapCacheFactory.validateCache(newMarkers.map((e) => e.icon.data.name).toList());
+    bitmapCacheFactory.validateCache(newMarkers.map((e) => e.icon.data.originalName).toList());
     for (final marker in newMarkers) {
       //process all marker data to check if there are new maker icons
       markerFutures.add(marker.icon.data.initResource(markerIconDataProcessor));

@@ -76,8 +76,17 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
 
   @override
   Future<void> validateCache(List<String> validNames) async {
-    _cache.removeWhere((key, value) => !validNames.contains(key));
-    _sizeCache.removeWhere((key, value) => !validNames.contains(key));
+    _cache.removeWhere((key, value) => validateNames(key, validNames));
+    _sizeCache.removeWhere((key, value) => validateNames(key, validNames));
+  }
+
+  bool validateNames(String key, List<String> validNames) {
+    return !validNames.any((name) => validateName(key, name));
+  }
+
+  bool validateName(String key, String name) {
+    RegExp regExp = RegExp("$name+");
+    return regExp.hasMatch(key);
   }
 
   @override

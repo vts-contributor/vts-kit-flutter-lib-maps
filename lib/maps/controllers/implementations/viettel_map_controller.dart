@@ -87,7 +87,7 @@ class _ViettelMapController extends BaseCoreMapController {
         Log.e(logTag, e.toString());
       }
     }
-    await cacheFactory.validateCache(validNames);
+    await cacheFactory.validateCache(_originalShapes.markers.map((e) => e.icon.data.originalName).toList());
   }
 
   ///return addObjects
