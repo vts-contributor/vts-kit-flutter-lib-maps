@@ -39,9 +39,13 @@ class MarkerIcon {
       MarkerIcon._(BitmapMarkerIconData(name, bitmap));
 
   static MarkerIcon fromWidget(final String name, final Widget widget, {
-    Duration delay = const Duration(milliseconds: 1),
+    Duration delay = const Duration(microseconds: 1),
   }) {
     return  MarkerIcon._(WidgetMarkerIconData(name, widget, delay));
+  }
+  
+  static MarkerIcon scale(final MarkerIcon otherMarker, double scale) {
+    return MarkerIcon._(ScaleMarkerIconData(otherMarker._data, scale));
   }
 
   @override
@@ -151,5 +155,19 @@ class WidgetMarkerIconData extends MarkerIconData<Widget> {
   @override
   Future<Uint8List> initResource(MarkerIconDataProcessor processor) async {
     return await processor.processWidgetMarkerIcon(this);
+  }
+}
+
+class ScaleMarkerIconData extends MarkerIconData<MarkerIconData<dynamic>> {
+  final double scale;
+
+  ScaleMarkerIconData(MarkerIconData<dynamic> original, this.scale) : super(original.name, original);
+  
+  @override
+  String get name => "${super.name}**scale$scale}";
+
+  @override
+  Future<Uint8List> initResource(MarkerIconDataProcessor processor) async{
+    return await processor.processScaleMarkerIcon(this);
   }
 }

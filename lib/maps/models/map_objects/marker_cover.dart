@@ -23,6 +23,7 @@ class MarkerCover extends Marker {
     this.isClustered = false,
     required this.positionMarkerCover,
     super.isCanCluster = true,
+    super.clickScale,
   }) {
     setPosition(position);
   }
@@ -65,6 +66,8 @@ class MarkerCover extends Marker {
     bool? isClusteredParam,
     LatLng? positionMarkerCoverParam,
     bool? isCanClusterParam,
+    bool? isSelectedParam,
+    double? clickScaleParam,
   }) {
     return MarkerCover(
       id: id,
@@ -87,6 +90,7 @@ class MarkerCover extends Marker {
       isClustered: isClusteredParam ?? isClustered,
       positionMarkerCover: positionMarkerCoverParam ?? positionMarkerCover,
       isCanCluster: isCanClusterParam ?? isCanCluster,
+      clickScale: clickScaleParam ?? clickScale,
     );
   }
 
@@ -112,6 +116,7 @@ class MarkerCover extends Marker {
       isClustered: false,
       positionMarkerCover: cluster.positionMarkerCover,
       isCanCluster: cluster.isCanCluster,
+      clickScale: cluster.clickScale,
     );
   }
 }

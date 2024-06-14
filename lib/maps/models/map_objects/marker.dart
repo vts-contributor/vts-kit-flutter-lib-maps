@@ -8,6 +8,7 @@ import 'dart:ui' show Offset;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart'
     show immutable, ValueChanged, VoidCallback;
+import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/models/map_objects/map_object.dart';
 
@@ -189,6 +190,7 @@ class Marker implements MapObject<Marker> {
     this.onDragStart,
     this.onDragEnd,
     this.isCanCluster = true,
+    this.clickScale = Constant.defaultMarkerScale,
   }) : assert((0.0 <= alpha && alpha <= 1.0));
 
   /// Uniquely identifies a [Marker].
@@ -251,6 +253,7 @@ class Marker implements MapObject<Marker> {
   /// Decide whether the marker can form a cluster or not
   final bool isCanCluster;
 
+  final double clickScale;
   /// Creates a new [Marker] object whose values are the same as this instance,
   /// unless overwritten by the specified parameters.
   Marker copyWith({
@@ -269,6 +272,7 @@ class Marker implements MapObject<Marker> {
     ValueChanged<LatLng>? onDragParam,
     ValueChanged<LatLng>? onDragEndParam,
     bool? isCanClusterParam,
+    double? clickScaleParam,
   }) {
     return Marker(
       id: id,
@@ -286,7 +290,8 @@ class Marker implements MapObject<Marker> {
       onDragStart: onDragStartParam ?? onDragStart,
       onDrag: onDragParam ?? onDrag,
       onDragEnd: onDragEndParam ?? onDragEnd,
-      isCanCluster: isCanClusterParam ?? isCanCluster
+      isCanCluster: isCanClusterParam ?? isCanCluster,
+      clickScale: clickScaleParam ?? clickScale,
     );
   }
 
@@ -313,6 +318,7 @@ class Marker implements MapObject<Marker> {
     addIfPresent('rotation', rotation);
     addIfPresent('visible', visible);
     addIfPresent('zIndex', zIndex);
+    addIfPresent('clickScale', clickScale);
     return json;
   }
 
@@ -346,7 +352,7 @@ class Marker implements MapObject<Marker> {
     return 'Marker{markerId: $id, alpha: $alpha, anchor: $anchor, '
         'icon: $icon, infoWindow: $infoWindow, position: $position, rotation: $rotation, '
         'visible: $visible, zIndex: $zIndex, onTap: $onTap, onDragStart: $onDragStart, '
-        'onDrag: $onDrag, onDragEnd: $onDragEnd}';
+        'onDrag: $onDrag, onDragEnd: $onDragEnd, clickScale: $clickScale}';
   }
 
   ggmap.Marker toGoogle(Uint8List markerBitmap) {

@@ -35,6 +35,8 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   late final _InfoWindowManagerImpl _infoWindowManager = _InfoWindowManagerImpl(widget.shapes?.markers, _markerIconDataFactory);
 
+  late final _MarkerOnTapEffectManagerImpl _markerOnTapEffectManager = _MarkerOnTapEffectManagerImpl();
+
   final MarkerIconDataFactory _markerIconDataFactory = MarkerIconDataFactory();
 
   late final _ClusterManagerImpl _clusterManager = _ClusterManagerImpl(
@@ -56,6 +58,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     _initRoutingManager();
     _initInfoWindowManager();
     _initClusterManager();
+    _initMarkerOnTapEffectManager();
   }
 
   @override
@@ -78,6 +81,10 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   void _initRoutingManager() {
     _routingManager.addListener(() => setState(() {}));
     _updateRoutingManager();
+  }
+
+  void _initMarkerOnTapEffectManager() {
+    _markerOnTapEffectManager.addListener(() => setState(() {}));
   }
 
   void _initInfoWindowManager() {
@@ -152,11 +159,11 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         data: widget.data.copyWith(
             initialCameraPosition:
             _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition),
-        shapes: _routingManager.combineShape(
-          widget.data.isUseCluster
-              ? _clusterManager._filterCluster(widget.shapes)
-              : widget.shapes,
-        ),
+        //TODO: refactor to chain responsibilities and nullability of modifyShape method
+        shapes: _markerOnTapEffectManager.modifyShapes(_routingManager.modifyShapes(
+            widget.data.isUseCluster
+                ? _clusterManager._filterCluster(widget.shapes)
+                : widget.shapes)),
         callbacks: (widget.callbacks ?? CoreMapCallbacks()).copyWith(
             onMapCreated: (controller) {
               CoreMapControllerWrapper controllerWrapper = (_controller ??= CoreMapControllerWrapper());

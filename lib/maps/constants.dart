@@ -58,6 +58,9 @@ class Constant {
   ///max zoom level google map
   static const double maxZoomLevelGoogleMap = 20.0;
 
+  ///default scaling for marker icon
+  static const double defaultMarkerScale = 1.0;
+
   static double getMaxZoomLevel(CoreMapType type) {
     switch (type) {
       case CoreMapType.google:

@@ -1,5 +1,6 @@
 import 'package:maps_core/maps.dart';
 
+///ONLY FOR HANDLING CHANGING MAP STYLE - DO NOT PUTTING OTHER LOGIC HERE
 class CoreMapControllerWrapper implements CoreMapController {
   late CoreMapController _innerController;
 

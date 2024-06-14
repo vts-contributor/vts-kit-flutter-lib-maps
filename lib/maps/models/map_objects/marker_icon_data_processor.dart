@@ -12,4 +12,6 @@ abstract class MarkerIconDataProcessor {
   Future<Uint8List> processBitmapMarkerIcon(BitmapMarkerIconData markerIconData);
 
   Future<Uint8List> processWidgetMarkerIcon(WidgetMarkerIconData markerIconData);
+
+  Future<Uint8List> processScaleMarkerIcon(ScaleMarkerIconData markerIconData);
 }

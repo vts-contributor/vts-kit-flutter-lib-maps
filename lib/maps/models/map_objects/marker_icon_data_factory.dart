@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart';
+import 'package:maps_core/maps/extensions/iterable_convert.dart';
 import 'package:maps_core/maps/extensions/utils.dart';
 import 'package:maps_core/maps/models/map_objects/bitmap_cache_factory.dart';
 import 'package:maps_core/maps/models/map_objects/marker_icon.dart';
@@ -83,6 +84,14 @@ class MarkerIconDataFactory implements MarkerIconDataProcessor, BitmapCacheFacto
   Future<Uint8List> processWidgetMarkerIcon(WidgetMarkerIconData markerIconData) async {
     return _getBitmapOrElse(markerIconData.name, orElse: () async {
       return await WidgetConverter().widgetToBitmap(markerIconData.value, delay: markerIconData.delay);
+    });
+  }
+
+  @override
+  Future<Uint8List> processScaleMarkerIcon(ScaleMarkerIconData markerIconData) async {
+    return _getBitmapOrElse(markerIconData.name, orElse: () async {
+      Uint8List bitmap = await markerIconData.value.initResource(this);
+      return bitmap.resizeImage(markerIconData.scale) ?? bitmap;
     });
   }
 

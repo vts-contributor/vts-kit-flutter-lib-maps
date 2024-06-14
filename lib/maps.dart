@@ -13,6 +13,7 @@ import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/models/auto_route.dart';
+import 'package:maps_core/maps/views/managers/core_map_shape_modifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
@@ -42,6 +43,8 @@ part 'maps/views/managers/cluster_manager_internal.dart';
 part 'maps/views/managers/cluster_manager_internal_impl.dart';
 part 'maps/views/managers/cluster_manager.dart';
 part 'maps/views/managers/default_cluster_manager_impl.dart';
+part 'maps/views/managers/marker_on_tap_effect_manager_impl.dart';
+part 'maps/views/managers/marker_on_tap_effect_manager.dart';
 
 part 'maps/controllers/implementations/google_map_controller.dart';
 part 'maps/controllers/implementations/viettel_map_controller.dart';

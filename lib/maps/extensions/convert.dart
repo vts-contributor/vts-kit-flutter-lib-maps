@@ -144,6 +144,7 @@ extension MarkerConvert on Marker {
       zIndex: zIndex,
       positionMarkerCover: position,
       isCanCluster: isCanCluster,
+      clickScale: clickScale,
     );
 
     return markerCover;
