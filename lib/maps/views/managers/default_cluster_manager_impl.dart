@@ -33,7 +33,7 @@ class _DefaultClusterManager implements ClusterManager {
     );
 
     return ClusterData(
-      icon: MarkerIcon.fromWidget('${cluster.id}icon', custom),
+      icon: MarkerIcon.fromWidget('cluster_default_%8594509456804icon@${setAllMarkerOfCluster.length}', custom),
       expandOnTap: true,
     );
   }
