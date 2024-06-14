@@ -5,6 +5,7 @@ import 'package:maps_core/maps.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
 import 'package:maps_core/maps/models/map_objects/bitmap_cache_factory.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
+import 'package:image/image.dart' as img;
 
 extension ListLatLnConvert on List<LatLng> {
   List<ggmap.LatLng> toGoogle() {
@@ -56,15 +57,35 @@ extension SetCircleConvert on Set<Circle> {
   }
 }
 
+extension ScaleImage on Uint8List {
+  Uint8List? resizeImage(double scale) {
+    Uint8List? resizedData;
+    img.Image? image = img.decodeImage(this);
+    if (image != null) {
+      img.Image resized = img.copyResize(image,
+          width: (image.width * scale).toInt(),
+          height: (image.height * scale).toInt());
+      resizedData = img.encodePng(resized);
+    }
+    return resizedData;
+  }
+}
+
 extension SetMarkerConvert on Set<Marker> {
   ///only return markers whose icon data were initialized
-  Set<ggmap.Marker> toGoogle(BitmapCacheFactory cacheFactory) {
+  Set<ggmap.Marker> toGoogle(BitmapCacheFactory cacheFactory, {Function(Marker marker)? onTap}) {
     Set<ggmap.Marker> ggMarkers = {};
 
     for (final marker in this) {
       Uint8List? bitmap = cacheFactory.getCachedBitmap(marker.icon.data.name);
+      if (marker.isSelected && marker.clickScale > 0.0  && bitmap != null) {
+        bitmap = bitmap.resizeImage(marker.clickScale);
+      }
       if (bitmap != null) {
-        ggMarkers.add(marker.toGoogle(bitmap));
+        final ggMarker = marker.toGoogle(bitmap, onTap: (){
+          onTap?.call(marker);
+        });
+        ggMarkers.add(ggMarker);
       }
     }
 

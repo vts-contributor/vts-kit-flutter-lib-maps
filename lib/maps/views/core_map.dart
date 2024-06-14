@@ -203,12 +203,47 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     required CoreMapShapes shapes,
     CoreMapCallbacks? callbacks,
   }) {
+    // if(_controller?.selectedMarkerId != null || _controller?.previousSelectedMarkerId != null) {
+    //   Marker? clickedMarker, currentClickedMarker;
+    //   for (Marker marker in shapes.markers) {
+    //     if (_controller?.previousSelectedMarkerId != null &&
+    //         marker.id.value == _controller?.previousSelectedMarkerId) {
+    //       currentClickedMarker = marker;
+    //     }
+    //     if (_controller?.selectedMarkerId != null && marker.id.value == _controller?.selectedMarkerId ) {
+    //       clickedMarker = marker;
+    //     }
+    //     if (clickedMarker != null && currentClickedMarker != null) {
+    //       break;
+    //     }
+    //   }
+    //   if (currentClickedMarker?.id.value != clickedMarker?.id.value) {
+    //     if (currentClickedMarker != null) {
+    //       Marker unselectedMarker = currentClickedMarker.copyWith(isSelectedParam: false);
+    //       shapes.markers.remove(currentClickedMarker);
+    //       shapes.markers.add(unselectedMarker);
+    //     }
+    //     if (clickedMarker != null) {
+    //       Marker selectedMarker = clickedMarker.copyWith(isSelectedParam: true);
+    //       shapes.markers.remove(clickedMarker);
+    //       shapes.markers.add(selectedMarker);
+    //     }
+    //   }
+    // }
+    final highlightSelectedMarkerSet = _controller?.detectSelectedMarker(shapes.markers);
+    // if (highlightSelectedMarkerSet != null) {
+    //   shapes = shapes.copyWith(markers: highlightSelectedMarkerSet);
+    // }
+    final shapesCallback = CoreMapShapesCallback(onMarkerTap: (marker){
+      _controller?.onClickMaker(marker);
+    });
     switch (type) {
       case CoreMapType.google:
         return _CoreGoogleMap(
           data: data,
           callbacks: callbacks,
           shapes: shapes,
+          shapesCallback: shapesCallback,
           markerIconDataFactory: _markerIconDataFactory,
           infoWindowManager: _infoWindowManager,
         );

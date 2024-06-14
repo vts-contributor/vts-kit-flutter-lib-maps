@@ -189,6 +189,8 @@ class Marker implements MapObject<Marker> {
     this.onDragStart,
     this.onDragEnd,
     this.isCanCluster = true,
+    this.isSelected = false,
+    this.clickScale = -1.0,
   }) : assert((0.0 <= alpha && alpha <= 1.0));
 
   /// Uniquely identifies a [Marker].
@@ -251,6 +253,9 @@ class Marker implements MapObject<Marker> {
   /// Decide whether the marker can form a cluster or not
   final bool isCanCluster;
 
+  final bool isSelected;
+
+  final double clickScale;
   /// Creates a new [Marker] object whose values are the same as this instance,
   /// unless overwritten by the specified parameters.
   Marker copyWith({
@@ -269,6 +274,8 @@ class Marker implements MapObject<Marker> {
     ValueChanged<LatLng>? onDragParam,
     ValueChanged<LatLng>? onDragEndParam,
     bool? isCanClusterParam,
+    bool? isSelectedParam,
+    double? clickScaleParam,
   }) {
     return Marker(
       id: id,
@@ -286,7 +293,9 @@ class Marker implements MapObject<Marker> {
       onDragStart: onDragStartParam ?? onDragStart,
       onDrag: onDragParam ?? onDrag,
       onDragEnd: onDragEndParam ?? onDragEnd,
-      isCanCluster: isCanClusterParam ?? isCanCluster
+      isCanCluster: isCanClusterParam ?? isCanCluster,
+      isSelected: isSelectedParam ?? isSelected,
+      clickScale: clickScaleParam ?? clickScale,
     );
   }
 
@@ -313,6 +322,8 @@ class Marker implements MapObject<Marker> {
     addIfPresent('rotation', rotation);
     addIfPresent('visible', visible);
     addIfPresent('zIndex', zIndex);
+    addIfPresent('isSelected', isSelected);
+    addIfPresent('clickScale', clickScale);
     return json;
   }
 
@@ -346,10 +357,10 @@ class Marker implements MapObject<Marker> {
     return 'Marker{markerId: $id, alpha: $alpha, anchor: $anchor, '
         'icon: $icon, infoWindow: $infoWindow, position: $position, rotation: $rotation, '
         'visible: $visible, zIndex: $zIndex, onTap: $onTap, onDragStart: $onDragStart, '
-        'onDrag: $onDrag, onDragEnd: $onDragEnd}';
+        'onDrag: $onDrag, onDragEnd: $onDragEnd, isSelected: $isSelected, clickScale: $clickScale}';
   }
 
-  ggmap.Marker toGoogle(Uint8List markerBitmap) {
+  ggmap.Marker toGoogle(Uint8List markerBitmap, {Function? onTap}) {
     ggmap.BitmapDescriptor markerDescriptor;
 
     markerDescriptor = ggmap.BitmapDescriptor.fromBytes(markerBitmap);
@@ -366,7 +377,10 @@ class Marker implements MapObject<Marker> {
       rotation: rotation,
       visible: visible,
       zIndex: zIndex.toDouble(),
-      onTap: onTap,
+      onTap: (){
+        onTap?.call();
+        this.onTap?.call();
+      },
       onDrag: (ggmap.LatLng value) => onDrag?.call(value.toCore()),
       onDragStart: (ggmap.LatLng value) => onDragStart?.call(value.toCore()),
       onDragEnd: (ggmap.LatLng value) => onDragEnd?.call(value.toCore()),

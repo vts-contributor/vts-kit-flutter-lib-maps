@@ -75,4 +75,9 @@ class _GoogleMapController extends BaseCoreMapController
 
   @override
   void onMarkerTapSetInfoWindow(MarkerId markerId) => infoWindowManager.onMarkerTapSetInfoWindow(markerId);
+
+  @override
+  void notifyChange() {
+    notifyListeners();
+  }
 }

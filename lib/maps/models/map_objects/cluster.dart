@@ -24,6 +24,8 @@ class Cluster extends MarkerCover {
     required super.positionMarkerCover,
     required this.markerSet,
     super.isCanCluster = true,
+    super.isSelected = false,
+    super.clickScale,
   });
 
   // set marker of cluster
@@ -51,6 +53,8 @@ class Cluster extends MarkerCover {
     LatLng? positionMarkerCoverParam,
     Set<MarkerCover>? markerSetParam,
     bool? isCanClusterParam,
+    bool? isSelectedParam,
+    double? clickScaleParam,
   }) {
     return Cluster(
       id: id,
@@ -74,6 +78,8 @@ class Cluster extends MarkerCover {
       positionMarkerCover: positionMarkerCoverParam ?? positionMarkerCover,
       markerSet: markerSetParam ?? markerSet,
       isCanCluster: isCanClusterParam ?? isCanCluster,
+      isSelected: isSelectedParam ?? isSelected,
+      clickScale: clickScaleParam ?? clickScale,
     );
   }
 
@@ -105,6 +111,8 @@ class Cluster extends MarkerCover {
       positionMarkerCover: positionMarkerCover,
       markerSet: markerSet,
       isCanCluster: isCanCluster,
+      isSelected: isSelected,
+      clickScale: clickScale,
     );
   }
 }

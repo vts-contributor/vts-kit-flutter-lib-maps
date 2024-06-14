@@ -54,3 +54,9 @@ class CoreMapShapes {
     return {...polygons, ...polylines, ...circles, ...markers};
   }
 }
+class CoreMapShapesCallback {
+  final void Function(Marker marker)? onMarkerTap;
+
+  CoreMapShapesCallback({required this.onMarkerTap});
+
+}

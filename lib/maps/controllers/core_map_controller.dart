@@ -29,6 +29,8 @@ abstract class CoreMapController implements InfoWindowManager {
   ///
   ///If you can, please use [animateCamera] with duration = 1 instead.
   Future<void> moveCamera(CameraUpdate cameraUpdate);
+
+  void notifyChange();
 }
 
 

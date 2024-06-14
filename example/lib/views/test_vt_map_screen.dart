@@ -45,6 +45,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           SizedBox(
             height: 500,
             child: VTMap(
+              accessToken: "49013166841fe36d7fa7f395fce4a663",
               initialCameraPosition:
                   CameraPosition(target: firstPoint, zoom: 7),
               onMapCreated: (controller) {

@@ -6,6 +6,8 @@ class _CoreGoogleMap extends StatefulWidget {
 
   final CoreMapShapes shapes;
 
+  final CoreMapShapesCallback? shapesCallback;
+
   final CoreMapCallbacks? callbacks;
 
   final MarkerIconDataFactory markerIconDataFactory;
@@ -16,6 +18,7 @@ class _CoreGoogleMap extends StatefulWidget {
     required this.data,
     this.callbacks,
     required this.shapes,
+    this.shapesCallback,
     required this.markerIconDataFactory,
     required this.infoWindowManager,
   }) : super(key: key);
@@ -82,7 +85,9 @@ class _CoreGoogleMapState extends State<_CoreGoogleMap> {
       polygons: widget.shapes.polygons.toGoogle(),
       polylines:  widget.shapes.polylines.toGoogle(),
       circles:  widget.shapes.circles.toGoogle(),
-      markers:  widget.shapes.markers.toGoogle(widget.markerIconDataFactory),
+      markers:  widget.shapes.markers.toGoogle(widget.markerIconDataFactory, onTap: (marker){
+        widget.shapesCallback?.onMarkerTap?.call(marker);
+      }),
       onCameraMove: (position) {
         _controller?.onCameraMove(position);
       },
