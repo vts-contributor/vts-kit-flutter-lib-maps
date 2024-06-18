@@ -5,8 +5,14 @@ import 'package:maps_core/maps.dart';
 
 extension ZoomHelperExtension on CoreMapController {
   ///animate camera to center of these points with zoom level to see all of these points
-  Future<void> animateCameraToCenterOfPoints(List<LatLng> points, double padding, {int? duration}) async {
+  Future<void> animateCameraToCenterOfPoints(List<LatLng> points, double padding, {int? duration, double zoomForOnePoint = 16}) async {
     if (points.isEmpty) return;
+
+    if (points.length == 1) {
+      animateCamera(CameraUpdate.newLatLngZoom(points.first, zoomForOnePoint), duration: duration);
+      return;
+    }
+
     ViewPort viewPort = points.getBounds();
     LatLng? southwest = viewPort.southwest;
     LatLng? northeast = viewPort.northeast;
