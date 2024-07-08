@@ -396,7 +396,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
             borderRadius: buttonData?.borderRadius,
             border: Border.fromBorderSide(buttonData?.borderSide ?? BorderSide.none),
           ),
-          child: buttonData?.icon ??
+          child: buttonData?.getIcon() ??
               Icon(
                 icon,
                 color: buttonIconColor ?? Constant.defaultButtonIconColor,
@@ -407,6 +407,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
   }
 
   Widget _buildFullScreenButton(BuildContext context) {
+    (widget.data.fullScreenButtonData as CoreMapButtonCustomizeTwoStateData?)?.isFirstState = !_isFullScreen;
     return _buildButton(context,
       onTap: () {
         bool wasFullScreen = _isFullScreen;

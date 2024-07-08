@@ -286,4 +286,34 @@ class CoreMapButtonCustomizeData {
   final BorderSide? borderSide;
   final Widget? icon;
   final BorderRadius? borderRadius;
+
+  Widget? getIcon() {
+    return icon;
+  }
+}
+
+class CoreMapButtonCustomizeTwoStateData extends CoreMapButtonCustomizeData {
+  final Widget iconSecond;
+  bool isFirstState = true;
+
+  CoreMapButtonCustomizeTwoStateData({
+    double? width,
+    double? height,
+    Color? color,
+    BorderSide? borderSide,
+    Widget? icon,
+    required this.iconSecond,
+    BorderRadius? borderRadius,
+  }) : super(
+          width: width,
+          height: height,
+          color: color,
+          borderSide: borderSide,
+          borderRadius: borderRadius,
+        );
+
+  @override
+  Widget? getIcon() {
+    return isFirstState ? icon : iconSecond;
+  }
 }
