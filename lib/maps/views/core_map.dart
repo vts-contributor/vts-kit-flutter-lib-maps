@@ -428,6 +428,8 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
         } else {
           _openMapFullScreen(context);
         }
+
+        widget.callbacks?.onFullScreenCallback?.call(_isFullScreen);
       },
       buttonData: widget.data.fullScreenButtonData,
       buttonSize: Constant.fullScreenButtonSize,

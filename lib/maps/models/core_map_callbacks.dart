@@ -16,6 +16,7 @@ class CoreMapCallbacks {
     this.onLocationPermissionDenied,
     this.onLocationPermissionDeniedForever,
     this.onRoutingManagerReady,
+    this.onFullScreenCallback,
   });
 
   ///Map is ready to be used
@@ -51,6 +52,9 @@ class CoreMapCallbacks {
   ///routing manager is ready to be used.
   final void Function(RoutingManager)? onRoutingManagerReady;
 
+  ///callback when fullscreen or not
+  final void Function(bool)? onFullScreenCallback;
+
   CoreMapCallbacks copyWith({
     final void Function(CoreMapController controller)? onMapCreated,
     final void Function(CameraPosition position)? onCameraMove,
@@ -63,6 +67,7 @@ class CoreMapCallbacks {
     final Future<bool> Function()? onLocationPermissionDenied,
     final Future<bool> Function()? onLocationPermissionDeniedForever,
     final void Function(RoutingManager)? onRoutingManagerReady,
+    final void Function(bool)? onFullScreenCallback,
   }) {
     return CoreMapCallbacks(
       onMapCreated: onMapCreated ?? this.onMapCreated,
@@ -76,6 +81,7 @@ class CoreMapCallbacks {
       onLocationPermissionDenied: onLocationPermissionDenied ?? this.onLocationPermissionDenied,
       onLocationPermissionDeniedForever: onLocationPermissionDeniedForever ?? this.onLocationPermissionDeniedForever,
       onRoutingManagerReady: onRoutingManagerReady ?? this.onRoutingManagerReady,
+      onFullScreenCallback: onFullScreenCallback ?? this.onFullScreenCallback,
     );
   }
 }
