@@ -49,6 +49,8 @@ void main() {
       expect(JointType.bevel.toViettel(), "bevel");
       expect(JointType.mitered.toViettel(), "mitered");
       expect(JointType.round.toViettel(), "round");
+
+      print(double.tryParse("   "));
     });
   });
 }
