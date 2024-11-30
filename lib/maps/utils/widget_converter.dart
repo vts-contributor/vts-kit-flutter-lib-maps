@@ -84,12 +84,13 @@ class WidgetConverter {
 
     assert(logicalSize.aspectRatio.toStringAsPrecision(5) ==
         imageSize.aspectRatio.toStringAsPrecision(5)); // Adapted (toPrecision was not available)
-
+    final view = platformView.first;
     final RenderView renderView = RenderView(
-      view: platformView.first,
+      view: view,
       child: RenderPositionedBox(alignment: Alignment.center, child: repaintBoundary),
       configuration: ViewConfiguration(
-        size: logicalSize,
+        physicalConstraints: BoxConstraints.tight(logicalSize) * view.devicePixelRatio,
+        logicalConstraints: BoxConstraints.tight(logicalSize),
         devicePixelRatio: pixelRatio ?? 1.0,
       ),
     );
