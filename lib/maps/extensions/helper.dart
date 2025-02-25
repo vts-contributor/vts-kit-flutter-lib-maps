@@ -5,7 +5,8 @@ import 'package:maps_core/maps.dart';
 
 extension ZoomHelperExtension on CoreMapController {
   ///animate camera to center of these points with zoom level to see all of these points
-  Future<void> animateCameraToCenterOfPoints(List<LatLng> points, double padding, {int? duration, double zoomForOnePoint = 16}) async {
+  Future<void> animateCameraToCenterOfPoints(List<LatLng> points, double padding,
+      {int? duration, double zoomForOnePoint = 16}) async {
     if (points.isEmpty) return;
 
     if (points.length == 1) {
@@ -17,14 +18,17 @@ extension ZoomHelperExtension on CoreMapController {
     LatLng? southwest = viewPort.southwest;
     LatLng? northeast = viewPort.northeast;
     if (southwest != null && northeast != null) {
-      animateCamera(CameraUpdate.newLatLngBounds(LatLngBounds(
-        northeast: northeast,
-        southwest: southwest,
-      ), padding), duration: duration);
+      animateCamera(
+          CameraUpdate.newLatLngBounds(
+              LatLngBounds(
+                northeast: northeast,
+                southwest: southwest,
+              ),
+              padding),
+          duration: duration);
     }
   }
 }
-
 
 class _RADII {
   int km;
@@ -59,16 +63,14 @@ class _HaversineDistance {
     }
   }
 
-  double haversine(
-      LatLng startCoordinates, LatLng endCoordinates, _Unit unit) {
+  double haversine(LatLng startCoordinates, LatLng endCoordinates, _Unit unit) {
     final R = getUnit(unit);
     final dLat = toRad(endCoordinates.latitude - startCoordinates.latitude);
     final dLon = toRad(endCoordinates.longitude - startCoordinates.longitude);
     final lat1 = toRad(startCoordinates.latitude);
     final lat2 = toRad(endCoordinates.latitude);
 
-    final a = sin(dLat / 2) * sin(dLat / 2) +
-        sin(dLon / 2) * sin(dLon / 2) * cos(lat1) * cos(lat2);
+    final a = sin(dLat / 2) * sin(dLat / 2) + sin(dLon / 2) * sin(dLon / 2) * cos(lat1) * cos(lat2);
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
     return R * c;

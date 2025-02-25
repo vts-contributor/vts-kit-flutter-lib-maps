@@ -45,16 +45,14 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
           SizedBox(
             height: 500,
             child: VTMap(
-              accessToken: "",
-              initialCameraPosition:
-                  CameraPosition(target: firstPoint, zoom: 7),
+              accessToken: "ad903093bbefba04624d5e742e155e30",
+              initialCameraPosition: CameraPosition(target: firstPoint, zoom: 7),
               onMapCreated: (controller) {
                 this.controller = controller;
               },
               onStyleLoadedCallback: () async {
                 mt.Marker marker1 = marker();
-                Uint8List bitmap = await marker1.icon.data
-                    .initResource(MarkerIconDataFactory());
+                Uint8List bitmap = await marker1.icon.data.initResource(MarkerIconDataFactory());
                 controller?.addImage(marker1.icon.data.name, bitmap);
                 controller?.addSymbol(marker1.toSymbolOptions());
                 controller?.onSymbolTapped.add((argument) {
@@ -73,8 +71,7 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
                     "onCameraMovingStarted: ${controller?.cameraPosition?.target.toString()}");
               },
               onCameraIdle: () {
-                Log.d("VTMAP",
-                    "onCameraIdle: ${controller?.cameraPosition?.target.toString()}");
+                Log.d("VTMAP", "onCameraIdle: ${controller?.cameraPosition?.target.toString()}");
               },
               onCameraTrackingDismissed: () {
                 Log.d("VTMAP",
@@ -102,13 +99,9 @@ class _TestVTMapScreenState extends State<TestVTMapScreen> {
     LatLng secondPoint = const LatLng(10.875063025053082, 106.62863270883156);
 
     final stop1 = WayPoint(
-        name: "Way Point 2",
-        latitude: secondPoint.latitude,
-        longitude: secondPoint.longitude);
+        name: "Way Point 2", latitude: secondPoint.latitude, longitude: secondPoint.longitude);
     final origin = WayPoint(
-        name: "Way Point 1",
-        latitude: firstPoint.latitude,
-        longitude: firstPoint.longitude);
+        name: "Way Point 1", latitude: firstPoint.latitude, longitude: firstPoint.longitude);
 
     wayPoints.add(origin);
     wayPoints.add(stop1);

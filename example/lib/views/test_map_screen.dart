@@ -53,16 +53,16 @@ class _TestMapScreenState extends State<TestMapScreen> {
             icon: const Icon(Icons.swap_horiz),
             onPressed: () async {
               setState(() {
-                _type = _type == CoreMapType.viettel
-                    ? CoreMapType.google
-                    : CoreMapType.viettel;
+                _type = _type == CoreMapType.viettel ? CoreMapType.google : CoreMapType.viettel;
               });
             },
           ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
-                  _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(10.867235213747376, 106.63784199919601), 20), duration: 1);
+              _controller?.animateCamera(
+                  CameraUpdate.newLatLngZoom(LatLng(10.867235213747376, 106.63784199919601), 20),
+                  duration: 1);
             },
           ),
         ],
@@ -71,20 +71,21 @@ class _TestMapScreenState extends State<TestMapScreen> {
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            accessToken: "",
+            accessToken: "ad903093bbefba04624d5e742e155e30",
             markerAllowOverlap: true,
-            initialCameraPosition: CameraPosition(
-                target: const LatLng(9.85419858085518, 105.49970250115466),
-                zoom: 7),
+            initialCameraPosition:
+                CameraPosition(target: const LatLng(9.85419858085518, 105.49970250115466), zoom: 7),
             compassEnabled: true,
             myLocationEnabled: true,
             zoomInButtonData: CoreMapButtonCustomizeData(
-                icon: Icon(Icons.reddit, ),
-                color: Colors.yellow.withOpacity(0.4),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(4),
-                ),
+              icon: Icon(
+                Icons.reddit,
+              ),
+              color: Colors.yellow.withOpacity(0.4),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(4),
+              ),
             ),
             zoomOutButtonData: CoreMapButtonCustomizeData(
               icon: Icon(Icons.bluetooth),
@@ -112,14 +113,18 @@ class _TestMapScreenState extends State<TestMapScreen> {
             },
             onLongPress: (latLng) {
               Log.d("onLongPress", latLng.toString());
-            }, onCameraIdle: () {
-            // Log.d("CameraIdle", "camera idle");
-          },
+            },
+            onCameraIdle: () {
+              // Log.d("CameraIdle", "camera idle");
+            },
+            onUserLocationUpdated: (userLocation) {
+              debugPrint("$userLocation");
+            },
           ),
           shapes: CoreMapShapes(
             polygons: {polygon1()},
             circles: {circle()},
-            markers: showMarker? {marker(), marker2(), marker3()}: {},
+            markers: showMarker ? {marker(), marker2(), marker3()} : {},
             polylines: {polyline(), polyline2()},
           ),
         ),

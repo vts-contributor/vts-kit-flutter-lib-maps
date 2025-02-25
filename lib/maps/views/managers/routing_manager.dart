@@ -4,9 +4,7 @@ import 'package:maps_core/maps/models/auto_route.dart';
 import 'package:maps_core/maps/views/managers/core_map_shape_modifier.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
-
 abstract class RoutingManager implements CoreMapShapeModifier {
-
   static const double moveCameraPadding = 10;
 
   static const String logTag = "ROUTING MANAGER";
@@ -17,7 +15,7 @@ abstract class RoutingManager implements CoreMapShapeModifier {
   ///options
   Future<void> buildRoutes(RoutingOptions options);
 
-  ///add a route go that will go through waypoints 
+  ///add a route go that will go through waypoints
   Future<void> addRoute(RouteConfig routeConfig);
 
   ///add multiple routes
@@ -28,6 +26,10 @@ abstract class RoutingManager implements CoreMapShapeModifier {
 
   ///remove all routes with [id]
   Future<void> removeRoutes(String id);
+
+  /// update the current route from the location change
+  /// by checking if the current location is on the route or not
+  Future<void> updateRoute({required String id, required LatLng currentLocation});
 
   ///start navigation with the selected route
   ///
@@ -42,13 +44,14 @@ abstract class RoutingManager implements CoreMapShapeModifier {
 
   ///select a route with id,
   ///have to buildDirections first or else this always return false
-  bool selectRoute(String id, {
+  bool selectRoute(
+    String id, {
     bool zoomToRoute = true,
   });
 
   // set start location of a route with icon
   void setStartLocation(LatLng position, [Widget? icon]);
-  
+
   // set end location of a route with icon
   void setEndLocation(LatLng position, [Widget? icon]);
 
@@ -72,7 +75,6 @@ abstract class RoutingManager implements CoreMapShapeModifier {
 }
 
 class RoutingOptions {
-
   /// The initial Latitude of the Map View
   final double? initialLatitude;
 
@@ -140,8 +142,8 @@ class RoutingOptions {
 
   final TravelMode mode;
 
-  RoutingOptions(this.apiKey, {
-    required this.points,
+  RoutingOptions(this.apiKey,
+      {required this.points,
       this.alternatives = false,
       this.mode = TravelMode.driving,
       this.initialLatitude,
@@ -161,10 +163,8 @@ class RoutingOptions {
       this.mapStyleUrlNight,
       this.enableFreeDriveMode,
       this.animateBuildRoute,
-      this.padding =
-          const EdgeInsets.only(left: 50, top: 100, right: 50, bottom: 100),
-      this.startIndex = 0
-  });
+      this.padding = const EdgeInsets.only(left: 50, top: 100, right: 50, bottom: 100),
+      this.startIndex = 0});
 
   vt.VTMapOptions toViettelMapOptions() {
     return vt.VTMapOptions(
@@ -188,8 +188,11 @@ class RoutingOptions {
       simulateRoute: simulateRoute,
     );
   }
+
   List<vt.WayPoint> getViettelWaypoints() {
-    return points.map((e) => vt.WayPoint(latitude: e.latitude, longitude: e.longitude, name: e.toString())).toList();
+    return points
+        .map((e) => vt.WayPoint(latitude: e.latitude, longitude: e.longitude, name: e.toString()))
+        .toList();
   }
 }
 

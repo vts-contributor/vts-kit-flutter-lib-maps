@@ -101,21 +101,22 @@ class _LocationManager extends ChangeNotifier {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     LocationPermission permissionStatus = await Geolocator.checkPermission();
 
-    return (permissionStatus == LocationPermission.always
-        || permissionStatus == LocationPermission.whileInUse) && serviceEnabled;
+    return (permissionStatus == LocationPermission.always ||
+            permissionStatus == LocationPermission.whileInUse) &&
+        serviceEnabled;
   }
 
   void _startLocationListener() {
     _locationStreamSubscription ??= Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        distanceFilter: 10,
-      )
-    ).listen((event) {
-        // Log.d(logTag, "onLocationChanged ${event.latitude} ${event.longitude}");
-        _updateUserLocation(event);
-        Log.e(logTag, "update user location");
-        _onUserLocationUpdated?.call(event);
-      })..onError((object, stack) {
+        locationSettings: const LocationSettings(
+      distanceFilter: 0,
+    )).listen((event) {
+      // Log.d(logTag, "onLocationChanged ${event.latitude} ${event.longitude}");
+      _updateUserLocation(event);
+      Log.e(logTag, "update user location");
+      _onUserLocationUpdated?.call(event);
+    })
+      ..onError((object, stack) {
         Log.e(logTag, "listen to stream error");
       });
   }

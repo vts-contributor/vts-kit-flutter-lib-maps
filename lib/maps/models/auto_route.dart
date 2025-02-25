@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:maps_core/maps.dart';
 
 class RouteConfig {
-
   ///Passing the same id will connect first point of this config with last point of the route with same id
   ///Read other fields documment
   final String id;
@@ -40,7 +39,9 @@ class RouteConfig {
   ///zoom on tap. This does not affect onRouteTapListener
   final bool selectOnTap;
 
-  RouteConfig(this.id, this.waypoints, {
+  RouteConfig(
+    this.id,
+    this.waypoints, {
     this.routeType = RouteType.auto,
     this.color,
     this.width,
@@ -61,7 +62,9 @@ class RouteConfig {
     int? zIndex,
     bool? selectOnTap,
   }) {
-    return RouteConfig(id ?? this.id, waypoints ?? this.waypoints,
+    return RouteConfig(
+      id ?? this.id,
+      waypoints ?? this.waypoints,
       routeType: routeType ?? this.routeType,
       color: color ?? this.color,
       width: width ?? this.width,
@@ -79,17 +82,20 @@ enum RouteType {
   line,
 }
 
-enum RouteTravelMode {
-  driving,
-  bycycling,
-  walking
-}
+enum RouteTravelMode { driving, bycycling, walking }
 
 class RouteInfo {
   final String id;
   final List<LatLng>? waypoints;
+
   ///total distance (Kilometers)
   final double? totalDistance;
+  final double? totalDuration;
 
-  RouteInfo(this.id, this.waypoints, this.totalDistance);
+  RouteInfo(
+    this.id,
+    this.waypoints,
+    this.totalDistance,
+    this.totalDuration,
+  );
 }

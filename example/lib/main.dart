@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:map_core_example/view_models/routing_view_model.dart';
 import 'package:map_core_example/views/test_google_map_screen.dart';
 import 'package:map_core_example/views/test_map_screen.dart';
+import 'package:map_core_example/views/test_navigation_screen.dart';
 import 'package:map_core_example/views/test_routing_screen.dart';
 import 'package:map_core_example/views/test_shared_marker.dart';
 import 'package:map_core_example/views/test_vt_map_screen.dart';
@@ -35,10 +36,11 @@ class MyApp extends StatelessWidget {
         TestGoogleMapScreen.routeName: (_) => const TestGoogleMapScreen(),
         TestVTMapScreen.routeName: (_) => const TestVTMapScreen(),
         TestRoutingScreen.routeName: (_) => ChangeNotifierProvider(
-          create: (_) => RoutingViewModel(MapsAPIServiceImpl(key: "")),
-          child: const TestRoutingScreen(),
-        ),
-        TestSharedMarkerScreen.routeName:(context) => const TestSharedMarkerScreen()
+              create: (_) => RoutingViewModel(MapsAPIServiceImpl(key: "")),
+              child: const TestRoutingScreen(),
+            ),
+        TestSharedMarkerScreen.routeName: (context) => const TestSharedMarkerScreen(),
+        TestNavigationScreen.routeName: (context) => const TestNavigationScreen(),
       },
     );
   }
@@ -122,15 +124,20 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => Navigator.pushNamed(context, TestVTMapScreen.routeName),
               child: const Text("Test vt map"),
             ),
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestRoutingScreen.routeName),
               child: const Text("Test routing map"),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.pushNamed(
-                  context, TestSharedMarkerScreen.routeName),
+              onPressed: () => Navigator.pushNamed(context, TestSharedMarkerScreen.routeName),
               child: const Text('Test shared marker'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, TestNavigationScreen.routeName),
+              child: const Text('Test navigation'),
             ),
           ],
         ),

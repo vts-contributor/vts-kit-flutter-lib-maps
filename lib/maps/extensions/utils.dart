@@ -15,7 +15,6 @@ import '../models/network/token.dart';
 import '../models/route.dart';
 import '../models/viewport.dart';
 
-
 typedef LetCallback<T, R> = R Function(T it);
 typedef FutureLetCallback<T, R> = Future<R> Function(T it);
 
@@ -30,6 +29,7 @@ extension Let<T, R> on T {
 }
 
 typedef TakeIfCallback<T> = bool Function(T it);
+
 extension TakeIf<T> on T {
   T? takeIf(TakeIfCallback<T> callback) {
     if (callback(this)) {
@@ -177,7 +177,6 @@ extension RootBundleImage on AssetBundle {
 
 extension DioImageDownload on Dio {
   Future<Uint8List> downloadImageToBitmap(String url) async {
-
     final response = await get<List<int>>(
       url,
       options: Options(responseType: ResponseType.bytes), // Set the response type to `stream`.
@@ -208,7 +207,6 @@ extension ConstrictZoomLevel on double {
 }
 
 extension CompareDouble on double {
-
   /// The parameter [precision] must be an integer satisfying:
   /// `0 <= fractionDigits <= 20`. If this is not satisfied, it will just return
   /// double.compareTo
@@ -247,6 +245,13 @@ extension RouteLegExtension on List<RouteLeg> {
     //error value detected in distances list, return null
     if (distances.contains(null)) return null;
     return distances.whereNotNull().sum;
+  }
+
+  double? getDuration() {
+    Iterable<double?> duration = map((e) => e.duration?.value);
+    //error value detected in duration list, return null
+    // if (duration.contains(null)) return null;
+    return duration.whereNotNull().sum;
   }
 }
 
