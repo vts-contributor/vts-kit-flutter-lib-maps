@@ -77,6 +77,7 @@ class MapRoute {
     List<String>? warning,
     List<String>? waypointOrder,
     List<RouteLeg>? legs,
+    RouteConfig? config,
   }) {
     return MapRoute(
       id: id,
@@ -87,6 +88,7 @@ class MapRoute {
       warning: warning ?? this.warning,
       waypointOrder: waypointOrder ?? this.waypointOrder,
       legs: legs ?? this.legs,
+      config: config ?? this.config,
     );
   }
 }

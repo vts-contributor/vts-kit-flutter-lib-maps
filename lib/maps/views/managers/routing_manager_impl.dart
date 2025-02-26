@@ -619,13 +619,12 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
             final points = route.pointsFromLegs;
             points?.removeRange(0, isOnRouteIndex);
             route = route.copyWith(points: points);
-            _routes?[0] = route;
+          }
+          int? selectedRouteIndex = _routes?.indexWhere((element) => element.id == id);
+          if (selectedRouteIndex != null && selectedRouteIndex != -1) {
+            _updateMapRoute(route, selectedRouteIndex);
           }
           notifyListeners();
-        } else {
-          final temp = route;
-          removeRoutes(id);
-          // addRoute(temp);
         }
       }
     }
@@ -646,6 +645,11 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       if (_isOnSegment(location, waypoints[i], waypoints[i + 1])) return i;
     }
     return -1;
+  }
+
+  void _updateMapRoute(MapRoute route, int index) {
+    _routes?[index] = route;
+    notifyListeners();
   }
 }
 
