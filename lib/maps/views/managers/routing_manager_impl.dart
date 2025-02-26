@@ -613,19 +613,40 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         if (isOnRouteIndex != -1) {
           debugPrint("aaaaa: $isOnRouteIndex");
           // rebuild the route line
+          int removedIndex = isOnRouteIndex;
+          // if (removedIndex > 1) {
+          //   removedIndex = isOnRouteIndex + 2;
+          // }
           if (route.points?.isNotEmpty == true) {
-            route.points?.removeRange(0, isOnRouteIndex);
+            route.points?.removeRange(0, removedIndex);
           } else {
             final points = route.pointsFromLegs;
-            points?.removeRange(0, isOnRouteIndex);
+            points?.removeRange(0, removedIndex);
             route = route.copyWith(points: points);
           }
           int? selectedRouteIndex = _routes?.indexWhere((element) => element.id == id);
           if (selectedRouteIndex != null && selectedRouteIndex != -1) {
             _updateMapRoute(route, selectedRouteIndex);
           }
-          notifyListeners();
+        } else {
+          final currentWaypoint = route.config?.waypoints;
+          if (currentWaypoint != null && currentWaypoint.isNotEmpty) {
+            final destination = route.config?.waypoints.last;
+            if (destination != null) {
+              route = route.copyWith(
+                config: route.config?.copyWith(
+                  waypoints: [currentLocation, destination],
+                ),
+              );
+            }
+            final config = route.config;
+            if (config != null) {
+              await removeRoutes(id);
+              await addRoute(config);
+            }
+          }
         }
+        notifyListeners();
       }
     }
   }
@@ -634,7 +655,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     final distanceWaypoint = point1.getDistanceFrom(point2);
     final distanceFromStart = currentLocation.getDistanceFrom(point1);
     final distanceFromEnd = currentLocation.getDistanceFrom(point2);
-    double tolerance = 50; // acceptable error value
+    double tolerance = 10; // acceptable error value
     final diff = (distanceFromStart + distanceFromEnd - distanceWaypoint).abs();
 
     return diff < tolerance;
@@ -642,7 +663,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   int _isOnRoute(List<LatLng> waypoints, LatLng location) {
     for (int i = 0; i < waypoints.length - 1; i++) {
-      if (_isOnSegment(location, waypoints[i], waypoints[i + 1])) return i;
+      if (_isOnSegment(location, waypoints[i], waypoints[i + 1])) return i + 1;
     }
     return -1;
   }
