@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/controllers/controllers.dart';
-import 'package:maps_core/maps/models/models.dart';
+import 'package:geolocator/geolocator.dart';
 
 class TestNavigationScreen extends StatefulWidget {
   const TestNavigationScreen({Key? key}) : super(key: key);
@@ -26,7 +25,7 @@ class _TestNavigationScreenState extends State<TestNavigationScreen> {
         title: const Text("Test navigation"),
       ),
       body: CoreMap(
-        type: CoreMapType.viettel,
+        type: CoreMapType.google,
         data: CoreMapData(
           accessToken: "ad903093bbefba04624d5e742e155e30",
           initialCameraPosition: CameraPosition(target: start, zoom: 15),
@@ -44,6 +43,9 @@ class _TestNavigationScreenState extends State<TestNavigationScreen> {
           onMapCreated: (manager) {
             debugPrint("onMapCreated");
             onMapReady(manager);
+          },
+          onUserLocationUpdated: (userLocation) {
+            _onUserLocationUpdate(userLocation);
           },
         ),
         shapes: CoreMapShapes(markers: {
@@ -85,5 +87,12 @@ class _TestNavigationScreenState extends State<TestNavigationScreen> {
         60,
       );
     });
+  }
+
+  Future<void> _onUserLocationUpdate(Position location) async {
+    await _routingManager?.updateRoute(
+      id: "1",
+      currentLocation: LatLng(location.latitude, location.longitude),
+    );
   }
 }

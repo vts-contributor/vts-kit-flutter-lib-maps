@@ -132,6 +132,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   Polyline? _buildPolylineFromRoute(MapRoute route, bool isSelected) {
     List<LatLng>? listPoint = route.tryGetNonNullOrEmptyPoints();
     if (listPoint != null) {
+      debugPrint("list points length: ${listPoint.length}");
       return Polyline(
           id: PolylineId(route.id),
           points: listPoint,
@@ -604,13 +605,27 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   @override
   Future<void> updateRoute({required String id, required LatLng currentLocation}) async {
-    final route = _routes?.firstWhereOrNull((e) => e.id == id);
+    MapRoute? route = _routes?.firstWhereOrNull((e) => e.id == id);
     if (route != null) {
       List<LatLng>? listPoint = route.tryGetNonNullOrEmptyPoints();
       if (listPoint != null && listPoint.isNotEmpty) {
-        bool isOnRoute = _isOnRoute(listPoint, currentLocation);
-        if (isOnRoute) {
+        final isOnRouteIndex = _isOnRoute(listPoint, currentLocation);
+        if (isOnRouteIndex != -1) {
+          debugPrint("aaaaa: $isOnRouteIndex");
           // rebuild the route line
+          if (route.points?.isNotEmpty == true) {
+            route.points?.removeRange(0, isOnRouteIndex);
+          } else {
+            final points = route.pointsFromLegs;
+            points?.removeRange(0, isOnRouteIndex);
+            route = route.copyWith(points: points);
+            _routes?[0] = route;
+          }
+          notifyListeners();
+        } else {
+          final temp = route;
+          removeRoutes(id);
+          // addRoute(temp);
         }
       }
     }
@@ -620,17 +635,17 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     final distanceWaypoint = point1.getDistanceFrom(point2);
     final distanceFromStart = currentLocation.getDistanceFrom(point1);
     final distanceFromEnd = currentLocation.getDistanceFrom(point2);
-    final tolerance = 50; // acceptable error value
+    double tolerance = 50; // acceptable error value
     final diff = (distanceFromStart + distanceFromEnd - distanceWaypoint).abs();
 
     return diff < tolerance;
   }
 
-  bool _isOnRoute(List<LatLng> waypoints, LatLng location) {
+  int _isOnRoute(List<LatLng> waypoints, LatLng location) {
     for (int i = 0; i < waypoints.length - 1; i++) {
-      if (_isOnSegment(location, waypoints[i], waypoints[i + 1])) return true;
+      if (_isOnSegment(location, waypoints[i], waypoints[i + 1])) return i;
     }
-    return false;
+    return -1;
   }
 }
 

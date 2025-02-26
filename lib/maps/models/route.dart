@@ -39,8 +39,8 @@ class MapRoute {
     final String? encodedPoints = json?['overview_polyline']?['points'];
     final List<LatLng> points = _decodePolyline(encodedPoints ?? '', skipStep: pointsSkipStep);
     final String? summary = json?['summary'];
-    final List<RouteLeg>? legs = (json?['legs'] as List<dynamic>?)
-        ?.map((json) => RouteLeg.fromJson(json)).toList();
+    final List<RouteLeg>? legs =
+        (json?['legs'] as List<dynamic>?)?.map((json) => RouteLeg.fromJson(json)).toList();
     return MapRoute(
       id: const Uuid().v4(),
       bounds: bounds,
@@ -52,15 +52,42 @@ class MapRoute {
   }
 
   List<LatLng>? get pointsFromLegs {
-    return legs?.map((leg) =>
-        //return points of steps of a leg
-        leg.steps?.map((step) => step.points).whereNotNull().reduce((value, element) => value + element)
-    ).whereNotNull().reduce((value, element) => value + element).toList();
+    return legs
+        ?.map((leg) =>
+            //return points of steps of a leg
+            leg.steps
+                ?.map((step) => step.points)
+                .whereNotNull()
+                .reduce((value, element) => value + element))
+        .whereNotNull()
+        .reduce((value, element) => value + element)
+        .toList();
   }
 
   List<LatLng>? tryGetNonNullOrEmptyPoints() {
     List<LatLng>? points = this.points;
-    return (points != null && points.isNotEmpty) ? points: pointsFromLegs;
+    return (points != null && points.isNotEmpty) ? points : pointsFromLegs;
+  }
+
+  MapRoute copyWith({
+    ViewPort? bounds,
+    String? copyrights,
+    List<LatLng>? points,
+    String? summary,
+    List<String>? warning,
+    List<String>? waypointOrder,
+    List<RouteLeg>? legs,
+  }) {
+    return MapRoute(
+      id: id,
+      bounds: bounds ?? this.bounds,
+      copyrights: copyrights ?? this.copyrights,
+      points: points ?? this.points,
+      summary: summary ?? this.summary,
+      warning: warning ?? this.warning,
+      waypointOrder: waypointOrder ?? this.waypointOrder,
+      legs: legs ?? this.legs,
+    );
   }
 }
 
@@ -75,26 +102,25 @@ class RouteLeg {
 
   //traffic speed entry and via_waypoint
 
-  RouteLeg({
-    this.distance,
-    this.duration,
-    this.startAddress,
-    this.endAddress,
-    this.startLocation,
-    this.endLocation,
-    this.steps
-  });
+  RouteLeg(
+      {this.distance,
+      this.duration,
+      this.startAddress,
+      this.endAddress,
+      this.startLocation,
+      this.endLocation,
+      this.steps});
 
   factory RouteLeg.fromJson(Map<String, dynamic>? json) {
     return RouteLeg(
-      distance: RouteDistance.fromJson(json?["distance"]),
-      duration: RouteDuration.fromJson(json?["duration"]),
-      startAddress: json?["start_address"],
-      endAddress: json?["end_address"],
-      startLocation: LatLng.fromJson(json?["start_location"]),
-      endLocation: LatLng.fromJson(json?["fromJson"]),
-      steps: (json?["steps"] as List<dynamic>?)?.map((json) => RouteStep.fromJson(json)).toList()
-    );
+        distance: RouteDistance.fromJson(json?["distance"]),
+        duration: RouteDuration.fromJson(json?["duration"]),
+        startAddress: json?["start_address"],
+        endAddress: json?["end_address"],
+        startLocation: LatLng.fromJson(json?["start_location"]),
+        endLocation: LatLng.fromJson(json?["fromJson"]),
+        steps:
+            (json?["steps"] as List<dynamic>?)?.map((json) => RouteStep.fromJson(json)).toList());
   }
 }
 
@@ -130,16 +156,15 @@ class RouteStep {
   final List<LatLng>? points;
   final TravelMode? travelMode;
 
-  RouteStep({
-    this.distance,
-    this.duration,
-    this.startLocation,
-    this.endLocation,
-    this.instructions,
-    this.maneuver,
-    this.points,
-    this.travelMode
-  });
+  RouteStep(
+      {this.distance,
+      this.duration,
+      this.startLocation,
+      this.endLocation,
+      this.instructions,
+      this.maneuver,
+      this.points,
+      this.travelMode});
 
   factory RouteStep.fromJson(Map<String, dynamic>? json) {
     List<LatLng> points = _decodePolyline(json?["polyline"]?["points"]);
@@ -175,7 +200,7 @@ enum TravelMode {
 
   @override
   String toString() {
-    switch(this) {
+    switch (this) {
       case TravelMode.driving:
         return "driving";
       case TravelMode.walking:
@@ -186,7 +211,7 @@ enum TravelMode {
   }
 
   vt.VTMapNavigationMode toViettel() {
-    switch(this) {
+    switch (this) {
       case TravelMode.driving:
         return vt.VTMapNavigationMode.driving;
       case TravelMode.drivingWithTraffic:
@@ -207,7 +232,7 @@ List<LatLng> _decodePolyline(String encoded, {int? skipStep}) {
   List<LatLng> decoded = [];
   int lat = 0;
   int lng = 0;
-  int i=0;
+  int i = 0;
   while (index < len) {
     int b;
     int shift = 0;
@@ -217,7 +242,7 @@ List<LatLng> _decodePolyline(String encoded, {int? skipStep}) {
       result += b << shift;
       shift += 5;
     } while (b >= 0x1f);
-    lat += (result & 1) != 0? ~(result >> 1): (result >> 1);
+    lat += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
 
     shift = 0;
     result = 1;
@@ -226,7 +251,7 @@ List<LatLng> _decodePolyline(String encoded, {int? skipStep}) {
       result += b << shift;
       shift += 5;
     } while (b >= 0x1f);
-    lng += (result & 1) != 0? ~(result >> 1): (result >> 1);
+    lng += (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
 
     decoded.add(LatLng(lat * 1e-5, lng * 1e-5));
   }
