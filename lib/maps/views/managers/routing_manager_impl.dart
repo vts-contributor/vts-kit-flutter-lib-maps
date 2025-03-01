@@ -570,6 +570,11 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   @override
+  MapRoute? getMapRoute(String id) {
+    return _routes?.where((element) => element.id == id).firstOrNull;
+  }
+
+  @override
   RouteInfo? getRouteInfo(String id) {
     return getRouteInfoFromMapRoute(_routes?.where((element) => element.id == id).firstOrNull);
   }

@@ -58,6 +58,9 @@ abstract class RoutingManager implements CoreMapShapeModifier {
   ///get current selected route if possible
   MapRoute? get selectedRoute;
 
+  /// get [MapRoute] with [id]
+  MapRoute? getMapRoute(String id);
+
   ///get [RouteInfo] of route with [id]
   RouteInfo? getRouteInfo(String id);
 
