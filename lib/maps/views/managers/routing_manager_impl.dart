@@ -134,7 +134,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
     if (listPoint != null) {
       debugPrint("list points length: ${listPoint.length}");
       return Polyline(
-          id: PolylineId(route.id),
+          id: PolylineId(const Uuid().v4()),
           points: listPoint,
           color: route.config?.color ?? (isSelected ? _selectedColor : _unselectedColor),
           zIndex: route.config?.zIndex ?? (isSelected ? 6 : 5),
@@ -611,19 +611,21 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       if (listPoint != null && listPoint.isNotEmpty) {
         final isOnRouteIndex = _isOnRoute(listPoint, currentLocation);
         if (isOnRouteIndex != -1) {
-          debugPrint("aaaaa: $isOnRouteIndex");
-          // rebuild the route line
           int removedIndex = isOnRouteIndex;
-          // if (removedIndex > 1) {
-          //   removedIndex = isOnRouteIndex + 2;
-          // }
+          // 1. Remove the range from the begining to the current location
+          // 2. Insert current location to the beginning of the set
+          // to prevent the location marker is not on the path
+          // for some cases
           if (route.points?.isNotEmpty == true) {
             route.points?.removeRange(0, removedIndex);
+            route.points?.insert(0, currentLocation);
           } else {
             final points = route.pointsFromLegs;
             points?.removeRange(0, removedIndex);
+            points?.insert(0, currentLocation);
             route = route.copyWith(points: points);
           }
+
           int? selectedRouteIndex = _routes?.indexWhere((element) => element.id == id);
           if (selectedRouteIndex != null && selectedRouteIndex != -1) {
             _updateMapRoute(route, selectedRouteIndex);

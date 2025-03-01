@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps/extensions/utils.dart';
 
 import '../models/models.dart';
@@ -9,6 +10,8 @@ import 'maps_api_service_abstract.dart';
 
 class MapsAPIServiceImpl extends MapsAPIService {
   static MapsAPIAbstractService? _instance;
+
+  static const String tag = "MapsAPIServiceImpl";
 
   @protected
   @override
@@ -70,8 +73,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
       params: params,
       cancelToken: cancelToken,
     );
-    final result =
-        response.list?.map((e) => GeocodingPlace.fromJson(e)).toList() ?? [];
+    final result = response.list?.map((e) => GeocodingPlace.fromJson(e)).toList() ?? [];
     return result;
   }
 
@@ -126,8 +128,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
       params: params,
       cancelToken: cancelToken,
     );
-    final result = PlaceList.fromResponse(
-        response, (json) => AutocompletePlace.fromJson(json));
+    final result = PlaceList.fromResponse(response, (json) => AutocompletePlace.fromJson(json));
     return result;
   }
 
@@ -146,8 +147,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     final keyLocation = paramsKeyMapper.valueOrKey(MapsAPIConst.kLocation);
     final keyRadius = paramsKeyMapper.valueOrKey(MapsAPIConst.kRadius);
     final keyRankBy = paramsKeyMapper.valueOrKey(MapsAPIConst.kRankBy);
-    final keyNextPageToken =
-        paramsKeyMapper.valueOrKey(MapsAPIConst.kNextPageToken);
+    final keyNextPageToken = paramsKeyMapper.valueOrKey(MapsAPIConst.kNextPageToken);
     final params = {
       keyKeyword: keyword,
       keyLocation: '$lat,$lng',
@@ -169,24 +169,22 @@ class MapsAPIServiceImpl extends MapsAPIService {
 
   //[routePointsSkipStep]: skip every [routePointsSkipStep] route points if routes contains many points.
   @override
-  Future<Directions> direction({
-    required double originLat,
-    required double originLng,
-    required double destLat,
-    required double destLng,
-    bool alternatives = false,
-    String? mode,
-    Map<String, String>? paramsKeyMapper,
-    int? routePointsSkipStep,
-    List<LatLng>? waypoints,
-    CustomCancelToken? cancelToken,
-    Function(Map<String, dynamic> json)? onReceiveJson
-  }) async {
+  Future<Directions> direction(
+      {required double originLat,
+      required double originLng,
+      required double destLat,
+      required double destLng,
+      bool alternatives = false,
+      String? mode,
+      Map<String, String>? paramsKeyMapper,
+      int? routePointsSkipStep,
+      List<LatLng>? waypoints,
+      CustomCancelToken? cancelToken,
+      Function(Map<String, dynamic> json)? onReceiveJson}) async {
+    Log.e(tag, "MAP API SERVICES: fetch direction API");
     final keyOrigin = paramsKeyMapper.valueOrKey(MapsAPIConst.kOrigin);
-    final keyDestination =
-        paramsKeyMapper.valueOrKey(MapsAPIConst.kDestination);
-    final keyAlternatives =
-        paramsKeyMapper.valueOrKey(MapsAPIConst.kAlternatives);
+    final keyDestination = paramsKeyMapper.valueOrKey(MapsAPIConst.kDestination);
+    final keyAlternatives = paramsKeyMapper.valueOrKey(MapsAPIConst.kAlternatives);
     final keyMode = paramsKeyMapper.valueOrKey(MapsAPIConst.kMode);
     final keyWaypoints = paramsKeyMapper.valueOrKey(MapsAPIConst.kWayPoints);
     final params = {
@@ -194,7 +192,8 @@ class MapsAPIServiceImpl extends MapsAPIService {
       keyDestination: '$destLat,$destLng',
       keyAlternatives: alternatives,
       keyMode: mode,
-      if (waypoints != null) keyWaypoints: waypoints.map((e) => "${e.latitude},${e.longitude}").join(";"),
+      if (waypoints != null)
+        keyWaypoints: waypoints.map((e) => "${e.latitude},${e.longitude}").join(";"),
     };
     final response = await get<PlaceResponse>(
       config.directionPath,
@@ -226,13 +225,12 @@ class MapsAPIServiceImpl extends MapsAPIService {
     Function(Map<String, dynamic> json)? onReceiveJson,
   }) async {
     final keyOrigins = paramsKeyMapper.valueOrKey(MapsAPIConst.kOrigins);
-    final keyDestinations =
-    paramsKeyMapper.valueOrKey(MapsAPIConst.kDestinations);
+    final keyDestinations = paramsKeyMapper.valueOrKey(MapsAPIConst.kDestinations);
     final keyMode = paramsKeyMapper.valueOrKey(MapsAPIConst.kMode);
     final params = {
       keyOrigins: origins.map((e) => "${e.latitude},${e.longitude}").join(";"),
-      keyDestinations:  destinations.map((e) => "${e.latitude},${e.longitude}").join(";"),
-      keyMode: travelMode == RouteTravelMode.bycycling? "cycling": travelMode?.name,
+      keyDestinations: destinations.map((e) => "${e.latitude},${e.longitude}").join(";"),
+      keyMode: travelMode == RouteTravelMode.bycycling ? "cycling" : travelMode?.name,
     };
 
     final response = await get<PlaceResponse>(

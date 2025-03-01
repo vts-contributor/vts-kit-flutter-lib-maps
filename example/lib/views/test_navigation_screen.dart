@@ -25,7 +25,7 @@ class _TestNavigationScreenState extends State<TestNavigationScreen> {
         title: const Text("Test navigation"),
       ),
       body: CoreMap(
-        type: CoreMapType.google,
+        type: CoreMapType.viettel,
         data: CoreMapData(
           accessToken: "ad903093bbefba04624d5e742e155e30",
           initialCameraPosition: CameraPosition(target: start, zoom: 15),
@@ -62,7 +62,8 @@ class _TestNavigationScreenState extends State<TestNavigationScreen> {
   Widget _buildBottom(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      child: Text("${_routingManager?.getRouteInfo("1")?.totalDuration}"),
+      child: Text(
+          "${_routingManager?.getRouteInfo("1")?.totalDuration} - ${_routingManager?.getRouteInfo("1")?.totalDistance}"),
     );
   }
 
