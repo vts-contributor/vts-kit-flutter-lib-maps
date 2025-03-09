@@ -29,7 +29,11 @@ abstract class RoutingManager implements CoreMapShapeModifier {
 
   /// update the current route from the location change
   /// by checking if the current location is on the route or not
-  Future<void> updateRoute({required String id, required LatLng currentLocation});
+  Future<void> updateRoute({
+    required String id,
+    required LatLng currentLocation,
+    void Function(bool isOnNewRoute)? onComplete,
+  });
 
   ///start navigation with the selected route
   ///
