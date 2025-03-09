@@ -609,7 +609,11 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   @override
-  Future<void> updateRoute({required String id, required LatLng currentLocation}) async {
+  Future<void> updateRoute({
+    required String id,
+    required LatLng currentLocation,
+    void Function(bool isOnNewRoute)? onComplete,
+  }) async {
     MapRoute? route = _routes?.firstWhereOrNull((e) => e.id == id);
     if (route != null) {
       List<LatLng>? listPoint = route.tryGetNonNullOrEmptyPoints();
@@ -635,6 +639,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
           if (selectedRouteIndex != null && selectedRouteIndex != -1) {
             _updateMapRoute(route, selectedRouteIndex);
           }
+          onComplete?.call(false);
         } else {
           final currentWaypoint = route.config?.waypoints;
           if (currentWaypoint != null && currentWaypoint.isNotEmpty) {
@@ -652,6 +657,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
               await addRoute(config);
             }
           }
+          onComplete?.call(true);
         }
         notifyListeners();
       }
