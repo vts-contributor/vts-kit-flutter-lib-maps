@@ -182,11 +182,12 @@ class _ClusterManagerImpl extends ChangeNotifier
       isChange = true;
     }
 
-    if (isChange) {
+    // vi code theo co che clear -> declare nen cac doan code kiem tra isChange khong chinh xac nua
+    // if (isChange) {
       notifyListeners();
 
       _callback?.call();
-    }
+    // }
   }
 
   Set<Marker> _getSetMarkerAfterClustered() {
