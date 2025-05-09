@@ -24,6 +24,14 @@ class DistanceMatrix {
       rows: rows
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "destination_addresses": destinationAddresses,
+      "origin_addresses": originAddresses,
+      "rows": rows?.map((row) => row.map((e) => e.toJson()).toList()).toList(),
+    };
+  }
 }
 
 class DistanceMatrixElement {
@@ -45,5 +53,13 @@ class DistanceMatrixElement {
       duration: duration,
       status: json?["status"]
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "distance": distance?.toJson(),
+      "duration": duration?.toJson(),
+      "status": status
+    };
   }
 }

@@ -26,4 +26,13 @@ class AddressComponent {
         shortName: shortName,
         areaCode: areaCode);
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'types': types,
+      'long_name': longName,
+      'short_name': shortName,
+      'area_code': areaCode,
+    };
+  }
 }

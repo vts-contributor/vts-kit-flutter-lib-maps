@@ -9,4 +9,10 @@ class OpeningHours {
     final bool? openingNow = json?['opening_now'];
     return OpeningHours(openingNow: openingNow ?? false);
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'opening_now': openingNow,
+    };
+  }
 }

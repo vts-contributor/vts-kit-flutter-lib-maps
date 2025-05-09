@@ -12,4 +12,11 @@ class PlusCode {
     final String? compoundCode = json?['compound_code'];
     return PlusCode(globalCode: globalCode, compoundCode: compoundCode);
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'global_code': globalCode,
+      'compound_code': compoundCode,
+    };
+  }
 }

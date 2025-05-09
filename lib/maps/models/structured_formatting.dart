@@ -15,4 +15,20 @@ class StructuredFormatting {
       secondaryText: secondaryText,
     );
   }
+
+  factory StructuredFormatting.fromJsonGoogle(Map<String, dynamic>? json) {
+    final mainText = json?['mainText']['text'];
+    final secondaryText = json?['secondaryText']['text'];
+    return StructuredFormatting(
+      mainText: mainText,
+      secondaryText: secondaryText,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'main_text': mainText,
+      'secondary_text': secondaryText,
+    };
+  }
 }

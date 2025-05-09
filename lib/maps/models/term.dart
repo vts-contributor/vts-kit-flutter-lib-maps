@@ -15,4 +15,11 @@ class Term {
       value: value,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'offset': offset,
+      'value': value,
+    };
+  }
 }

@@ -23,7 +23,13 @@ class LatLng {
   /// The [longitude] from -180.0 to +180.0.
   factory LatLng.fromMap(Map latLngMap, {bool receiveNow = false}) {
     try {
-      return LatLng(latLngMap['lat'], latLngMap['lng']);
+      if (latLngMap.containsKey('lat') && latLngMap.containsKey('lng')) {
+        return LatLng(latLngMap['lat'], latLngMap['lng']);
+      }
+      else if (latLngMap.containsKey('latitude') && latLngMap.containsKey('longitude')) {
+        return LatLng(latLngMap['latitude'], latLngMap['longitude']);
+      }
+      else throw Exception('LatLngMap does not contain lat/lng or latitude/longitude');
     } catch (err) {
       Log.e('LatLng.fromMap',
           'Parse LatLng from Map $latLngMap failed because $err');
@@ -37,8 +43,8 @@ class LatLng {
   }
 
   static LatLng? fromMapsAPIJson(Map<String, dynamic>? json) {
-    final double? lat = json?['lat'];
-    final double? lng = json?['lng'];
+    final double? lat = json?['lat'] ?? json?['latitude'];
+    final double? lng = json?['lng'] ?? json?['longitude'];
     if (lat != null && lng != null) {
       return LatLng(lat, lng);
     }
@@ -64,6 +70,10 @@ class LatLng {
   static LatLng? fromJson(Map<String, dynamic>? json) {
     if (json != null && json.containsKey("lat") == true && json.containsKey("lng") == true) {
       return LatLng(json["lat"], json["lng"]);
+    } else if (json != null && json.containsKey("latitude") == true && json.containsKey("longitude") == true) {
+      return LatLng(json["latitude"], json["longitude"]);
+    } else if (json != null && json.containsKey("location") == true) {
+      return LatLng.fromJson(json["location"]);
     } else {
       return null;
     }

@@ -17,4 +17,11 @@ class PlaceList<T extends Place> {
       nextPageToken: response.nextPageToken,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "values": values.map((e) => e.toJson()).toList(),
+      "nextPageToken": nextPageToken,
+    };
+  }
 }

@@ -21,4 +21,12 @@ class Geometry {
       viewPort: viewPort,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'location': location?.toJson(),
+      'location_type': locationType,
+      'viewport': viewPort?.toJson(),
+    };
+  }
 }
