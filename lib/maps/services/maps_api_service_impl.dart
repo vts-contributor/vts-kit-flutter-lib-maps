@@ -8,7 +8,14 @@ import 'maps_api_service.dart';
 import 'maps_api_service_abstract.dart';
 
 class MapsAPIServiceImpl extends MapsAPIService {
-  static MapsAPIAbstractService? _instance;
+  static MapsAPIServiceImpl? _instance;
+
+  @protected
+  @override
+  late MapAPIConfig configViettel;
+  @protected
+  @override
+  late MapAPIConfig configGoogle;
 
   @protected
   @override
@@ -19,11 +26,17 @@ class MapsAPIServiceImpl extends MapsAPIService {
     MapsAPIDirectionsParser(),
   ]);
 
-  @protected
-  @override
-  late MapAPIConfig config;
+  // Private constructor
+  MapsAPIServiceImpl._() : super(MapProviderConst.VIETTEL) {
+    configViettel = MapAPIConfig.getConfig(MapProviderConst.VIETTEL);
+    configGoogle = MapAPIConfig.getConfig(MapProviderConst.GOOGLE);
+    config = configViettel; // Set default config to Viettel
+  }
 
-  MapsAPIServiceImpl._();
+  // Use in the init method or when need to change provider
+  void useProvider(String provider) {
+   provider == MapProviderConst.GOOGLE ? setConfig(configGoogle) : setConfig(configViettel);
+  }
 
   MapsAPIServiceImpl setConfig(MapAPIConfig config) {
     final currentKey = this.config.key;
@@ -34,14 +47,19 @@ class MapsAPIServiceImpl extends MapsAPIService {
     return this;
   }
 
-  factory MapsAPIServiceImpl({String? key}) {
+  factory MapsAPIServiceImpl({String? viettelKey, String? googleKey, required String provider}) {
     if (_instance == null) {
       _instance = MapsAPIServiceImpl._();
-      _instance?.config = MapAPIConfig();
+      _instance?.config = MapAPIConfig.getConfig(provider);
+      if (viettelKey != null) {
+        _instance?.configViettel.key = viettelKey;
+      }
+      if (googleKey != null) {
+        _instance?.configGoogle.key = googleKey;
+      }
     }
-    if (key != null) {
-      _instance?.config.key = key;
-    }
+    _instance?.useProvider(provider);
+
     return _instance as MapsAPIServiceImpl;
   }
 

@@ -70,3 +70,10 @@ class Constant {
     }
   }
 }
+
+class MapProviderConst {
+  MapProviderConst._();
+
+  static const VIETTEL = "VIETTEL";
+  static const GOOGLE = "GOOGLE";
+}
