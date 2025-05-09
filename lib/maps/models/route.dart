@@ -301,3 +301,31 @@ List<LatLng> _decodePolyline(String encoded, {int? skipStep}) {
   }
   return decoded;
 }
+
+String _encodePolyline(List<LatLng> points) {
+  var result = StringBuffer();
+  var lat = 0;
+  var lng = 0;
+
+  for (var point in points) {
+    var latNew = (point.latitude * 1e5).round();
+    var lngNew = (point.longitude * 1e5).round();
+
+    _encodeValue(result, latNew - lat);
+    _encodeValue(result, lngNew - lng);
+
+    lat = latNew;
+    lng = lngNew;
+  }
+
+  return result.toString();
+}
+
+void _encodeValue(StringBuffer result, int value) {
+  value = (value < 0) ? ~(value << 1) : (value << 1);
+  while (value >= 0x20) {
+    result.writeCharCode((0x20 | (value & 0x1f)) + 63);
+    value >>= 5;
+  }
+  result.writeCharCode(value + 63);
+}

@@ -6,7 +6,13 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   final _LocationManager _locationManager;
 
-  String? _token;
+  String? _vtToken;
+
+  String? _ggToken;
+
+  String provider = MapProviderConst.VIETTEL;
+
+  MapsAPIServiceImpl? mapsApiService;
 
   CoreMapController? mapController;
 
@@ -38,8 +44,44 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   RouteCachingStrategy? _cachingStrategy = _DefaultRouteCachingStrategy();
 
-  set token(String? value) {
-    _token = value;
+  set vtToken(String? value) {
+    _vtToken = value;
+  }
+
+  set ggToken(String? value) {
+    _ggToken = value;
+  }
+
+  Future<bool> initMapsApiService(String provider) async {
+    try {
+      if (_vtToken == null && provider == MapProviderConst.VIETTEL) {
+        Log.e(RoutingManager.logTag, "Cannot initialize Viettel Maps API without token");
+        return false;
+      }
+
+      if (_ggToken == null && provider == MapProviderConst.GOOGLE) {
+        Log.e(RoutingManager.logTag, "Cannot initialize Google Maps API without token");
+        return false;
+      }
+
+      mapsApiService = MapsAPIServiceImpl(viettelKey: _vtToken, googleKey: _ggToken, provider: provider);
+
+      this.provider = provider;
+      return mapsApiService != null;
+    } catch (e) {
+      Log.e(RoutingManager.logTag, "Failed to initialize Maps API service");
+      return false;
+    }
+  }
+
+  Future<MapsAPIServiceImpl> getMapService() async {
+    if (mapsApiService == null) {
+      bool success = await initMapsApiService(provider);
+      if (!success) {
+        throw StateError('Map API service initialization failed');
+      }
+    }
+    return mapsApiService!;
   }
 
   void updateColor(Color selected, Color unselected) {
@@ -217,7 +259,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
   }
 
   @override
-  Future<void> buildRoutes(RoutingOptions options) async {
+  Future<void> buildRoutes(RoutingOptions options, String provider) async {
     if (options.points.length >= 2) {
       // if (_buildRouteNative(options)) return;
 
@@ -226,7 +268,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         waypoints = options.points.sublist(1, options.points.length - 1);
       }
 
-      Directions direction = (await MapsAPIServiceImpl(key: options.apiKey).direction(
+      Directions direction = await getMapService().then((service) => service.direction(
         originLat: options.points.first.latitude,
         originLng: options.points.first.longitude,
         destLat: options.points.last.latitude,
@@ -323,7 +365,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
     Directions? directions;
     if (jsonString == null) {
-      directions = await MapsAPIServiceImpl(key: _token).direction(
+      directions = await getMapService().then((service) => service.direction(
         originLat: waypoints.first.latitude,
         originLng: waypoints.first.longitude,
         destLat: waypoints.last.latitude,
@@ -334,7 +376,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         onReceiveJson: (json) {
           _cachingStrategy?.save(cachingKey, jsonEncode(json));
         },
-      );
+      ));
     } else {
       directions = Directions.fromJson(jsonDecode(jsonString));
     }
@@ -434,7 +476,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
             String id = "$i/$j";
 
-            listFuture.add(MapsAPIServiceImpl(key: _token).getDistanceMatrix(
+            listFuture.add(getMapService().then((service) => service.getDistanceMatrix(
               origins: origins,
               destinations: destinations,
               travelMode: (travelMode ?? _defaultTravelMode),
@@ -442,7 +484,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
               onReceiveJson: (json) {
                 newJsonString.write("${jsonEncode(json)}$itemDivider$id$listDivider");
               },
-            ));
+            )));
           }
         }
 

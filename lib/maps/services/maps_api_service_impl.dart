@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/extensions/utils.dart';
 
 import '../models/models.dart';
 import '../models/network/custom_cancel_token.dart';
 import 'maps_api_config.dart';
 import 'maps_api_service.dart';
-import 'maps_api_service_abstract.dart';
 
 class MapsAPIServiceImpl extends MapsAPIService {
   static MapsAPIServiceImpl? _instance;
@@ -83,14 +83,32 @@ class MapsAPIServiceImpl extends MapsAPIService {
       keyAddress: address,
       keyBounds: bounds,
     };
+    params.removeWhere((key, value) => value == null);
     final response = await get<PlaceListingResponse>(
       config.geocodePath,
       params: params,
       cancelToken: cancelToken,
     );
-    final result =
-        response.list?.map((e) => GeocodingPlace.fromJson(e)).toList() ?? [];
-    return result;
+    if (response.list == null) {
+      debugPrint('API Maps geocode response content is null');
+      return [];
+    }
+
+    if (config.provider == MapProviderConst.GOOGLE) {
+      return GeocodingPlaceGoogle.parseListGeocoding(
+        response.list as List<Map<String, dynamic>>,
+      );
+    }
+    else if (config.provider == MapProviderConst.VIETTEL) {
+      return GeocodingPlace.parseListGeocoding(
+        response.list as List<Map<String, dynamic>>,
+      );
+    }
+    else {
+      throw ImplicitServerResponseError(
+        rootCause: Exception('Provider not supported'),
+      );
+    }
   }
 
   @override
@@ -106,16 +124,30 @@ class MapsAPIServiceImpl extends MapsAPIService {
       keyPlaceId: placeId,
       keyFields: fields,
     };
+    if (config.provider == MapProviderConst.GOOGLE) {
+      params[keyFields] = fields?.join(',') ?? '*';
+    }
+    params.removeWhere((key, value) => value == null);
     final response = await get<PlaceResponse>(
       config.placeDetailPath,
       params: params,
       cancelToken: cancelToken,
+      pathResource: config.provider == MapProviderConst.GOOGLE ? placeId : null,
     );
-    if (response.content is Map<String, dynamic>) {
-      return DetailPlace.fromJson(response.content as Map<String, dynamic>);
-    } else {
+
+    if (config.provider == MapProviderConst.GOOGLE) {
+      return DetailPlaceGoogle.fromJson(
+        response.content as Map<String, dynamic>,
+      );
+    }
+    else if (config.provider == MapProviderConst.VIETTEL) {
+      return DetailPlace.fromJson(
+        response.content as Map<String, dynamic>,
+      );
+    }
+    else {
       throw ImplicitServerResponseError(
-        rootCause: Exception('API Maps details response content is null'),
+        rootCause: Exception('Provider not supported'),
       );
     }
   }
@@ -139,13 +171,27 @@ class MapsAPIServiceImpl extends MapsAPIService {
       keyLocation: location,
       keyRadius: radius,
     };
-    final response = await get<PlaceListingResponse>(
-      config.autocompleteSearchPath,
-      params: params,
-      cancelToken: cancelToken,
-    );
-    final result = PlaceList.fromResponse(
-        response, (json) => AutocompletePlace.fromJson(json));
+    params.removeWhere((key, value) => value == null);
+
+    var result;
+    if (config.provider == MapProviderConst.GOOGLE) {
+      final response = await post<PlaceListingResponse>(
+        config.autocompleteSearchPath,
+        params: AutocompletePlaceGoogle.googleAutocompleteParamsMapper(params),
+        cancelToken: cancelToken,
+      );
+      result = PlaceList.fromResponse(
+          response, (json) => AutocompletePlaceGoogle.fromJson(json));
+    }
+    else if (config.provider == MapProviderConst.VIETTEL) {
+      final response = await get<PlaceListingResponse>(
+        config.autocompleteSearchPath,
+        params: params,
+        cancelToken: cancelToken,
+      );
+      result = PlaceList.fromResponse(
+          response, (json) => AutocompletePlace.fromJson(json));
+    }
     return result;
   }
 
@@ -160,7 +206,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     Map<String, String>? paramsKeyMapper,
     CustomCancelToken? cancelToken,
   }) async {
-    final keyKeyword = paramsKeyMapper.valueOrKey(MapsAPIConst.kKeyword);
+    final keyKeyword = paramsKeyMapper.valueOrKey(config.provider == MapProviderConst.GOOGLE ? MapsAPIConst.kType : MapsAPIConst.kKeyword);
     final keyLocation = paramsKeyMapper.valueOrKey(MapsAPIConst.kLocation);
     final keyRadius = paramsKeyMapper.valueOrKey(MapsAPIConst.kRadius);
     final keyRankBy = paramsKeyMapper.valueOrKey(MapsAPIConst.kRankBy);
@@ -173,6 +219,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
       keyRankBy: rankBy,
       keyNextPageToken: nextPageToken,
     };
+    params.removeWhere((key, value) => value == null);
     final response = await get<PlaceListingResponse>(
       config.nearbySearchPath,
       params: params,
@@ -212,7 +259,9 @@ class MapsAPIServiceImpl extends MapsAPIService {
       keyDestination: '$destLat,$destLng',
       keyAlternatives: alternatives,
       keyMode: mode,
-      if (waypoints != null) keyWaypoints: waypoints.map((e) => "${e.latitude},${e.longitude}").join(";"),
+      if (waypoints != null) keyWaypoints: config.provider == MapProviderConst.GOOGLE
+          ? waypoints.map((e) => "${e.latitude},${e.longitude}").join("|")
+          : waypoints.map((e) => "${e.latitude},${e.longitude}").join(";"),
     };
     final response = await get<PlaceResponse>(
       config.directionPath,
@@ -221,11 +270,23 @@ class MapsAPIServiceImpl extends MapsAPIService {
     );
     if (response.content is Map<String, dynamic>) {
       onReceiveJson?.call(response.content as Map<String, dynamic>);
-      final result = Directions.fromJson(
-        response.content as Map<String, dynamic>,
-        routePointsSkipStep: routePointsSkipStep,
-      );
-      return result;
+      if (config.provider == MapProviderConst.GOOGLE) {
+        return Directions.fromJsonGoogle(
+          response.content as Map<String, dynamic>,
+          routePointsSkipStep: routePointsSkipStep,
+        );
+      }
+      else if (config.provider == MapProviderConst.VIETTEL) {
+        return Directions.fromJson(
+          response.content as Map<String, dynamic>,
+          routePointsSkipStep: routePointsSkipStep,
+        );
+      }
+      else {
+        throw ImplicitServerResponseError(
+          rootCause: Exception('Provider not supported'),
+        );
+      }
     } else {
       throw ImplicitServerResponseError(
         rootCause: Exception('API Maps directions response content is null'),
@@ -248,10 +309,12 @@ class MapsAPIServiceImpl extends MapsAPIService {
     paramsKeyMapper.valueOrKey(MapsAPIConst.kDestinations);
     final keyMode = paramsKeyMapper.valueOrKey(MapsAPIConst.kMode);
     final params = {
-      keyOrigins: origins.map((e) => "${e.latitude},${e.longitude}").join(";"),
-      keyDestinations:  destinations.map((e) => "${e.latitude},${e.longitude}").join(";"),
+      keyOrigins: origins.map((e) => "${e.latitude},${e.longitude}").join(config.provider == MapProviderConst.GOOGLE ? "|" : ";"),
+      keyDestinations:  destinations.map((e) => "${e.latitude},${e.longitude}").join(config.provider == MapProviderConst.GOOGLE ? "|" : ";"),
       keyMode: travelMode == RouteTravelMode.bycycling? "cycling": travelMode?.name,
     };
+
+    params.removeWhere((key, value) => value == null);
 
     final response = await get<PlaceResponse>(
       config.distanceMatrixPath,
