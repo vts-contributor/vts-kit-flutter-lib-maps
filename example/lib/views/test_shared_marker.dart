@@ -46,7 +46,9 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            accessToken: "",
+            vtMapAccessToken: "",
+            ggMapAccessToken: "",
+            provider: MapProviderConst.VIETTEL,
             // markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(
                 target: const LatLng(10.885305387234123, 106.63943723003548),

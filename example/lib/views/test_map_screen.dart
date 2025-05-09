@@ -71,7 +71,9 @@ class _TestMapScreenState extends State<TestMapScreen> {
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            accessToken: "",
+            vtMapAccessToken: "",
+            ggMapAccessToken: "",
+            provider: MapProviderConst.VIETTEL,
             markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(
                 target: const LatLng(9.85419858085518, 105.49970250115466),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:map_core_example/view_models/routing_view_model.dart';
+import 'package:map_core_example/views/test_api_screen.dart';
 import 'package:map_core_example/views/test_google_map_screen.dart';
 import 'package:map_core_example/views/test_map_screen.dart';
 import 'package:map_core_example/views/test_routing_screen.dart';
@@ -35,10 +36,11 @@ class MyApp extends StatelessWidget {
         TestGoogleMapScreen.routeName: (_) => const TestGoogleMapScreen(),
         TestVTMapScreen.routeName: (_) => const TestVTMapScreen(),
         TestRoutingScreen.routeName: (_) => ChangeNotifierProvider(
-          create: (_) => RoutingViewModel(MapsAPIServiceImpl(key: "")),
+          create: (_) => RoutingViewModel(MapsAPIServiceImpl(viettelKey: "", googleKey: "", provider: MapProviderConst.VIETTEL)),
           child: const TestRoutingScreen(),
         ),
-        TestSharedMarkerScreen.routeName:(context) => const TestSharedMarkerScreen()
+        TestSharedMarkerScreen.routeName:(context) => const TestSharedMarkerScreen(),
+        ApiTestScreen.routeName: (_) => const ApiTestScreen(),
       },
     );
   }
@@ -131,6 +133,10 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => Navigator.pushNamed(
                   context, TestSharedMarkerScreen.routeName),
               child: const Text('Test shared marker'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, ApiTestScreen.routeName),
+              child: const Text('Test API'),
             ),
           ],
         ),
