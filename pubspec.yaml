@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  vtmap_gl: ^2.0.7
+  vtmap_gl: ^4.0.0
   google_maps_flutter: ^2.6.1
   http: ^0.13.5
   dio: ^5.4.3+1
