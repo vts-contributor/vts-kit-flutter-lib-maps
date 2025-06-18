@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/io.dart';
@@ -80,6 +82,52 @@ Future<File> download(
 
 Dio prepareDio({required InterceptorsWrapper interceptors}) {
   final dio = Dio()..interceptors.add(interceptors);
+  //
+  // // Add logging interceptor
+  // dio.interceptors.add(InterceptorsWrapper(
+  //   onRequest: (options, handler) {
+  //     final queryString = options.queryParameters.entries
+  //         .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value.toString())}')
+  //         .join('&');
+  //     final curl = StringBuffer('curl -X ${options.method} "${options.baseUrl}${options.path}?$queryString"');
+  //     if (options.headers.isNotEmpty) {
+  //       options.headers.forEach((key, value) {
+  //         curl.write(' -H "${key}: ${value}"');
+  //       });
+  //     }
+  //     if (options.data != null) {
+  //       curl.write(' --data \'${options.data}\'');
+  //     }
+  //     print('CURL: $curl');
+  //     log('CURL: $curl');
+  //     return handler.next(options); // Continue with the request
+  //   },
+  //   onResponse: (response, handler) {
+  //     print('Response: ${response.requestOptions.method} ${response.requestOptions.uri} ${response.statusCode} ${response.statusMessage} ${response.data}');
+  //     print('Status Code: ${response.statusCode}');
+  //     // response.statusCode = 500;
+  //     // response.data = {
+  //     //   'status': 500,
+  //     //   'message': "Forwarding error"
+  //     // };
+  //     // print('Data: ${jsonEncode(response.data)}');
+  //     // Future.delayed(
+  //     //   const Duration(seconds: 30),
+  //     //   () => print('Response: ${response.statusCode}'),
+  //     // );
+  //     return handler.next(response); // Continue with the response
+  //   },
+  //   onError: (DioError error, handler) {
+  //     print('Error:');
+  //     print('Message: ${error.message}');
+  //     if (error.response != null) {
+  //       print('Status Code: ${error.response?.statusCode}');
+  //       print('Data: ${jsonEncode(error.response?.data)}');
+  //     }
+  //     return handler.next(error); // Continue with the error
+  //   },
+  // ));
+
   (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
     final HttpClient client = HttpClient(context: SecurityContext(withTrustedRoots: false));
     client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
