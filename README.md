@@ -98,6 +98,247 @@ Mặc định, onTap của marker sẽ chỉnh camera về vị trí marker và 
 
 Các loại hình khác trên bản đồ tương đối đơn giản, xem comment trong thư viện để sử dụng các hình này (lưu ý một số tham số sẽ không hoạt động khi dùng loại Viettel Map)
 
+## Tích hợp Google Maps
+
+### 1. Lựa chọn loại bản đồ
+Thư viện hỗ trợ 2 loại bản đồ:
+- **Google Maps** (`CoreMapType.google`)
+- **Viettel Maps** (`CoreMapType.viettel`)
+
+### 2. Cấu hình
+
+#### Android: Thêm API key vào `AndroidManifest.xml`
+```xml
+<meta-data
+    android:name="com.google.android.geo.API_KEY"
+    android:value="YOUR_GOOGLE_MAPS_API_KEY" />
+```
+
+#### iOS: Thêm API key vào `AppDelegate.swift`
+```swift
+GMSServices.provideAPIKey("YOUR_GOOGLE_MAPS_API_KEY")
+```
+
+### 3. Sử dụng
+
+```dart
+// Google Maps
+CoreMap(
+  data: CoreMapData(
+    type: CoreMapType.google,
+    initialCameraPosition: CameraPosition(target: LatLng(10.762622, 106.660172), zoom: 14),
+  ),
+)
+
+// Viettel Maps  
+CoreMap(
+  data: CoreMapData(
+    type: CoreMapType.viettel,
+    token: 'YOUR_VIETTEL_TOKEN',
+    initialCameraPosition: CameraPosition(target: LatLng(10.762622, 106.660172), zoom: 14),
+  ),
+)
+```
+
+### 4. Chuyển đổi động
+```dart
+CoreMapType _mapType = CoreMapType.google;
+
+void _switchMapType() {
+  setState(() {
+    _mapType = _mapType == CoreMapType.google ? CoreMapType.viettel : CoreMapType.google;
+  });
+}
+```
+
+## Tích hợp Maps API Services
+
+### 1. Giới thiệu
+Ngoài việc hiển thị bản đồ, thư viện còn cung cấp **MapsAPIServiceImpl** để gọi các API services:
+- **Geocoding**: Chuyển đổi địa chỉ ↔ tọa độ  
+- **Places**: Tìm kiếm, autocomplete, chi tiết địa điểm
+- **Directions**: Tìm đường, tính khoảng cách
+- **Nearby Search**: Tìm địa điểm gần đó
+
+### 2. Khởi tạo service
+
+```dart
+final service = MapsAPIServiceImpl(
+  viettelKey: "YOUR_VIETTEL_API_KEY",
+  googleKey: "YOUR_GOOGLE_API_KEY", 
+  provider: MapProviderConst.VIETTEL, // Provider mặc định
+);
+```
+
+### 3. Chuyển đổi API provider
+
+```dart
+// Chuyển sang Google Maps API
+service.useProvider(MapProviderConst.GOOGLE);
+
+// Chuyển sang Viettel Maps API  
+service.useProvider(MapProviderConst.VIETTEL);
+```
+
+### 4. Sử dụng API services
+
+#### a) Geocoding
+```dart
+// Địa chỉ -> Tọa độ
+final geocoding = await service.geocode(address: 'Bitexco Tower, TP.HCM');
+
+// Tọa độ -> Địa chỉ
+final reverseGeocoding = await service.geocode(lat: 10.762622, lng: 106.660172);
+```
+
+#### b) Place Autocomplete
+```dart
+final autocomplete = await service.autocomplete(
+  input: 'Bitexco',
+  location: '10.762622,106.660172',
+  radius: '1000',
+);
+```
+
+#### c) Place Details
+```dart
+final placeDetail = await service.placeDetail(
+  placeId: 'PLACE_ID_HERE',
+  fields: ['name', 'formatted_address', 'geometry', 'rating'],
+);
+```
+
+#### d) Directions
+```dart
+final directions = await service.direction(
+  originLat: 10.762622,
+  originLng: 106.660172,
+  destLat: 21.028511,
+  destLng: 105.804817,
+  waypoints: [LatLng(14.058324, 108.277199)], // Điểm dừng
+);
+```
+
+#### e) Nearby Search
+```dart
+final nearbyPlaces = await service.nearbySearch(
+  lat: 10.762622,
+  lng: 106.660172,
+  radius: 1000,
+  keyword: 'restaurant',
+);
+```
+
+### 5. Patterns sử dụng
+
+#### a) Fallback strategy
+```dart
+try {
+  service.useProvider(MapProviderConst.GOOGLE);
+  final result = await service.geocode(address: query);
+} catch (e) {
+  // Fallback về Viettel nếu Google fails
+  service.useProvider(MapProviderConst.VIETTEL);
+  final result = await service.geocode(address: query);
+}
+```
+
+#### b) Provider theo vùng địa lý
+```dart
+Future<void> searchPlaces(LatLng location) async {
+  // Dùng Viettel cho Việt Nam, Google cho quốc tế
+  if (isInVietnam(location)) {
+    service.useProvider(MapProviderConst.VIETTEL);
+  } else {
+    service.useProvider(MapProviderConst.GOOGLE);
+  }
+  
+  final places = await service.nearbySearch(lat: location.latitude, lng: location.longitude);
+}
+```
+
+#### c) Feature-specific provider
+```dart
+// Google tốt hơn cho place details
+Future<DetailPlace> getPlaceDetails(String placeId) async {
+  service.useProvider(MapProviderConst.GOOGLE);
+  return await service.placeDetail(placeId: placeId);
+}
+
+// Viettel có thể chính xác hơn cho đường Việt Nam
+Future<Directions> getDirections(LatLng from, LatLng to) async {
+  service.useProvider(MapProviderConst.VIETTEL);
+  return await service.direction(originLat: from.latitude, originLng: from.longitude, destLat: to.latitude, destLng: to.longitude);
+}
+```
+
+### 6. Custom URL Configuration
+
+Để sử dụng API server riêng hoặc proxy server:
+
+```dart
+// Tạo custom config cho Viettel Maps
+final customViettelConfig = MapAPIConfigExtension.customConfig(
+  provider: MapProviderConst.VIETTEL,
+  placeHost: 'https://your-proxy-server.com/viettel-api',
+  routeHost: 'https://your-proxy-server.com/viettel-routing',
+  geocodePath: 'custom-geocode',
+  directionPath: 'custom-directions',
+  key: 'YOUR_API_KEY',
+);
+
+// Tạo custom config cho Google Maps  
+final customGoogleConfig = MapAPIConfigExtension.customConfig(
+  provider: MapProviderConst.GOOGLE,
+  mapsHost: 'https://your-proxy-server.com/google-maps',
+  placeHost: 'https://your-proxy-server.com/google-places',
+  routeHost: 'https://your-proxy-server.com/google-routes',
+  key: 'YOUR_API_KEY',
+);
+
+// Áp dụng custom config
+final service = MapsAPIServiceImpl(
+  viettelKey: "key1", 
+  googleKey: "key2", 
+  provider: MapProviderConst.VIETTEL
+);
+
+service.configViettel = customViettelConfig;
+service.configGoogle = customGoogleConfig;
+```
+
+#### Mapping path cụ thể đến host khác nhau:
+```dart
+final customConfig = MapAPIConfigExtension.customConfig(
+  provider: MapProviderConst.VIETTEL,
+  pathToHost: {
+    'geocode': 'https://geocoding-server.com',
+    'directions': 'https://routing-server.com', 
+    'autocomplete': 'https://search-server.com',
+  },
+);
+```
+
+### 7. Lưu ý quan trọng
+
+- **API Response khác nhau**: Service tự động xử lý format khác nhau giữa Google và Viettel
+- **Parameter khác nhau**: Một số parameter có format khác (ví dụ: waypoints dùng `|` cho Google, `;` cho Viettel)
+- **Endpoint khác nhau**: Mỗi provider có host URL và đường dẫn riêng
+- **Singleton pattern**: Service sử dụng singleton, chỉ có 1 instance duy nhất
+- **Custom URLs**: Có thể override URLs cho từng API endpoint riêng biệt
 
 ## Một số lỗi thường gặp
+
+### 1. Google Maps specific
+- **API key không hợp lệ**: Kiểm tra API key trong AndroidManifest.xml và AppDelegate.swift
+- **Maps SDK for Android/iOS chưa được enable**: Enable trong Google Cloud Console
+- **Billing account chưa được thiết lập**: Cần thiết lập billing cho Google Cloud Project
+
+### 2. Chuyển đổi map type
+```
+Error: Cannot create map controller
+```
+**Giải pháp**: Đảm bảo đã cấu hình đúng cho loại map đang chọn (API key cho Google, token cho Viettel)
+
+### 3. Lỗi tương thích
 https://stackoverflow.com/questions/75273823/java-lang-incompatibleclasschangeerror-found-interface-com-google-android-gms-l

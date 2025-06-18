@@ -69,7 +69,7 @@ class MapAPIConfig {
     } else if (provider == MapProviderConst.VIETTEL) {
       return MapAPIConfig(
         mapsHost: '',
-        placeHost: 'https://api-maps.viettel.vn/gateway/placeapi/v2/place-api',
+        placeHost: 'https://api-maps.viettel.vn/gateway/placeapi/v4/place-api',
         routeHost: 'https://api-maps.viettel.vn/gateway/routing/v2',
         geocodePath: 'geocode',
         placeDetailPath: 'details',
