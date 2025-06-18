@@ -3,6 +3,9 @@ import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 import '../widgets/api_result_display.dart';
 import 'package:maps_core/maps/services/maps_api_service_impl.dart';
+import 'package:map_core_example/views/widgets/api_result_display.dart';
+import 'package:maps_core/maps/models/models.dart';
+import 'package:map_core_example/config/api_config.dart';
 
 class GeocodeTestScreen extends StatefulWidget {
   static String routeName = "geocode-test-screen";
@@ -38,9 +41,12 @@ class _GeocodeTestScreenState extends State<GeocodeTestScreen> {
       final double lat = double.parse(_latController.text);
       final double lng = double.parse(_lngController.text);
 
+      // Validate API keys
+      ApiConfig.validateKeys();
+
       final service = MapsAPIServiceImpl(
-        viettelKey: 'VIETTEL_KEY',
-        googleKey: 'GOOGLE_KEY',
+        viettelKey: ApiConfig.viettelKey,
+        googleKey: ApiConfig.googleKey,
         provider: provider,
       );
 
@@ -83,12 +89,15 @@ class _GeocodeTestScreenState extends State<GeocodeTestScreen> {
       return;
     }
 
+    // Validate API keys
+    ApiConfig.validateKeys();
+
     _setLoading(true);
 
     try {
       final service = MapsAPIServiceImpl(
-        viettelKey: 'VIETTEL_KEY',
-        googleKey: 'GOOGLE_KEY',
+        viettelKey: ApiConfig.viettelKey,
+        googleKey: ApiConfig.googleKey,
         provider: provider,
       );
 

@@ -362,6 +362,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
     String cachingKey = _getDirectionCachingKey(waypoints, travelMode);
     String? jsonString = await _cachingStrategy?.get(cachingKey);
+    // jsonString = null; Remove cache for testing
 
     Directions? directions;
     if (jsonString == null) {
@@ -464,6 +465,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
       
       List<DistanceMatrix> listMatrix;
 
+      // jsonString = null; // Remove cache for testing
       if (jsonString == null) {
         StringBuffer newJsonString = StringBuffer();
 

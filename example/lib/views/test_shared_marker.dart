@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:map_core_example/custom/custom_cluster_manager.dart';
 import 'package:map_core_example/views/test_shapes.dart';
 import 'package:maps_core/maps.dart';
+import 'package:maps_core/maps/constants.dart';
 
 class TestSharedMarkerScreen extends StatefulWidget {
   const TestSharedMarkerScreen({super.key});

@@ -3,8 +3,9 @@ import 'package:map_core_example/views/widgets/api_result_display.dart';
 import 'package:maps_core/maps/models/place_autocomplete.dart';
 import 'package:maps_core/maps/models/place_list.dart';
 import 'package:maps_core/maps/services/maps_api_service_impl.dart';
+import 'package:map_core_example/config/api_config.dart';
 
-import '../../utils/constant.dart';
+import 'package:maps_core/maps/constants.dart';
 
 class PlaceAutocompleteTestScreen extends StatefulWidget {
   static String routeName = "place-autocomplete-test-screen";
@@ -38,12 +39,15 @@ class _PlaceAutocompleteTestScreenState
       return;
     }
 
+    // Validate API keys
+    ApiConfig.validateKeys();
+
     _setLoading(true);
 
     try {
       final service = MapsAPIServiceImpl(
-        viettelKey: 'VIETTEL_KEY',
-        googleKey: 'GOOGLE_KEY',
+        viettelKey: ApiConfig.viettelKey,
+        googleKey: ApiConfig.googleKey,
         provider: provider,
       );
       service.useProvider(provider);

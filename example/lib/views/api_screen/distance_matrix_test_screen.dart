@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:map_core_example/views/widgets/api_result_display.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:maps_core/maps/services/maps_api_service_impl.dart';
+import 'package:map_core_example/config/api_config.dart';
 
-import '../../utils/constant.dart';
+import 'package:maps_core/maps/constants.dart';
+
 
 class DistanceMatrixTestScreen extends StatefulWidget {
   static String routeName = "distance-matrix-test-screen";
@@ -70,12 +72,15 @@ class _DistanceMatrixTestScreenState extends State<DistanceMatrixTestScreen> {
       return;
     }
 
+    // Validate API keys
+    ApiConfig.validateKeys();
+
     _setLoading(true);
 
     try {
       final service = MapsAPIServiceImpl(
-        viettelKey: 'VIETTEL_KEY',
-        googleKey: 'GOOGLE_KEY',
+        viettelKey: ApiConfig.viettelKey,
+        googleKey: ApiConfig.googleKey,
         provider: provider,
       );
 

@@ -3,6 +3,9 @@ import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 import '../widgets/api_result_display.dart';
 import 'package:maps_core/maps/services/maps_api_service_impl.dart';
+import 'package:map_core_example/views/widgets/api_result_display.dart';
+import 'package:maps_core/maps/models/place_detail.dart';
+import 'package:map_core_example/config/api_config.dart';
 
 class PlaceDetailTestScreen extends StatefulWidget {
   static String routeName = "place-detail-test-screen";
@@ -43,12 +46,15 @@ class _PlaceDetailTestScreenState extends State<PlaceDetailTestScreen> {
       return;
     }
 
+    // Validate API keys
+    ApiConfig.validateKeys();
+
     _setLoading(true);
 
     try {
       final service = MapsAPIServiceImpl(
-        viettelKey: 'VIETTEL_KEY',
-        googleKey: 'GOOGLE_KEY',
+        viettelKey: ApiConfig.viettelKey,
+        googleKey: ApiConfig.googleKey,
         provider: provider,
       );
 

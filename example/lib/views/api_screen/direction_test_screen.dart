@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:map_core_example/views/widgets/api_result_display.dart';
+import 'package:maps_core/maps/services/maps_api_service_impl.dart';
+import 'package:map_core_example/config/api_config.dart';
+
+import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/models/directions.dart';
 import 'package:maps_core/maps/models/models.dart';
-import 'package:maps_core/maps/services/maps_api_service_impl.dart';
 
-import '../../utils/constant.dart';
 
 class DirectionsTestScreen extends StatefulWidget {
   static String routeName = "directions-test-screen";
@@ -46,11 +48,14 @@ class _DirectionsTestScreenState extends State<DirectionsTestScreen> {
       return;
     }
 
+    // Validate API keys
+    ApiConfig.validateKeys();
+
     _setLoading(true);
 
       final service = MapsAPIServiceImpl(
-        viettelKey: 'VIETTEL_KEY',
-        googleKey: 'GOOGLE_KEY',
+        viettelKey: ApiConfig.viettelKey,
+        googleKey: ApiConfig.googleKey,
         provider: provider,
 
       );
