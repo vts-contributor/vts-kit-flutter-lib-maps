@@ -6,7 +6,9 @@ import 'package:maps_core/maps.dart';
 ///Data the map. Used as object for better transferring between maps and controllers
 class CoreMapData {
   CoreMapData({
-    this.accessToken,
+    this.vtMapAccessToken,
+    this.ggMapAccessToken,
+    required this.provider,
     required this.initialCameraPosition,
     this.gestureRecognizers = const <Factory<OneSequenceGestureRecognizer>>{},
     this.minMaxZoomPreference = MinMaxZoomPreference.unbounded,
@@ -42,7 +44,12 @@ class CoreMapData {
   });
 
   ///should be removed, use file instead
-  final String? accessToken;
+  final String? vtMapAccessToken;
+
+  final String? ggMapAccessToken;
+
+  /// Map provider
+  final String provider;
 
   /// The initial position of the map's camera.
   final CameraPosition initialCameraPosition;
@@ -198,7 +205,9 @@ class CoreMapData {
 
   ///copy data with new parameters
   CoreMapData copyWith({
-    String? accessToken,
+    String? vtMapAccessToken,
+    String? ggMapAccessToken,
+    String? provider,
     CameraPosition? initialCameraPosition,
     MinMaxZoomPreference? minMaxZoomPreference,
     CameraTargetBounds? cameraTargetBounds,
@@ -233,7 +242,9 @@ class CoreMapData {
     bool? isUseClusterData,
   }) {
     return CoreMapData(
-      accessToken: accessToken ?? this.accessToken,
+      vtMapAccessToken: vtMapAccessToken ?? this.vtMapAccessToken,
+      ggMapAccessToken: ggMapAccessToken ?? this.ggMapAccessToken,
+      provider: provider ?? this.provider,
       initialCameraPosition: initialCameraPosition ?? this.initialCameraPosition,
       minMaxZoomPreference: minMaxZoomPreference ?? this.minMaxZoomPreference,
       cameraTargetBounds: cameraTargetBounds ?? this.cameraTargetBounds,

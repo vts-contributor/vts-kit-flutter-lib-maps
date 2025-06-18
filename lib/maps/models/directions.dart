@@ -23,4 +23,25 @@ class Directions {
     );
   }
 
+  factory Directions.fromJsonGoogle(Map<String, dynamic> json, {int? routePointsSkipStep}) {
+    final List<GeocodingPlaceGoogle>? geocodedWaypoints =
+    (json['geocoded_waypoints'] as List<dynamic>?)
+        ?.map((e) => GeocodingPlaceGoogle.fromJson(e))
+        .toList();
+    final List<MapRoute>? routes = (json['routes'] as List<dynamic>?)
+        ?.map((e) => MapRoute.fromJson(e, pointsSkipStep: routePointsSkipStep))
+        .toList();
+    return Directions(
+      geocodedWaypoints: geocodedWaypoints,
+      routes: routes,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'geocoded_waypoints': geocodedWaypoints?.map((e) => e.toJson()).toList(),
+      'routes': routes?.map((e) => e.toJson()).toList(),
+    };
+  }
+
 }

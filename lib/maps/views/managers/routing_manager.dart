@@ -15,7 +15,7 @@ abstract class RoutingManager implements CoreMapShapeModifier {
   Future<void> buildListMapRoute(List<MapRoute>? routes);
 
   ///options
-  Future<void> buildRoutes(RoutingOptions options);
+  Future<void> buildRoutes(RoutingOptions options, String provider);
 
   ///add a route go that will go through waypoints 
   Future<void> addRoute(RouteConfig routeConfig);

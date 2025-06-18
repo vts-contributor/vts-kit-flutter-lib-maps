@@ -58,7 +58,7 @@ class _CoreViettelMapState extends State<_CoreViettelMap> {
     CoreMapData data = widget.data;
     
     return vt.VTMap(
-      accessToken: data.accessToken,
+      accessToken: data.vtMapAccessToken,
       initialCameraPosition: data.initialCameraPosition.toViettel(),
       gestureRecognizers: widget.data.gestureRecognizers,
       onStyleLoadedCallback: () {

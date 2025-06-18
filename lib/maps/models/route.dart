@@ -62,6 +62,52 @@ class MapRoute {
     List<LatLng>? points = this.points;
     return (points != null && points.isNotEmpty) ? points: pointsFromLegs;
   }
+
+
+  Map<String, dynamic> toJson() {
+    return {
+      'bounds': bounds?.toJson(),
+      'copyrights': copyrights,
+      'overview_polyline': {
+        'points': points?.isNotEmpty == true ? _encodePolyline(points!) : null,
+      },
+      'summary': summary,
+      'warning': warning,
+      'waypoint_order': waypointOrder,
+      'legs': legs?.map((leg) => {
+        'distance': {
+          'text': leg.distance?.text,
+          'value': leg.distance?.value,
+        },
+        'duration': {
+          'text': leg.duration?.text,
+          'value': leg.duration?.value,
+        },
+        'start_address': leg.startAddress,
+        'end_address': leg.endAddress,
+        'start_location': leg.startLocation?.toJson(),
+        'end_location': leg.endLocation?.toJson(),
+        'steps': leg.steps?.map((step) => {
+          'distance': {
+            'text': step.distance?.text,
+            'value': step.distance?.value,
+          },
+          'duration': {
+            'text': step.duration?.text,
+            'value': step.duration?.value,
+          },
+          'start_location': step.startLocation?.toJson(),
+          'end_location': step.endLocation?.toJson(),
+          'html_instructions': step.instructions,
+          'maneuver': step.maneuver,
+          'polyline': {
+            'points': step.points?.isNotEmpty == true ? _encodePolyline(step.points!) : null,
+          },
+          'travel_mode': step.travelMode?.toString(),
+        }).toList(),
+      }).toList(),
+    };
+  }
 }
 
 class RouteLeg {
@@ -104,8 +150,19 @@ class RouteDistance {
 
   RouteDistance(this.text, this.value);
 
-  factory RouteDistance.fromJson(Map<String, dynamic>? json) {
-    return RouteDistance(json?["text"], json?["value"]);
+  factory RouteDistance.fromJson(Map<String, dynamic>? json) =>
+      RouteDistance(
+        json?["text"] as String?,
+        (json?["value"] is int
+            ? (json?["value"] as int).toDouble()
+            : json?["value"] as double?),
+      );
+
+  Map<String, dynamic> toJson() {
+    return {
+      "text": text,
+      "value": value,
+    };
   }
 }
 
@@ -116,7 +173,19 @@ class RouteDuration {
   RouteDuration(this.text, this.value);
 
   factory RouteDuration.fromJson(Map<String, dynamic>? json) {
-    return RouteDuration(json?["text"], json?["value"]);
+    return RouteDuration(
+      json?["text"] as String?,
+      (json?["value"] is int
+          ? (json?["value"] as int).toDouble()
+          : json?["value"] as double?),
+    );
+  }
+
+  toJson() {
+    return {
+      "text": text,
+      "value": value,
+    };
   }
 }
 
@@ -231,4 +300,32 @@ List<LatLng> _decodePolyline(String encoded, {int? skipStep}) {
     decoded.add(LatLng(lat * 1e-5, lng * 1e-5));
   }
   return decoded;
+}
+
+String _encodePolyline(List<LatLng> points) {
+  var result = StringBuffer();
+  var lat = 0;
+  var lng = 0;
+
+  for (var point in points) {
+    var latNew = (point.latitude * 1e5).round();
+    var lngNew = (point.longitude * 1e5).round();
+
+    _encodeValue(result, latNew - lat);
+    _encodeValue(result, lngNew - lng);
+
+    lat = latNew;
+    lng = lngNew;
+  }
+
+  return result.toString();
+}
+
+void _encodeValue(StringBuffer result, int value) {
+  value = (value < 0) ? ~(value << 1) : (value << 1);
+  while (value >= 0x20) {
+    result.writeCharCode((0x20 | (value & 0x1f)) + 63);
+    value >>= 5;
+  }
+  result.writeCharCode(value + 63);
 }

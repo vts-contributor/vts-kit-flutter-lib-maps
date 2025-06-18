@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:map_core_example/views/test_shapes.dart';
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
+import 'package:maps_core/maps/constants.dart';
 
 class TestMapScreen extends StatefulWidget {
   static String routeName = "/test-map";
@@ -71,7 +72,9 @@ class _TestMapScreenState extends State<TestMapScreen> {
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            accessToken: "",
+            vtMapAccessToken: "",
+            ggMapAccessToken: "",
+            provider: MapProviderConst.VIETTEL,
             markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(
                 target: const LatLng(9.85419858085518, 105.49970250115466),

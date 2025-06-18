@@ -41,7 +41,9 @@ class NearbyPlace extends Place {
     OpeningHours.fromJson(json['opening_hours']);
     final PlusCode plusCode = PlusCode.fromJson(json['plus_code']);
     final int? priceLevel = json['price_level'];
-    final double? rating = json['rating'];
+    final double? rating = json['rating'] is int
+        ? (json['rating'] as int).toDouble()
+        : json['rating']?.toDouble();
     final List<String>? types = (json['types'] as List?)?.asListOf<String>();
     final int? userRatingTotal = json['user_rating_total'];
     final String? vicinity = json['vicinity'];
