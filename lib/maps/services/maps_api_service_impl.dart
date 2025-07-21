@@ -33,6 +33,15 @@ class MapsAPIServiceImpl extends MapsAPIService {
     config = configViettel; // Set default config to Viettel
   }
 
+  MapsAPIServiceImpl.withConfig({
+    required MapAPIConfig config,
+    required String viettelKey,
+    required String googleKey,
+  }) : super(config.provider) {
+    config.provider == MapProviderConst.VIETTEL ? configViettel = config : configGoogle = config;
+    config.key = config.provider == MapProviderConst.VIETTEL ? viettelKey : googleKey;
+  }
+
   // Use in the init method or when need to change provider
   void useProvider(String provider) {
    provider == MapProviderConst.GOOGLE ? setConfig(configGoogle) : setConfig(configViettel);
