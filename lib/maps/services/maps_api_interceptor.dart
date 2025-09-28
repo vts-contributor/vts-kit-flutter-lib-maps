@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import 'maps_api_config.dart';
 
@@ -18,6 +19,7 @@ class MapsAPIInterceptorsWrapper extends InterceptorsWrapper {
     if (!options.queryParameters.containsKey('key')) {
       options.queryParameters['key'] = config.key;
     }
+    debugPrint("MapsAPIInterceptorsWrapper onRequest ${options.path}");
     handler.next(options);
   }
 }
