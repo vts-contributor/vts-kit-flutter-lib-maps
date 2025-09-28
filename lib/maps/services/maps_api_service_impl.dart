@@ -56,16 +56,25 @@ class MapsAPIServiceImpl extends MapsAPIService {
     return this;
   }
 
+  static MapsAPIServiceImpl get getInstance {
+    final instance = _instance;
+    if (instance != null) {
+      return instance;
+    } else {
+      return MapsAPIServiceImpl(provider: "VIETTEL");
+    }
+  }
+
   factory MapsAPIServiceImpl({String? viettelKey, String? googleKey, required String provider}) {
     if (_instance == null) {
       _instance = MapsAPIServiceImpl._();
       _instance?.config = MapAPIConfig.getConfig(provider);
-      if (viettelKey != null) {
-        _instance?.configViettel.key = viettelKey;
-      }
-      if (googleKey != null) {
-        _instance?.configGoogle.key = googleKey;
-      }
+    }
+    if (viettelKey != null) {
+      _instance?.configViettel.key = viettelKey;
+    }
+    if (googleKey != null) {
+      _instance?.configGoogle.key = googleKey;
     }
     _instance?.useProvider(provider);
 

@@ -64,7 +64,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         return false;
       }
 
-      mapsApiService = MapsAPIServiceImpl(viettelKey: _vtToken, googleKey: _ggToken, provider: provider);
+      mapsApiService = MapsAPIServiceImpl.getInstance;
 
       this.provider = provider;
       return mapsApiService != null;
