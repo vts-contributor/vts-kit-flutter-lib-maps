@@ -2,6 +2,7 @@ import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:maps_core/maps/services/maps_api_config.dart';
 import 'package:maps_core/maps/services/maps_api_service_abstract.dart';
+import 'package:maps_core/maps/utils/provider_resolver.dart';
 
 import '../models/network/custom_cancel_token.dart';
 
@@ -9,9 +10,10 @@ abstract class MapsAPIService extends MapsAPIAbstractService {
   late MapAPIConfig configViettel;
   late MapAPIConfig configGoogle;
 
-MapsAPIService(String provider) : super(provider)  {
-    configViettel = MapAPIConfig.getConfig(MapProviderConst.VIETTEL);
+  MapsAPIService(String provider) : super(resolveMapProvider(provider))  {
     configGoogle = MapAPIConfig.getConfig(MapProviderConst.GOOGLE);
+    // Redirect Viettel config to Google as it's no longer supported
+    configViettel = configGoogle; 
   }
 
   Future<List<GeocodingPlace>> geocode({

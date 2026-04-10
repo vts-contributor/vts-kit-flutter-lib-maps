@@ -32,7 +32,6 @@ export 'maps/views/managers/managers.dart';
 export 'maps/utils/utils.dart';
 
 part 'maps/views/core_map.dart';
-part 'maps/views/core_viettel_map.dart';
 part 'maps/views/core_google_map.dart';
 
 part 'maps/views/managers/location_manager.dart';
@@ -47,5 +46,4 @@ part 'maps/views/managers/marker_on_tap_effect_manager_impl.dart';
 part 'maps/views/managers/marker_on_tap_effect_manager.dart';
 
 part 'maps/controllers/implementations/google_map_controller.dart';
-part 'maps/controllers/implementations/viettel_map_controller.dart';
 part 'maps/controllers/base_core_map_controller.dart';
