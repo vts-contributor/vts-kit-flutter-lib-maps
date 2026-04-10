@@ -6,7 +6,6 @@ import 'package:map_core_example/config/api_config.dart';
 
 import 'package:maps_core/maps/constants.dart';
 
-
 class DistanceMatrixTestScreen extends StatefulWidget {
   static String routeName = "distance-matrix-test-screen";
   const DistanceMatrixTestScreen({Key? key}) : super(key: key);
@@ -14,12 +13,10 @@ class DistanceMatrixTestScreen extends StatefulWidget {
   @override
   State<DistanceMatrixTestScreen> createState() => _DistanceMatrixTestScreenState();
 }
+
 class _DistanceMatrixTestScreenState extends State<DistanceMatrixTestScreen> {
   final _originLatController = TextEditingController(text: "40.6655101");
   final _originLngController = TextEditingController(text: "-73.8918897");
-
-  // this is lat and lng 1 to 4
-  // 40.659569%2C-73.933783%7C40.729029%2C-73.851524%7C40.6860072%2C-73.6334271%7C40.598566%2C-73.7527626
 
   final _dest1LatController = TextEditingController(text: "40.659569");
   final _dest1LngController = TextEditingController(text: "-73.933783");
@@ -30,15 +27,10 @@ class _DistanceMatrixTestScreenState extends State<DistanceMatrixTestScreen> {
   final _dest4LatController = TextEditingController(text: "40.598566");
   final _dest4LngController = TextEditingController(text: "-73.7527626");
 
-
-
-  String provider = MapProviderConst.VIETTEL;
   bool _isLoading = false;
   String? _error;
-  List<Map<String, dynamic>> _resultsViettel = [];
-  List<Map<String, dynamic>> _resultsGoogle = [];
+  List<Map<String, dynamic>> _results = [];
   RouteTravelMode _travelMode = RouteTravelMode.bycycling;
-
 
   @override
   void dispose() {
@@ -81,7 +73,7 @@ class _DistanceMatrixTestScreenState extends State<DistanceMatrixTestScreen> {
       final service = MapsAPIServiceImpl(
         viettelKey: ApiConfig.viettelKey,
         googleKey: ApiConfig.googleKey,
-        provider: provider,
+        provider: MapProviderConst.GOOGLE,
       );
 
       final distanceMatrix = await service.getDistanceMatrix(
@@ -114,20 +106,16 @@ class _DistanceMatrixTestScreenState extends State<DistanceMatrixTestScreen> {
 
       final results = distanceMatrix.toJson();
       setState(() {
-        if (provider == MapProviderConst.GOOGLE) {
-          _resultsGoogle = [results];
-        } else {
-          _resultsViettel = [results];
-        }
+        _results = [results];
         _error = null;
+        _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _error = e.toString();
+        _isLoading = false;
       });
     }
-
-    _setLoading(false);
   }
 
   Widget _buildCoordinateFields() {
@@ -199,7 +187,7 @@ class _DistanceMatrixTestScreenState extends State<DistanceMatrixTestScreen> {
 
   Widget _buildTravelModeDropdown() {
     return DropdownButtonFormField<RouteTravelMode>(
-      initialValue: _travelMode,
+      value: _travelMode,
       decoration: const InputDecoration(
         labelText: 'Travel Mode',
         border: OutlineInputBorder(),
@@ -219,70 +207,24 @@ class _DistanceMatrixTestScreenState extends State<DistanceMatrixTestScreen> {
   }
 
   Widget _buildButtons() {
-    return Row(
-      children: [
-        ElevatedButton(
-          onPressed: _isLoading
-              ? null
-              : () {
-            setState(() {
-              provider = MapProviderConst.VIETTEL;
-            });
-            _fetchDistanceMatrix();
-          },
-          child: const Text('Get Viettel Matrix'),
-        ),
-        const SizedBox(width: 8),
-        ElevatedButton(
-          onPressed: _isLoading
-              ? null
-              : () {
-            setState(() {
-              provider = MapProviderConst.GOOGLE;
-            });
-            _fetchDistanceMatrix();
-          },
-          child: const Text('Get Google Matrix'),
-        ),
-      ],
+    return ElevatedButton(
+      onPressed: _isLoading ? null : _fetchDistanceMatrix,
+      child: const Text('Fetch Distance Matrix'),
     );
   }
 
   Widget _buildResults() {
-    return IntrinsicHeight(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 2 - 24,
-              child: ApiResultDisplay(
-                title: 'Viettel Results',
-                data: _resultsViettel,
-                isLoading: provider == MapProviderConst.VIETTEL && _isLoading,
-                errorMessage: provider == MapProviderConst.VIETTEL ? _error : null,
-              ),
-            ),
-            const SizedBox(width: 16),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 2 - 24,
-              child: ApiResultDisplay(
-                title: 'Google Results',
-                data: _resultsGoogle,
-                isLoading: provider == MapProviderConst.GOOGLE && _isLoading,
-                errorMessage: provider == MapProviderConst.GOOGLE ? _error : null,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return ApiResultDisplay(
+      title: 'Results',
+      data: _results,
+      isLoading: _isLoading,
+      errorMessage: _error,
     );
   }
 
-  void _setLoading(bool bool) {
+  void _setLoading(bool loading) {
     setState(() {
-      _isLoading = bool;
+      _isLoading = loading;
     });
   }
 }

@@ -8,7 +8,6 @@ import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 /// The position of the map "camera", the view point from which the world is shown in the map view.
 ///
@@ -122,15 +121,6 @@ class CameraPosition {
       bearing: bearing ?? this.bearing,
       zoom: zoom ?? this.zoom,
       tilt: tilt ?? this.tilt
-    );
-  }
-
-  vtmap.CameraPosition toViettel() {
-    return vtmap.CameraPosition(
-        target: target.toViettel(),
-        bearing: bearing,
-        tilt: tilt,
-        zoom: zoom.toZoomViettel()
     );
   }
 

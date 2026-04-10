@@ -1,13 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:vtmap_gl/vtmap_gl.dart';
 
 ///Data (usually flags) of specific map type
 class MapViewSpecificData {
   GoogleMapSpecificData? google;
-  ViettelMapSpecificData? viettel;
 }
 
 class GoogleMapSpecificData {
@@ -67,31 +63,5 @@ class GoogleMapSpecificData {
     this.buildingsEnabled = true,
     this.mapToolbarEnabled = false,
     this.tileOverlays = const <TileOverlay>{},
-  });
-}
-
-class ViettelMapSpecificData {
-
-  ///show or hide Mapbox logo
-  final bool? logoEnabled;
-
-  /// Set the layout margins for the Mapbox Logo
-  final Point? logoViewMargin;
-
-  /// Position of the compass when rotate the map
-  final CompassViewPosition? compassViewPosition;
-
-  /// margins of the compass
-  final Point? compassViewMargins;
-
-  /// margins of the attribution button
-  final Point? attributionButtonMargins;
-
-  ViettelMapSpecificData({
-    this.logoEnabled = true,
-    this.logoViewMargin,
-    this.compassViewPosition,
-    this.compassViewMargins,
-    this.attributionButtonMargins,
   });
 }

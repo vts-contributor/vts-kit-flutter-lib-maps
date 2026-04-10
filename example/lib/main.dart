@@ -5,7 +5,6 @@ import 'package:map_core_example/views/test_google_map_screen.dart';
 import 'package:map_core_example/views/test_map_screen.dart';
 import 'package:map_core_example/views/test_routing_screen.dart';
 import 'package:map_core_example/views/test_shared_marker.dart';
-import 'package:map_core_example/views/test_vt_map_screen.dart';
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 import 'package:provider/provider.dart';
@@ -35,9 +34,8 @@ class MyApp extends StatelessWidget {
       routes: {
         TestMapScreen.routeName: (_) => const TestMapScreen(),
         TestGoogleMapScreen.routeName: (_) => const TestGoogleMapScreen(),
-        TestVTMapScreen.routeName: (_) => const TestVTMapScreen(),
         TestRoutingScreen.routeName: (_) => ChangeNotifierProvider(
-          create: (_) => RoutingViewModel(MapsAPIServiceImpl(viettelKey: "", googleKey: "", provider: MapProviderConst.VIETTEL)),
+          create: (_) => RoutingViewModel(MapsAPIServiceImpl(googleKey: "", provider: MapProviderConst.GOOGLE)),
           child: const TestRoutingScreen(),
         ),
         TestSharedMarkerScreen.routeName:(context) => const TestSharedMarkerScreen(),
@@ -107,10 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestGoogleMapScreen.routeName),
               child: const Text("Test google map"),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, TestVTMapScreen.routeName),
-              child: const Text("Test vt map"),
             ),
             const SizedBox(height: 10,),
             ElevatedButton(

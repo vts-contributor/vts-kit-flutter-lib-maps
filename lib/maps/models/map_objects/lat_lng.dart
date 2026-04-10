@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 
 import '../../../log/log.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 class LatLng {
   final double latitude;
@@ -94,10 +93,6 @@ class LatLng {
   ggmap.LatLng toGoogle() {
     return ggmap.LatLng(latitude, longitude);
   }
-
-  vtmap.LatLng toViettel() {
-    return vtmap.LatLng(latitude, longitude);
-  }
 }
 
 
@@ -166,13 +161,6 @@ class LatLngBounds {
     return ggmap.LatLngBounds(
       northeast: northeast.toGoogle(),
       southwest: southwest.toGoogle(),
-    );
-  }
-
-  vtmap.LatLngBounds toViettel() {
-    return vtmap.LatLngBounds(
-      northeast: northeast.toViettel(),
-      southwest: southwest.toViettel(),
     );
   }
 }

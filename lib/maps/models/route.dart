@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:uuid/uuid.dart';
-import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 class MapRoute {
   String id;
@@ -251,17 +250,6 @@ enum TravelMode {
         return "walking";
       case TravelMode.drivingWithTraffic:
         return "driving";
-    }
-  }
-
-  vt.VTMapNavigationMode toViettel() {
-    switch(this) {
-      case TravelMode.driving:
-        return vt.VTMapNavigationMode.driving;
-      case TravelMode.drivingWithTraffic:
-        return vt.VTMapNavigationMode.drivingWithTraffic;
-      case TravelMode.walking:
-        return vt.VTMapNavigationMode.walking;
     }
   }
 }

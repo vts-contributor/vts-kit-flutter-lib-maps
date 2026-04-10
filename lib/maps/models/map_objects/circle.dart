@@ -9,9 +9,6 @@ import 'package:flutter/foundation.dart' show immutable;
 import 'package:flutter/material.dart' show Color, Colors;
 import 'package:maps_core/maps.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
-
-import '../../constants.dart';
 
 /// Uniquely identifies a [Circle] among [CoreMap] markers.
 ///
@@ -159,43 +156,6 @@ class Circle implements MapObject<Circle> {
         visible: visible,
         zIndex: zIndex,
         onTap: onTap
-    );
-  }
-
-  vtmap.CircleOptions toCircleOptions() {
-    return vtmap.CircleOptions(
-        geometry: center.toViettel(),
-        circleColor: fillColor.toHex(),
-        circleRadius: radius / 1000, //kilometer -> meter
-        circleStrokeColor: strokeColor.toRGBA(),
-        circleStrokeWidth: strokeWidth.toDouble(),
-        circleOpacity: fillColor.opacity,
-        circleStrokeOpacity: strokeColor.opacity
-    );
-  }
-
-  vtmap.FillOptions toFillOptions([List<LatLng>? points]) {
-    points ??= toCirclePoints(160);
-    return vtmap.FillOptions(
-      geometry: [points.toViettel()],
-      fillColor: fillColor.toHex(),
-      fillOpacity: fillColor.opacity,
-    );
-  }
-
-  vtmap.LineOptions toLineOptions([List<LatLng>? points]) {
-    points ??= toCirclePoints(160);
-    points = List.from(points);
-    if (points.length > 2) {
-      //to remove outline little gap
-      points.addAll(points.getRange(0, points.length ~/ 10));
-    }
-    return vtmap.LineOptions(
-      geometry: points.toViettel(),
-      lineWidth: (strokeWidth * Constant.vtStrokeWidthMultiplier).toDouble(),
-      lineColor: strokeColor.toViettel(),
-      lineOpacity: strokeColor.opacity,
-      lineJoin: "round",
     );
   }
 

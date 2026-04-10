@@ -19,11 +19,9 @@ class _DirectionsTestScreenState extends State<DirectionsTestScreen> {
   final _destLatController = TextEditingController(text: "10.7766347");
   final _destLngController = TextEditingController(text: "106.7007673");
 
-  String provider = MapProviderConst.VIETTEL;
   bool _isLoading = false;
   String? _error;
-  List<Map<String, dynamic>> _resultsViettel = [];
-  List<Map<String, dynamic>> _resultsGoogle = [];
+  List<Map<String, dynamic>> _results = [];
 
   @override
   void dispose() {
@@ -50,13 +48,12 @@ class _DirectionsTestScreenState extends State<DirectionsTestScreen> {
 
     _setLoading(true);
 
+    try {
       final service = MapsAPIServiceImpl(
         viettelKey: ApiConfig.viettelKey,
         googleKey: ApiConfig.googleKey,
-        provider: provider,
-
+        provider: MapProviderConst.GOOGLE,
       );
-      service.useProvider(provider);
 
       final directions = await service.direction(
         originLat: double.parse(_originLatController.text),
@@ -74,15 +71,17 @@ class _DirectionsTestScreenState extends State<DirectionsTestScreen> {
       ];
 
       setState(() {
-        if (provider == MapProviderConst.GOOGLE) {
-          _resultsGoogle = results;
-        } else {
-          _resultsViettel = results;
-        }
+        _results = results;
         _error = null;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
       });
     }
-
+  }
 
   void _setLoading(bool loading) {
     setState(() {
@@ -171,64 +170,18 @@ class _DirectionsTestScreenState extends State<DirectionsTestScreen> {
   }
 
   Widget _buildButtons() {
-    return Row(
-      children: [
-        ElevatedButton(
-          onPressed: _isLoading
-              ? null
-              : () {
-            setState(() {
-              provider = MapProviderConst.VIETTEL;
-            });
-            _fetchDirections();
-          },
-          child: const Text('Get Viettel Directions'),
-        ),
-        const SizedBox(width: 8),
-        ElevatedButton(
-          onPressed: _isLoading
-              ? null
-              : () {
-            setState(() {
-              provider = MapProviderConst.GOOGLE;
-            });
-            _fetchDirections();
-          },
-          child: const Text('Get Google Directions'),
-        ),
-      ],
+    return ElevatedButton(
+      onPressed: _isLoading ? null : _fetchDirections,
+      child: const Text('Fetch Directions'),
     );
   }
 
   Widget _buildResults() {
-    return IntrinsicHeight(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 2 - 24,
-              child: ApiResultDisplay(
-                title: 'Viettel Results',
-                data: _resultsViettel,
-                isLoading: provider == MapProviderConst.VIETTEL && _isLoading,
-                errorMessage: provider == MapProviderConst.VIETTEL ? _error : null,
-              ),
-            ),
-            const SizedBox(width: 16),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 2 - 24,
-              child: ApiResultDisplay(
-                title: 'Google Results',
-                data: _resultsGoogle,
-                isLoading: provider == MapProviderConst.GOOGLE && _isLoading,
-                errorMessage: provider == MapProviderConst.GOOGLE ? _error : null,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return ApiResultDisplay(
+      title: 'Results',
+      data: _results,
+      isLoading: _isLoading,
+      errorMessage: _error,
     );
   }
 }

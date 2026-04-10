@@ -13,30 +13,20 @@ class PlaceDetailTestScreen extends StatefulWidget {
 }
 
 class _PlaceDetailTestScreenState extends State<PlaceDetailTestScreen> {
-  final _placeIdGoogleController = TextEditingController(text: 'ChIJMfaNaSovdTER7H7koMW6Ql8');
-  final _placeIdViettelController = TextEditingController(text: '65794a7762326c66615751694f6a457a4e4451774d6a4573496e4276615639306558426c496a6f7a4d58303d');
-  String provider = MapProviderConst.VIETTEL;
+  final _placeIdController = TextEditingController(text: 'ChIJMfaNaSovdTER7H7koMW6Ql8');
 
   bool _isLoading = false;
   String? _error;
-  Map<String, dynamic> _resultsViettel = {};
-  Map<String, dynamic> _resultsGoogle = {};
+  Map<String, dynamic> _results = {};
 
   @override
   void dispose() {
-    _placeIdViettelController.dispose();
-    _placeIdGoogleController.dispose();
+    _placeIdController.dispose();
     super.dispose();
   }
 
-  Future<void> _getPlaceDetails({String provider = MapProviderConst.VIETTEL}) async {
-    if (_placeIdViettelController.text.isEmpty && provider == MapProviderConst.VIETTEL) {
-      setState(() {
-        _error = 'Please enter a Place ID';
-      });
-      return;
-    }
-    if (_placeIdGoogleController.text.isEmpty && provider == MapProviderConst.GOOGLE) {
+  Future<void> _getPlaceDetails() async {
+    if (_placeIdController.text.isEmpty) {
       setState(() {
         _error = 'Please enter a Place ID';
       });
@@ -52,37 +42,25 @@ class _PlaceDetailTestScreenState extends State<PlaceDetailTestScreen> {
       final service = MapsAPIServiceImpl(
         viettelKey: ApiConfig.viettelKey,
         googleKey: ApiConfig.googleKey,
-        provider: provider,
+        provider: MapProviderConst.GOOGLE,
       );
 
-      Map<String, dynamic> result;
-      if (provider == MapProviderConst.VIETTEL) {
-        service.useProvider(MapProviderConst.VIETTEL);
-        result = (await service.placeDetail(
-          placeId: _placeIdViettelController.text,
-          fields: ['name', 'formatted_address', 'geometry', 'rating', 'types', 'photos'],
-          paramsKeyMapper: {},
-        )).toJson();
-        _resultsViettel = result;
-      } else {
-        service.useProvider(MapProviderConst.GOOGLE);
-        result = (await service.placeDetail(
-          placeId: _placeIdGoogleController.text,
-          fields: ["*"],
-          paramsKeyMapper: {},
-        )).toJson();
-        _resultsGoogle = result;
-      }
+      final result = (await service.placeDetail(
+        placeId: _placeIdController.text,
+        fields: ["name", "formattedAddress", "location", "rating", "types", "photos"],
+        paramsKeyMapper: {},
+      )).toJson();
 
       setState(() {
+        _results = result;
         _error = null;
+        _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _error = 'Error: ${e.toString()}';
+        _isLoading = false;
       });
-    } finally {
-      _setLoading(false);
     }
   }
 
@@ -103,34 +81,11 @@ class _PlaceDetailTestScreenState extends State<PlaceDetailTestScreen> {
         children: [
           _buildPlaceIdCard(),
           const SizedBox(height: 16),
-          IntrinsicHeight(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 2 - 24, // Half the screen width minus padding
-                    child: ApiResultDisplay(
-                      title: 'Results Viettel',
-                      data: _resultsViettel,
-                      isLoading: _isLoading,
-                      errorMessage: _error,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 2 - 24, // Half the screen width minus padding
-                    child: ApiResultDisplay(
-                      title: 'Results Google',
-                      data: _resultsGoogle,
-                      isLoading: _isLoading,
-                      errorMessage: _error,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          ApiResultDisplay(
+            title: 'Results',
+            data: _results,
+            isLoading: _isLoading,
+            errorMessage: _error,
           ),
         ],
       ),
@@ -153,42 +108,20 @@ class _PlaceDetailTestScreenState extends State<PlaceDetailTestScreen> {
             ),
             const SizedBox(height: 16),
             TextField(
-              controller: _placeIdViettelController,
+              controller: _placeIdController,
               decoration: const InputDecoration(
                 labelText: 'Place ID',
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _placeIdGoogleController,
-              decoration: const InputDecoration(
-                labelText: 'Place ID',
-                border: OutlineInputBorder(),
-              ),
-            ),
-
             const SizedBox(height: 16),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: _isLoading ? null : () => _getPlaceDetails(provider: MapProviderConst.VIETTEL),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 65, 95, 145),
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('Get Details Viettel'),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _isLoading ? null : () => _getPlaceDetails(provider: MapProviderConst.GOOGLE),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    foregroundColor: const Color.fromARGB(255, 65, 95, 145),
-                  ),
-                  child: const Text('Get Details Google'),
-                ),
-              ],
+            ElevatedButton(
+              onPressed: _isLoading ? null : _getPlaceDetails,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 65, 95, 145),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Fetch Details'),
             ),
           ],
         ),

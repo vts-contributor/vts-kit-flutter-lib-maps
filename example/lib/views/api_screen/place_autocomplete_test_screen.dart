@@ -19,11 +19,9 @@ class PlaceAutocompleteTestScreen extends StatefulWidget {
 class _PlaceAutocompleteTestScreenState
     extends State<PlaceAutocompleteTestScreen> {
   final _queryController = TextEditingController(text: "Viettel Tower");
-  String provider = MapProviderConst.VIETTEL;
   bool _isLoading = false;
   String? _error;
-  List<Map<String, dynamic>> _resultsViettel = [];
-  List<Map<String, dynamic>> _resultsGoogle = [];
+  List<Map<String, dynamic>> _results = [];
 
   @override
   void dispose() {
@@ -48,9 +46,8 @@ class _PlaceAutocompleteTestScreenState
       final service = MapsAPIServiceImpl(
         viettelKey: ApiConfig.viettelKey,
         googleKey: ApiConfig.googleKey,
-        provider: provider,
+        provider: MapProviderConst.GOOGLE,
       );
-      service.useProvider(provider);
 
       PlaceList<AutocompletePlace> placeList = await service.autocomplete(
         input: _queryController.text,
@@ -60,21 +57,17 @@ class _PlaceAutocompleteTestScreenState
 
       final results = placeList.values.map((e) => e.toJson()).toList();
 
-      if (provider == MapProviderConst.GOOGLE) {
-        _resultsGoogle = results;
-      } else {
-        _resultsViettel = results;
-      }
       setState(() {
+        _results = results;
         _error = null;
+        _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _error = e.toString();
+        _isLoading = false;
       });
     }
-
-    _setLoading(false);
   }
 
   void _setLoading(bool loading) {
@@ -93,76 +86,29 @@ class _PlaceAutocompleteTestScreenState
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextField(
-                    controller: _queryController,
-                    decoration: const InputDecoration(
-                      labelText: 'Query',
-                      border: OutlineInputBorder(),
-                    ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: _queryController,
+                  decoration: const InputDecoration(
+                    labelText: 'Query',
+                    border: OutlineInputBorder(),
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                          setState(() {
-                            provider = MapProviderConst.VIETTEL;
-                          });
-                          _fetchAutocompleteResults();
-                        },
-                        child: const Text('Search Viettel'),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                          setState(() {
-                            provider = MapProviderConst.GOOGLE;
-                          });
-                          _fetchAutocompleteResults();
-                        },
-                        child: const Text('Search Google'),
-                      ),
-                    ],
-                  ),
-                  IntrinsicHeight(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2 - 24, // Half the screen width minus padding
-                            child: ApiResultDisplay(
-                              title: 'Viettel Results',
-                              data: _resultsViettel,
-                              isLoading: provider == MapProviderConst.VIETTEL && _isLoading,
-                              errorMessage: provider == MapProviderConst.VIETTEL ? _error : null,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2 - 24, // Half the screen width minus padding
-                            child:ApiResultDisplay(
-                              title: 'Google Results',
-                              data: _resultsGoogle,
-                              isLoading: provider == MapProviderConst.GOOGLE && _isLoading,
-                              errorMessage: provider == MapProviderConst.GOOGLE ? _error : null,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _fetchAutocompleteResults,
+                  child: const Text('Fetch Autocomplete Results'),
+                ),
+                const SizedBox(height: 16),
+                ApiResultDisplay(
+                  title: 'Results',
+                  data: _results,
+                  isLoading: _isLoading,
+                  errorMessage: _error,
+                ),
+              ],
             ),
           ),
         ],

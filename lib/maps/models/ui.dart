@@ -7,7 +7,6 @@ import 'package:maps_core/maps/extensions/utils.dart';
 
 import 'map_objects/lat_lng.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 /// Type of map tiles to display.
 // Enum constants must be indexed to match the corresponding int constants of
@@ -73,10 +72,6 @@ class CameraTargetBounds {
   ggmap.CameraTargetBounds toGoogle() {
     return ggmap.CameraTargetBounds(bounds?.toGoogle());
   }
-
-  vtmap.CameraTargetBounds toViettel() {
-    return vtmap.CameraTargetBounds(bounds?.toViettel());
-  }
 }
 
 /// Preferred bounds for map camera zoom level.
@@ -131,10 +126,6 @@ class MinMaxZoomPreference {
 
   ggmap.MinMaxZoomPreference toGoogle() {
     return ggmap.MinMaxZoomPreference(minZoom, maxZoom);
-  }
-
-  vtmap.MinMaxZoomPreference toViettel() {
-    return vtmap.MinMaxZoomPreference(minZoom, maxZoom);
   }
 }
 
