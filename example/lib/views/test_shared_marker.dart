@@ -60,7 +60,7 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
               icon: const Icon(
                 Icons.reddit,
               ),
-              color: Colors.yellow.withOpacity(0.4),
+              color: Colors.yellow.withValues(alpha: 0.4),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(4),
@@ -68,7 +68,7 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
             ),
             zoomOutButtonData: CoreMapButtonCustomizeData(
               icon: const Icon(Icons.bluetooth),
-              color: Colors.yellow.withOpacity(0.4),
+              color: Colors.yellow.withValues(alpha: 0.4),
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(4),
                 bottomRight: Radius.circular(4),

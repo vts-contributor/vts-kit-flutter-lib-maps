@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
 
 import 'marker_icon.dart';
 

@@ -38,7 +38,7 @@ class _InfoWindowManagerImpl extends ChangeNotifier implements InfoWindowManager
   List<Widget> getInfoWindows(BuildContext context) {
     return _coordinates
         .map((key, value) => MapEntry(key, _getPositionedInfoWindow(context, key, value)))
-        .values.whereNotNull().toList();
+        .values.whereType<Widget>().toList();
   }
 
   Widget? _getPositionedInfoWindow(BuildContext context, MarkerId markerId, _InternalInfoWindowData data) {

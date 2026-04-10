@@ -276,7 +276,6 @@ List<LatLng> _decodePolyline(String encoded, {int? skipStep}) {
   List<LatLng> decoded = [];
   int lat = 0;
   int lng = 0;
-  int i=0;
   while (index < len) {
     int b;
     int shift = 0;

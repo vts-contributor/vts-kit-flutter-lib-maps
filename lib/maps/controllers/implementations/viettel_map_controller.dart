@@ -379,10 +379,6 @@ class _ViettelMapController extends BaseCoreMapController {
     }
   }
 
-  Future<void> _removeOldIconData() async {
-    final markers = _originalShapes.markers;
-  }
-
   @override
   void onDispose() {
     _controller.dispose();

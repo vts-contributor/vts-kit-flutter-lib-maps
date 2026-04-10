@@ -12,7 +12,6 @@ import 'package:maps_core/log/log.dart';
 
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
-import 'package:maps_core/maps/models/auto_route.dart';
 import 'package:maps_core/maps/views/managers/core_map_shape_modifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:synchronized/synchronized.dart';

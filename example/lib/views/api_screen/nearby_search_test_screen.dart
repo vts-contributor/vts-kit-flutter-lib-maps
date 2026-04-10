@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:map_core_example/views/widgets/api_result_display.dart';
-import 'package:maps_core/maps/models/place_nearby.dart';
 import 'package:maps_core/maps/services/maps_api_service_impl.dart';
 import 'package:map_core_example/config/api_config.dart';
 

@@ -22,7 +22,6 @@ class _TestMapScreenState extends State<TestMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -37,16 +36,16 @@ class _TestMapScreenState extends State<TestMapScreen> {
           IconButton(
             icon: const Icon(Icons.slideshow),
             onPressed: () async {
-              _controller?.showInfoWindow(MarkerId("test1"));
+              _controller?.showInfoWindow(const MarkerId("test1"));
             },
           ),
           IconButton(
             icon: const Icon(Icons.abc),
             onPressed: () async {
               _controller?.animateCameraToCenterOfPoints([
-                LatLng(9.50184, 105.26001),
-                LatLng(9.14554, 105.15764),
-                LatLng(9.22674, 105.45377),
+                const LatLng(9.50184, 105.26001),
+                const LatLng(9.14554, 105.15764),
+                const LatLng(9.22674, 105.45377),
               ], 0);
             },
           ),
@@ -63,7 +62,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
-                  _controller?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(10.867235213747376, 106.63784199919601), 20), duration: 1);
+                  _controller?.animateCamera(CameraUpdate.newLatLngZoom(const LatLng(10.867235213747376, 106.63784199919601), 20), duration: 1);
             },
           ),
         ],
@@ -82,17 +81,17 @@ class _TestMapScreenState extends State<TestMapScreen> {
             compassEnabled: true,
             myLocationEnabled: true,
             zoomInButtonData: CoreMapButtonCustomizeData(
-                icon: Icon(Icons.reddit, ),
-                color: Colors.yellow.withOpacity(0.4),
-                borderRadius: BorderRadius.only(
+                icon: const Icon(Icons.reddit, ),
+                color: Colors.yellow.withValues(alpha: 0.4),
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(4),
                 ),
             ),
             zoomOutButtonData: CoreMapButtonCustomizeData(
-              icon: Icon(Icons.bluetooth),
-              color: Colors.yellow.withOpacity(0.4),
-              borderRadius: BorderRadius.only(
+              icon: const Icon(Icons.bluetooth),
+              color: Colors.yellow.withValues(alpha: 0.4),
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(4),
                 bottomRight: Radius.circular(4),
               ),

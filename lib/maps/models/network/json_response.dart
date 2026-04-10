@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 
@@ -36,8 +37,8 @@ class JsonResponse {
         }
       }
     } catch (err) {
-      print(
-          'parse json fail {body:${response.body}, code:${response.statusCode}  $err');
+      debugPrint(
+          'parse json fail {body:${response.body}, code:${response.statusCode} $err');
       responseJson = JsonResponse(
           errorCode: response.statusCode, errorMessage: response.body);
     }
@@ -70,8 +71,8 @@ class JsonResponse {
         }
       }
     } catch (err) {
-      print(
-          'parse json fail {body:${response.data}, code:${response.statusCode}  $err');
+      debugPrint(
+          'parse json fail {body:${response.data}, code:${response.statusCode} $err');
       responseJson = JsonResponse(
           errorCode: response.statusCode, errorMessage: response.data);
     }

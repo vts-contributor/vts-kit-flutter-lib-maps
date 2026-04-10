@@ -13,8 +13,6 @@ class _LocationManager extends ChangeNotifier {
   late Future<bool> Function() _onPermissionDenied;
   Future<bool> Function()? _onPermissionDeniedForever;
 
-  final Geolocator _location = Geolocator();
-
   Position? _userLocation;
 
   bool _enabled = false;

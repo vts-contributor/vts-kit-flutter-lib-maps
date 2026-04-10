@@ -199,7 +199,7 @@ class _DistanceMatrixTestScreenState extends State<DistanceMatrixTestScreen> {
 
   Widget _buildTravelModeDropdown() {
     return DropdownButtonFormField<RouteTravelMode>(
-      value: _travelMode,
+      initialValue: _travelMode,
       decoration: const InputDecoration(
         labelText: 'Travel Mode',
         border: OutlineInputBorder(),

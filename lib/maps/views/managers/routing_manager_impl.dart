@@ -4,8 +4,6 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   static const int MAX_DESTINATION_FOR_DISTANCE_MATRIX = 45;
 
-  final _LocationManager _locationManager;
-
   String? _vtToken;
 
   String? _ggToken;
@@ -16,7 +14,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   CoreMapController? mapController;
 
-  _RoutingManagerImpl(this._locationManager);
+  _RoutingManagerImpl(_LocationManager locationManager);
 
   List<MapRoute>? _routes;
 
@@ -318,7 +316,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         mapRoute?.sortedWaypoints = waypoints;
       }
       _routes?.remove(placeHolder);
-    } catch (e, s) {
+    } catch (e) {
       _routes?.remove(placeHolder);
       rethrow;
     }
@@ -415,7 +413,6 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         break;
       }
 
-      Map<double, String> reverseDistanceMap = {};
       double? smallestDistance;
       String? nextPoint;
       for (MapEntry<String, DistanceMatrixElement> mapEntry in map.entries) {

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:collection/collection.dart';
 import 'package:maps_core/maps.dart';
 
 extension ZoomHelperExtension on CoreMapController {
@@ -38,7 +37,7 @@ class _RADII {
 enum _Unit { KM, MILE, METER, NMI }
 
 class _HaversineDistance {
-  final _RADII radii = new _RADII(6371, 3960, 6371000, 3440);
+  final _RADII radii = _RADII(6371, 3960, 6371000, 3440);
 
   double toRad(double num) {
     return num * pi / 180;

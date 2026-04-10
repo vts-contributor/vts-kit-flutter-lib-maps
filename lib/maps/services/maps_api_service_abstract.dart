@@ -73,7 +73,7 @@ abstract class MapsAPIAbstractService {
       // Viettel Maps use /places?place_id=...
       // Google Maps use /{place_id}?
       if (pathResource != null) {
-        path = path + "/${pathResource}";
+        path = "$path/$pathResource";
         params?.removeWhere((key, value) => value == pathResource);
       }
       parser ??= (config.provider == MapProviderConst.GOOGLE && hostPath == config.placeHost)

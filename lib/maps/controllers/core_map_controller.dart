@@ -1,6 +1,5 @@
 import 'package:maps_core/maps.dart';
 
-import '../models/models.dart';
 
 //This interface should only be used by client
 //If you're a maintainer, please make your new controller extends BaseCoreMapController

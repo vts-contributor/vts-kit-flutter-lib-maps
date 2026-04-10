@@ -12,13 +12,6 @@ class MapsAPIServiceImpl extends MapsAPIService {
 
   @protected
   @override
-  late MapAPIConfig configViettel;
-  @protected
-  @override
-  late MapAPIConfig configGoogle;
-
-  @protected
-  @override
   MapsAPIResponseParser jsonParser = MapsAPIResponseParser.link([
     MapsAPIGeocodingParser(),
     MapsAPIAutocompleteSearchParser(),
@@ -191,7 +184,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     };
     params.removeWhere((key, value) => value == null);
 
-    var result;
+    PlaceList<AutocompletePlace> result;
     if (config.provider == MapProviderConst.GOOGLE) {
       final response = await post<PlaceListingResponse>(
         config.autocompleteSearchPath,
@@ -209,6 +202,10 @@ class MapsAPIServiceImpl extends MapsAPIService {
       );
       result = PlaceList.fromResponse(
           response, (json) => AutocompletePlace.fromJson(json));
+    } else {
+      throw ImplicitServerResponseError(
+        rootCause: Exception('Provider not supported'),
+      );
     }
     return result;
   }

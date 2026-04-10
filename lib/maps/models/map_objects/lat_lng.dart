@@ -29,7 +29,9 @@ class LatLng {
       else if (latLngMap.containsKey('latitude') && latLngMap.containsKey('longitude')) {
         return LatLng(latLngMap['latitude'], latLngMap['longitude']);
       }
-      else throw Exception('LatLngMap does not contain lat/lng or latitude/longitude');
+      else {
+        throw Exception('LatLngMap does not contain lat/lng or latitude/longitude');
+      }
     } catch (err) {
       Log.e('LatLng.fromMap',
           'Parse LatLng from Map $latLngMap failed because $err');
@@ -174,4 +176,3 @@ class LatLngBounds {
     );
   }
 }
-

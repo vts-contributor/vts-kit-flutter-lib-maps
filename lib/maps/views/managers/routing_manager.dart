@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/models/auto_route.dart';
 import 'package:maps_core/maps/views/managers/core_map_shape_modifier.dart';
 import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 

@@ -34,6 +34,7 @@ class AutocompletePlace extends Place {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'place_id': id,

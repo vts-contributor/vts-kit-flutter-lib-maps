@@ -60,6 +60,7 @@ class DetailPlace extends Place {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'place_id': id,
@@ -121,7 +122,7 @@ class DetailPlaceGoogle extends DetailPlace {
   }) : super(id);
 
   factory DetailPlaceGoogle.fromJson(Map<String, dynamic> json) {
-    final Geometry? geometry = Geometry(
+    final Geometry geometry = Geometry(
       location: LatLng.fromJson(json['location']),
       viewPort: ViewPort.fromJson(json['viewport']),
     );

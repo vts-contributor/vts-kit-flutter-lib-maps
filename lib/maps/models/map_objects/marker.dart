@@ -3,11 +3,8 @@
 // found in the LICENSE file.
 
 import 'dart:typed_data';
-import 'dart:ui' show Offset;
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart'
-    show immutable, ValueChanged, VoidCallback;
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/models/map_objects/map_object.dart';

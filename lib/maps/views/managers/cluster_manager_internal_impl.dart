@@ -61,13 +61,6 @@ class _ClusterManagerImpl extends ChangeNotifier
 
   @override
   void createClusters(double zoom, Set<Marker>? markers, double maxZoomLevel) {
-    // check if has change in set marker
-    bool isChange = false;
-
-    if (_markers.isNotEmpty && markers?.isEmpty == true) {
-      isChange = true;
-    }
-
     // init markers
     _initSetMarker(markers);
 
@@ -106,7 +99,6 @@ class _ClusterManagerImpl extends ChangeNotifier
             _markers.add(marker.markerSet.elementAt(k));
           }
           marker.isClustered = true;
-          isChange = true;
         }
       }
     }
@@ -172,15 +164,10 @@ class _ClusterManagerImpl extends ChangeNotifier
         // add cluster to set marker
         _markers.add(cluster);
 
-        isChange = true;
       }
     }
 
-    bool isExtractCluster = _tryBreakApartClusters(zoom, maxZoomLevel);
-
-    if (isExtractCluster) {
-      isChange = true;
-    }
+    _tryBreakApartClusters(zoom, maxZoomLevel);
 
     // vi code theo co che clear -> declare nen cac doan code kiem tra isChange khong chinh xac nua
     // if (isChange) {
