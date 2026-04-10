@@ -38,7 +38,6 @@ dependencies:
   maps_core:
     path: ..
   google_maps_flutter: ^2.6.1
-  vtmap_gl: ^4.0.0
   provider: ^6.0.5
 
 dev_dependencies:

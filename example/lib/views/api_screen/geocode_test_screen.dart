@@ -40,7 +40,6 @@ class _GeocodeTestScreenState extends State<GeocodeTestScreen> {
       ApiConfig.validateKeys();
 
       final service = MapsAPIServiceImpl(
-        viettelKey: ApiConfig.viettelKey,
         googleKey: ApiConfig.googleKey,
         provider: MapProviderConst.GOOGLE,
       );
@@ -79,7 +78,6 @@ class _GeocodeTestScreenState extends State<GeocodeTestScreen> {
 
     try {
       final service = MapsAPIServiceImpl(
-        viettelKey: ApiConfig.viettelKey,
         googleKey: ApiConfig.googleKey,
         provider: MapProviderConst.GOOGLE,
       );

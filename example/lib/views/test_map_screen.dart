@@ -16,7 +16,7 @@ class TestMapScreen extends StatefulWidget {
 class _TestMapScreenState extends State<TestMapScreen> {
   CoreMapController? _controller;
 
-  CoreMapType _type = CoreMapType.viettel;
+  CoreMapType _type = CoreMapType.google;
 
   bool showMarker = false;
 
@@ -50,16 +50,6 @@ class _TestMapScreenState extends State<TestMapScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.swap_horiz),
-            onPressed: () async {
-              setState(() {
-                _type = _type == CoreMapType.viettel
-                    ? CoreMapType.google
-                    : CoreMapType.viettel;
-              });
-            },
-          ),
-          IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
                   _controller?.animateCamera(CameraUpdate.newLatLngZoom(const LatLng(10.867235213747376, 106.63784199919601), 20), duration: 1);
@@ -71,9 +61,8 @@ class _TestMapScreenState extends State<TestMapScreen> {
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            vtMapAccessToken: "",
             ggMapAccessToken: "",
-            provider: MapProviderConst.VIETTEL,
+            provider: MapProviderConst.GOOGLE,
             markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(
                 target: const LatLng(9.85419858085518, 105.49970250115466),

@@ -27,7 +27,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
 
   RoutingManager? _routingManager;
 
-  CoreMapType _type = CoreMapType.viettel;
+  CoreMapType _type = CoreMapType.google;
 
   @override
   Widget build(BuildContext context) {
@@ -193,14 +193,6 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
               },
               icon: const Icon(Icons.swap_vert_circle)),
           IconButton(
-            icon: const Icon(Icons.swap_horiz),
-            onPressed: () async {
-              setState(() {
-                _type = _type == CoreMapType.viettel ? CoreMapType.google : CoreMapType.viettel;
-              });
-            },
-          ),
-          IconButton(
               onPressed: () async {
                 final directions = await Provider.of<RoutingViewModel>(context, listen: false)
                         .downloadDirections(firstPoint, secondPoint);
@@ -214,9 +206,8 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
       body: CoreMap(
         type: _type,
         data: CoreMapData(
-          vtMapAccessToken: "",
           ggMapAccessToken: "",
-          provider: MapProviderConst.VIETTEL,
+          provider: MapProviderConst.GOOGLE,
           initialCameraPosition: CameraPosition(target: const LatLng(10.888305387234123, 106.63943723003548), zoom: 15),
           compassEnabled: true,
           myLocationEnabled: true,

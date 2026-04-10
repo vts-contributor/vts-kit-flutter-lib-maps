@@ -13,11 +13,9 @@ abstract class CoreMapController implements InfoWindowManager {
   ///get location on map from screen coordinate
   Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate);
 
-  /// Starts an animated change of the map camera position.
-  /// The animate process may be interrupted by map state rebuild with [CoreMapType.viettel]
-  /// => camera will stop before reaching its final destination
+  /// The animate process may be interrupted by map state rebuild.
   ///
-  /// Duration won't take effect in [CoreMapType.google]
+  /// Duration might have platform-specific behaviors.
   ///
   /// see https://github.com/flutter/flutter/issues/39810
   Future<void> animateCamera(CameraUpdate cameraUpdate, {int? duration});

@@ -23,20 +23,20 @@ class MapsAPIServiceImpl extends MapsAPIService {
   // Private constructor
   MapsAPIServiceImpl._() : super(MapProviderConst.GOOGLE) {
     configGoogle = MapAPIConfig.getConfig(MapProviderConst.GOOGLE);
-    configViettel = configGoogle; // Redirect to google config
+    configLegacy = configGoogle; // Redirect to google config
     config = configGoogle;
   }
 
   MapsAPIServiceImpl.withConfig({
     required MapAPIConfig config,
     @Deprecated('Viettel runtime implementation has been removed; this value is ignored.')
-    required String viettelKey,
+    String? viettelKey,
     required String googleKey,
   }) : super(resolveMapProvider(config.provider)) {
     String effectiveProvider = resolveMapProvider(config.provider);
     if (effectiveProvider == MapProviderConst.GOOGLE) {
       configGoogle = config;
-      configViettel = config;
+      configLegacy = config;
       config.key = googleKey;
     }
     this.config = config;

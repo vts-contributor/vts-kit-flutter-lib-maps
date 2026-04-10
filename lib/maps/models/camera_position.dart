@@ -129,7 +129,7 @@ class CameraPosition {
         target: target.toGoogle(),
         bearing: bearing,
         tilt: tilt,
-        //persist with vtmap_gl zoom
+        // Use core zoom level
         zoom: zoom.toZoomGoogle()
     );
   }

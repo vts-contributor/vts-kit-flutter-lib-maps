@@ -6,6 +6,7 @@ import 'package:maps_core/maps.dart';
 ///Data the map. Used as object for better transferring between maps and controllers
 class CoreMapData {
   CoreMapData({
+    @Deprecated('Viettel runtime implementation has been removed; this value is ignored.')
     this.vtMapAccessToken,
     this.ggMapAccessToken,
     required this.provider,
@@ -43,7 +44,7 @@ class CoreMapData {
     this.isUseCluster = false,
   });
 
-  ///should be removed, use file instead
+  @Deprecated('Viettel runtime implementation has been removed; this value is ignored.')
   final String? vtMapAccessToken;
 
   final String? ggMapAccessToken;

@@ -13,7 +13,7 @@ class CoreMap extends StatefulWidget {
 
   const CoreMap({
     super.key,
-    this.type = CoreMapType.viettel,
+    this.type = CoreMapType.google,
     this.callbacks,
     required this.data,
     this.shapes,
@@ -119,7 +119,6 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     _routingManager.updateColor(widget.data.selectedRouteColor, widget.data.unselectedRouteColor);
     _routingManager.updateWidth(widget.data.selectedRouteWidth, widget.data.unselectedRouteWidth);
     _routingManager.updateDefaultTravelMode(widget.data.defaultTravelMode);
-    _routingManager.vtToken = widget.data.vtMapAccessToken;
     _routingManager.ggToken = widget.data.ggMapAccessToken;
     _routingManager.initMapsApiService(resolveMapProvider(widget.data.provider));
   }

@@ -16,7 +16,7 @@ class TestSharedMarkerScreen extends StatefulWidget {
 }
 
 class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
-  CoreMapType _type = CoreMapType.viettel;
+  CoreMapType _type = CoreMapType.google;
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +31,14 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
               });
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.swap_horiz),
-            onPressed: () async {
-              setState(() {
-                _type = _type == CoreMapType.viettel
-                    ? CoreMapType.google
-                    : CoreMapType.viettel;
-              });
-            },
-          ),
         ],
       ),
       body: SizedBox(
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            vtMapAccessToken: "",
             ggMapAccessToken: "",
-            provider: MapProviderConst.VIETTEL,
+            provider: MapProviderConst.GOOGLE,
             // markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(
                 target: const LatLng(10.885305387234123, 106.63943723003548),

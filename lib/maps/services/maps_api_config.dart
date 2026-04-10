@@ -1,4 +1,3 @@
-import 'package:maps_core/maps/constants.dart';
 
 class MapAPIConfig {
   final String mapsHost;
@@ -14,28 +13,16 @@ class MapAPIConfig {
   String? key;
 
   String hostOf(String path) {
-    if (provider == MapProviderConst.GOOGLE) {
-      if (path == geocodePath || path == nearbySearchPath) {
-        // Legacy API
-        return mapsHost;
-      } else if (path == placeDetailPath || path == autocompleteSearchPath) {
-        // New Place API
-        return placeHost;
-      } else if (path == directionPath || path == distanceMatrixPath) {
-        return routeHost;
-      }
+    if (path == geocodePath || path == nearbySearchPath) {
+      // Legacy API
       return mapsHost;
+    } else if (path == placeDetailPath || path == autocompleteSearchPath) {
+      // New Place API
+      return placeHost;
+    } else if (path == directionPath || path == distanceMatrixPath) {
+      return routeHost;
     }
-    else if (provider == MapProviderConst.VIETTEL) {
-      if (path == directionPath || path == distanceMatrixPath) {
-        return routeHost;
-      } else {
-        return placeHost;
-      }
-    }
-    else {
-      throw Exception('Unsupported provider: $provider');
-    }
+    return mapsHost;
   }
 
   MapAPIConfig({
@@ -53,35 +40,19 @@ class MapAPIConfig {
   });
 
   static MapAPIConfig getConfig(String provider) {
-    if (provider == MapProviderConst.GOOGLE) {
-      return MapAPIConfig(
-        mapsHost: 'https://maps.googleapis.com/maps/api',
-        placeHost: 'https://places.googleapis.com/v1', // Place API New
-        routeHost: 'https://maps.googleapis.com/maps/api',
-        geocodePath: 'geocode/json',
-        placeDetailPath: 'places', // Place API New
-        autocompleteSearchPath: 'places:autocomplete', // Place API New
-        nearbySearchPath: 'place/nearbysearch/json', // Place API Legacy
-        directionPath: 'directions/json',
-        distanceMatrixPath: 'distancematrix/json',
-        provider: provider,
-      );
-    } else if (provider == MapProviderConst.VIETTEL) {
-      return MapAPIConfig(
-        mapsHost: '',
-        placeHost: 'https://api-maps.viettel.vn/gateway/placeapi/v4/place-api',
-        routeHost: 'https://api-maps.viettel.vn/gateway/routing/v2',
-        geocodePath: 'geocode',
-        placeDetailPath: 'details',
-        autocompleteSearchPath: 'autocomplete',
-        nearbySearchPath: 'nearbysearch',
-        directionPath: 'directions',
-        distanceMatrixPath: 'distancematrix',
-        provider: provider,
-      );
-    } else {
-      throw Exception('Unsupported provider: $provider');
-    }
+    // Both Google and legacy Viettel now use Google Maps infrastructure
+    return MapAPIConfig(
+      mapsHost: 'https://maps.googleapis.com/maps/api',
+      placeHost: 'https://places.googleapis.com/v1', // Place API New
+      routeHost: 'https://maps.googleapis.com/maps/api',
+      geocodePath: 'geocode/json',
+      placeDetailPath: 'places', // Place API New
+      autocompleteSearchPath: 'places:autocomplete', // Place API New
+      nearbySearchPath: 'place/nearbysearch/json', // Place API Legacy
+      directionPath: 'directions/json',
+      distanceMatrixPath: 'distancematrix/json',
+      provider: provider,
+    );
   }
 }
 

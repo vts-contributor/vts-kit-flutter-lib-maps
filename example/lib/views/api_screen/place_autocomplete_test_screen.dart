@@ -44,7 +44,6 @@ class _PlaceAutocompleteTestScreenState
 
     try {
       final service = MapsAPIServiceImpl(
-        viettelKey: ApiConfig.viettelKey,
         googleKey: ApiConfig.googleKey,
         provider: MapProviderConst.GOOGLE,
       );
