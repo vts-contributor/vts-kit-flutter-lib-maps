@@ -16,7 +16,7 @@ class TestMapScreen extends StatefulWidget {
 class _TestMapScreenState extends State<TestMapScreen> {
   CoreMapController? _controller;
 
-  CoreMapType _type = CoreMapType.google;
+  final CoreMapType _type = CoreMapType.google;
 
   bool showMarker = false;
 
@@ -71,7 +71,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
             myLocationEnabled: true,
             zoomInButtonData: CoreMapButtonCustomizeData(
                 icon: const Icon(Icons.reddit, ),
-                color: Colors.yellow.withValues(alpha: 0.4),
+                color: Colors.yellow.withOpacity(0.4),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(4),
@@ -79,7 +79,7 @@ class _TestMapScreenState extends State<TestMapScreen> {
             ),
             zoomOutButtonData: CoreMapButtonCustomizeData(
               icon: const Icon(Icons.bluetooth),
-              color: Colors.yellow.withValues(alpha: 0.4),
+              color: Colors.yellow.withOpacity(0.4),
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(4),
                 bottomRight: Radius.circular(4),

@@ -27,7 +27,7 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
 
   RoutingManager? _routingManager;
 
-  CoreMapType _type = CoreMapType.google;
+  final CoreMapType _type = CoreMapType.google;
 
   @override
   Widget build(BuildContext context) {
