@@ -90,7 +90,7 @@ class WidgetConverter {
       view: view,
       child: RenderPositionedBox(alignment: Alignment.center, child: repaintBoundary),
       configuration: ViewConfiguration(
-        size: logicalSize,
+        logicalConstraints: BoxConstraints.tight(logicalSize),
         devicePixelRatio: view.devicePixelRatio,
       ),
     );

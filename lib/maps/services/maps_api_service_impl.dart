@@ -75,9 +75,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     required String provider
   }) {
     String effectiveProvider = resolveMapProvider(provider);
-    if (_instance == null) {
-      _instance = MapsAPIServiceImpl._();
-    }
+    _instance ??= MapsAPIServiceImpl._();
 
     if (googleKey != null) {
       _instance?.configGoogle.key = googleKey;
