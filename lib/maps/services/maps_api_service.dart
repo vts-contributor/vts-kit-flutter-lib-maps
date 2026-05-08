@@ -7,13 +7,14 @@ import 'package:maps_core/maps/utils/provider_resolver.dart';
 import '../models/network/custom_cancel_token.dart';
 
 abstract class MapsAPIService extends MapsAPIAbstractService {
-  late MapAPIConfig configLegacy;
+  late MapAPIConfig configViettel;
   late MapAPIConfig configGoogle;
+  late MapAPIConfig configLegacy;
 
   MapsAPIService(String provider) : super(resolveMapProvider(provider))  {
+    configViettel = MapAPIConfig.getConfig(MapProviderConst.VIETTEL);
     configGoogle = MapAPIConfig.getConfig(MapProviderConst.GOOGLE);
-    // Redirect Legacy config to Google as Viettel is no longer supported
-    configLegacy = configGoogle; 
+    configLegacy = provider == MapProviderConst.GOOGLE ? configGoogle : configViettel;
   }
 
   Future<List<GeocodingPlace>> geocode({

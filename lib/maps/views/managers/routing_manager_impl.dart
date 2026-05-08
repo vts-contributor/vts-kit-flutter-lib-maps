@@ -4,6 +4,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   static const int MAX_DESTINATION_FOR_DISTANCE_MATRIX = 45;
 
+  String? _vtToken;
   String? _ggToken;
 
   String provider = MapProviderConst.GOOGLE;
@@ -40,8 +41,8 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   RouteCachingStrategy? _cachingStrategy = _DefaultRouteCachingStrategy();
 
-  @Deprecated('Viettel runtime implementation has been removed; this value is ignored.')
   set vtToken(String? value) {
+    _vtToken = value;
   }
 
   set ggToken(String? value) {
@@ -55,9 +56,18 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         return false;
       }
 
-      mapsApiService = MapsAPIServiceImpl.getInstance;
+      if (_vtToken == null && provider == MapProviderConst.VIETTEL) {
+        Log.e(RoutingManager.logTag, "Cannot initialize Viettel Maps API without token");
+        return false;
+      }
 
-      this.provider = MapProviderConst.GOOGLE;
+      mapsApiService = MapsAPIServiceImpl(
+        provider: provider,
+        googleKey: _ggToken,
+        viettelKey: _vtToken,
+      );
+
+      this.provider = provider;
       return mapsApiService != null;
     } catch (e) {
       Log.e(RoutingManager.logTag, "Failed to initialize Maps API service");
