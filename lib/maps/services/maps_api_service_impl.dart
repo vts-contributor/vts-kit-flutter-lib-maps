@@ -10,10 +10,9 @@ import 'maps_api_service.dart';
 class MapsAPIServiceImpl extends MapsAPIService {
   static MapsAPIServiceImpl? _instance;
 
-  @protected
   @override
   late MapAPIConfig configViettel;
-  @protected
+
   @override
   late MapAPIConfig configGoogle;
 
@@ -78,12 +77,16 @@ class MapsAPIServiceImpl extends MapsAPIService {
     if (googleKey != null) {
       _instance?.configGoogle.key = googleKey;
     }
-    _instance?.configGoogle.id = id;
-    _instance?.configViettel.id = id;
-    _instance?.config.id = id;
-    _instance?.configGoogle.fingerprint = fingerprint;
-    _instance?.configViettel.fingerprint = fingerprint;
-    _instance?.config.fingerprint = fingerprint;
+    if (id != null) {
+      _instance?.configGoogle.id = id;
+      _instance?.configViettel.id = id;
+      _instance?.config.id = id;
+    }
+    if (fingerprint != null) {
+      _instance?.configGoogle.fingerprint = fingerprint;
+      _instance?.configViettel.fingerprint = fingerprint;
+      _instance?.config.fingerprint = fingerprint;
+    }
     _instance?.useProvider(provider);
 
     return _instance as MapsAPIServiceImpl;
