@@ -65,7 +65,9 @@ class MapsAPIServiceImpl extends MapsAPIService {
     }
   }
 
-  factory MapsAPIServiceImpl({String? viettelKey, String? googleKey, required String provider}) {
+  String get provider => config.provider;
+
+  factory MapsAPIServiceImpl({String? viettelKey, String? googleKey, String? id, String? fingerprint, required String provider}) {
     if (_instance == null) {
       _instance = MapsAPIServiceImpl._();
       _instance?.config = MapAPIConfig.getConfig(provider);
@@ -76,6 +78,12 @@ class MapsAPIServiceImpl extends MapsAPIService {
     if (googleKey != null) {
       _instance?.configGoogle.key = googleKey;
     }
+    _instance?.configGoogle.id = id;
+    _instance?.configViettel.id = id;
+    _instance?.config.id = id;
+    _instance?.configGoogle.fingerprint = fingerprint;
+    _instance?.configViettel.fingerprint = fingerprint;
+    _instance?.config.fingerprint = fingerprint;
     _instance?.useProvider(provider);
 
     return _instance as MapsAPIServiceImpl;

@@ -12,6 +12,8 @@ class MapAPIConfig {
   final String distanceMatrixPath;
   final String provider;
   String? key;
+  String? id;
+  String? fingerprint;
 
   String hostOf(String path) {
     if (provider == MapProviderConst.GOOGLE) {
@@ -50,6 +52,8 @@ class MapAPIConfig {
     required this.distanceMatrixPath,
     required this.provider,
     this.key,
+    this.id,
+    this.fingerprint,
   });
 
   static MapAPIConfig getConfig(String provider) {

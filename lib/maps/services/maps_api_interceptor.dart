@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -18,6 +20,18 @@ class MapsAPIInterceptorsWrapper extends InterceptorsWrapper {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (!options.queryParameters.containsKey('key')) {
       options.queryParameters['key'] = config.key;
+    }
+    if (config.id != null) {
+      if (Platform.isAndroid) {
+        options.headers['X-Android-Package'] = config.id;
+      } else if (Platform.isIOS) {
+        options.headers['X-Ios-Bundle-Identifier'] = config.id;
+      }
+    }
+    if (config.fingerprint != null) {
+      if (Platform.isAndroid) {
+        options.headers['X-Android-Cert'] = config.fingerprint;
+      }
     }
     debugPrint("MapsAPIInterceptorsWrapper onRequest ${options.path}");
     handler.next(options);
