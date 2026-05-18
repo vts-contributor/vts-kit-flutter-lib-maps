@@ -16,7 +16,6 @@ class MapsAPIServiceImpl extends MapsAPIService {
   @override
   late MapAPIConfig configGoogle;
 
-
   @protected
   @override
   MapsAPIResponseParser jsonParser = MapsAPIResponseParser.link([
