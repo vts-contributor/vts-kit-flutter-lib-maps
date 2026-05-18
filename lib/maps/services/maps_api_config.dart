@@ -66,14 +66,14 @@ class MapAPIConfig {
         return routeHost;
       }
       return mapsHost;
-    } 
+    }
     else if (provider == MapProviderConst.VIETTEL) {
       if (path == directionPath || path == distanceMatrixPath) {
         return routeHost;
       } else {
         return placeHost;
       }
-    } 
+    }
     else {
       throw Exception('Unsupported provider: $provider');
     }

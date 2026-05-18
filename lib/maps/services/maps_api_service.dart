@@ -9,7 +9,7 @@ abstract class MapsAPIService extends MapsAPIAbstractService {
   late MapAPIConfig configViettel;
   late MapAPIConfig configGoogle;
 
-  MapsAPIService(String provider) : super(provider)  {
+MapsAPIService(String provider) : super(provider)  {
     configViettel = MapAPIConfig.getConfig(MapProviderConst.VIETTEL);
     configGoogle = MapAPIConfig.getConfig(MapProviderConst.GOOGLE);
   }
