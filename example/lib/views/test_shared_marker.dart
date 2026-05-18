@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:map_core_example/config/api_config.dart';
 import 'package:map_core_example/custom/custom_cluster_manager.dart';
 import 'package:map_core_example/views/test_shapes.dart';
 import 'package:maps_core/maps.dart';
@@ -37,8 +38,9 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            ggMapAccessToken: "",
-            provider: MapProviderConst.GOOGLE,
+            vtMapAccessToken: ApiConfig.viettelKey,
+            ggMapAccessToken: ApiConfig.googleKey,
+            provider: MapProviderConst.VIETTEL,
             // markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(
                 target: const LatLng(10.885305387234123, 106.63943723003548),

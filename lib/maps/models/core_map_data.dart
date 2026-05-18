@@ -43,6 +43,7 @@ class CoreMapData {
     this.isUseCluster = false,
   });
 
+  ///should be removed, use file instead
   final String? vtMapAccessToken;
 
   final String? ggMapAccessToken;

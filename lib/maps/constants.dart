@@ -27,7 +27,8 @@ class Constant {
   ///the lowest zoom level that maps should support
   static const double zoomLevelLowerBound = 1.0;
 
-  /// Legacy multiplier for matching stroke widths between providers.
+  ///sometime we draw outlines of vtmap shapes with Line
+  ///and Google map stroke is 2 times thicker than viettel map line
   static const double vtStrokeWidthMultiplier = 2.0;
 
   ///my location button size
@@ -51,7 +52,7 @@ class Constant {
   ///full screen button size
   static const double fullScreenButtonSize = 36;
 
-  ///max zoom level for legacy viettel provider (falls back to Google)
+  ///max zoom level viettel map
   static const double maxZoomLevelViettelMap = 25.5;
 
   ///max zoom level google map

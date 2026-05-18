@@ -19,9 +19,11 @@ class _NearbyPlaceTestScreenState extends State<NearbyPlaceTestScreen> {
   final _radiusController = TextEditingController(text: "1000");
   final _keywordController = TextEditingController();
 
+  String provider = MapProviderConst.VIETTEL;
   bool _isLoading = false;
   String? _error;
-  Map<String, dynamic> _results = {};
+  Map<String, dynamic> _resultsViettel = {};
+  Map<String, dynamic> _resultsGoogle = {};
 
 
   @override
@@ -50,9 +52,11 @@ class _NearbyPlaceTestScreenState extends State<NearbyPlaceTestScreen> {
 
     try {
       final service = MapsAPIServiceImpl(
+        viettelKey: ApiConfig.viettelKey,
         googleKey: ApiConfig.googleKey,
-        provider: MapProviderConst.GOOGLE,
+        provider: provider,
       );
+      service.useProvider(provider);
 
       final nearbyPlaces = await service.nearbySearch(
         lat: double.parse(_latController.text),
@@ -64,16 +68,20 @@ class _NearbyPlaceTestScreenState extends State<NearbyPlaceTestScreen> {
       final results = nearbyPlaces.toJson();
 
       setState(() {
-        _results = results;
+        if (provider == MapProviderConst.GOOGLE) {
+          _resultsGoogle = results;
+        } else {
+          _resultsViettel = results;
+        }
         _error = null;
-        _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _error = e.toString();
-        _isLoading = false;
       });
     }
+
+    _setLoading(false);
   }
 
   void _setLoading(bool loading) {
@@ -149,18 +157,64 @@ class _NearbyPlaceTestScreenState extends State<NearbyPlaceTestScreen> {
   }
 
   Widget _buildButtons() {
-    return ElevatedButton(
-      onPressed: _isLoading ? null : _fetchNearbyPlaces,
-      child: const Text('Fetch Nearby Places'),
+    return Row(
+      children: [
+        ElevatedButton(
+          onPressed: _isLoading
+              ? null
+              : () {
+            setState(() {
+              provider = MapProviderConst.VIETTEL;
+            });
+            _fetchNearbyPlaces();
+          },
+          child: const Text('Use Viettel'),
+        ),
+        const SizedBox(width: 8),
+        ElevatedButton(
+          onPressed: _isLoading
+              ? null
+              : () {
+            setState(() {
+              provider = MapProviderConst.GOOGLE;
+            });
+            _fetchNearbyPlaces();
+          },
+          child: const Text('Use Google'),
+        ),
+      ],
     );
   }
 
   Widget _buildResults() {
-    return ApiResultDisplay(
-      title: 'Results',
-      data: _results,
-      isLoading: _isLoading,
-      errorMessage: _error,
+    return IntrinsicHeight(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 2 - 24,
+              child: ApiResultDisplay(
+                title: 'Viettel Results',
+                data: _resultsViettel,
+                isLoading: provider == MapProviderConst.VIETTEL && _isLoading,
+                errorMessage: provider == MapProviderConst.VIETTEL ? _error : null,
+              ),
+            ),
+            const SizedBox(width: 16),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 2 - 24,
+              child: ApiResultDisplay(
+                title: 'Google Results',
+                data: _resultsGoogle,
+                isLoading: provider == MapProviderConst.GOOGLE && _isLoading,
+                errorMessage: provider == MapProviderConst.GOOGLE ? _error : null,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

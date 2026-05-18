@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:map_core_example/config/api_config.dart';
 import 'package:map_core_example/view_models/routing_view_model.dart';
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
@@ -206,8 +207,9 @@ class _TestRoutingScreenState extends State<TestRoutingScreen> {
       body: CoreMap(
         type: _type,
         data: CoreMapData(
-          ggMapAccessToken: "",
-          provider: MapProviderConst.GOOGLE,
+          vtMapAccessToken: ApiConfig.viettelKey,
+          ggMapAccessToken: ApiConfig.googleKey,
+          provider: MapProviderConst.VIETTEL,
           initialCameraPosition: CameraPosition(target: const LatLng(10.888305387234123, 106.63943723003548), zoom: 15),
           compassEnabled: true,
           myLocationEnabled: true,

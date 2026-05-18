@@ -4,8 +4,10 @@ class ApiConfig {
     defaultValue: '',
   );
 
-  @Deprecated('Viettel map support has been removed.')
-  static const String viettelKey = "";
+  static const String viettelKey = String.fromEnvironment(
+    'VIETTEL_MAPS_API_KEY',
+    defaultValue: '',
+  );
 
   static void validateKeys() {
     if (googleKey.isEmpty) {

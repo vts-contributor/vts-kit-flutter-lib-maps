@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:map_core_example/config/api_config.dart';
 import 'package:map_core_example/views/test_shapes.dart';
 import 'package:maps_core/log/log.dart';
 import 'package:maps_core/maps.dart';
@@ -61,8 +62,9 @@ class _TestMapScreenState extends State<TestMapScreen> {
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            ggMapAccessToken: "",
-            provider: MapProviderConst.GOOGLE,
+            vtMapAccessToken: ApiConfig.viettelKey,
+            ggMapAccessToken: ApiConfig.googleKey,
+            provider: MapProviderConst.VIETTEL,
             markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(
                 target: const LatLng(9.85419858085518, 105.49970250115466),

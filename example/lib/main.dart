@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:map_core_example/config/api_config.dart';
 import 'package:map_core_example/view_models/routing_view_model.dart';
 import 'package:map_core_example/views/test_api_screen.dart';
 import 'package:map_core_example/views/test_google_map_screen.dart';
@@ -35,7 +36,11 @@ class MyApp extends StatelessWidget {
         TestMapScreen.routeName: (_) => const TestMapScreen(),
         TestGoogleMapScreen.routeName: (_) => const TestGoogleMapScreen(),
         TestRoutingScreen.routeName: (_) => ChangeNotifierProvider(
-          create: (_) => RoutingViewModel(MapsAPIServiceImpl(googleKey: "", provider: MapProviderConst.GOOGLE)),
+          create: (_) => RoutingViewModel(MapsAPIServiceImpl(
+            viettelKey: ApiConfig.viettelKey,
+            googleKey: ApiConfig.googleKey,
+            provider: MapProviderConst.VIETTEL,
+          )),
           child: const TestRoutingScreen(),
         ),
         TestSharedMarkerScreen.routeName:(context) => const TestSharedMarkerScreen(),

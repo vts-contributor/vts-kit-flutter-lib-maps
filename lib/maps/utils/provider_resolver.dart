@@ -11,10 +11,3 @@ CoreMapType resolveCoreMapType(CoreMapType originalType) {
   return originalType;
 }
 
-/// Resolves a legacy Viettel provider string.
-String resolveMapProvider(String? provider) {
-  if (provider == MapProviderConst.VIETTEL || provider == 'viettel') {
-    return MapProviderConst.VIETTEL;
-  }
-  return provider ?? MapProviderConst.GOOGLE;
-}

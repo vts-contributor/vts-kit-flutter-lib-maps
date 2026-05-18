@@ -4,16 +4,19 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   static const int MAX_DESTINATION_FOR_DISTANCE_MATRIX = 45;
 
+  final _LocationManager _locationManager;
+
   String? _vtToken;
+
   String? _ggToken;
 
-  String provider = MapProviderConst.GOOGLE;
+  String provider = MapProviderConst.VIETTEL;
 
   MapsAPIServiceImpl? mapsApiService;
 
   CoreMapController? mapController;
 
-  _RoutingManagerImpl(_LocationManager locationManager);
+  _RoutingManagerImpl(this._locationManager);
 
   List<MapRoute>? _routes;
 
@@ -51,21 +54,17 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
 
   Future<bool> initMapsApiService(String provider) async {
     try {
-      if (_ggToken == null && provider == MapProviderConst.GOOGLE) {
-        Log.e(RoutingManager.logTag, "Cannot initialize Google Maps API without token");
-        return false;
-      }
-
       if (_vtToken == null && provider == MapProviderConst.VIETTEL) {
         Log.e(RoutingManager.logTag, "Cannot initialize Viettel Maps API without token");
         return false;
       }
 
-      mapsApiService = MapsAPIServiceImpl(
-        provider: provider,
-        googleKey: _ggToken,
-        viettelKey: _vtToken,
-      );
+      if (_ggToken == null && provider == MapProviderConst.GOOGLE) {
+        Log.e(RoutingManager.logTag, "Cannot initialize Google Maps API without token");
+        return false;
+      }
+
+      mapsApiService = MapsAPIServiceImpl.getInstance;
 
       this.provider = provider;
       return mapsApiService != null;
@@ -319,7 +318,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         mapRoute?.sortedWaypoints = waypoints;
       }
       _routes?.remove(placeHolder);
-    } catch (e) {
+    } catch (e, s) {
       _routes?.remove(placeHolder);
       rethrow;
     }
@@ -416,6 +415,7 @@ class _RoutingManagerImpl extends ChangeNotifier implements RoutingManager {
         break;
       }
 
+      Map<double, String> reverseDistanceMap = {};
       double? smallestDistance;
       String? nextPoint;
       for (MapEntry<String, DistanceMatrixElement> mapEntry in map.entries) {

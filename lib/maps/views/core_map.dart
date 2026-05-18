@@ -121,7 +121,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     _routingManager.updateDefaultTravelMode(widget.data.defaultTravelMode);
     _routingManager.vtToken = widget.data.vtMapAccessToken;
     _routingManager.ggToken = widget.data.ggMapAccessToken;
-    _routingManager.initMapsApiService(resolveMapProvider(widget.data.provider));
+    _routingManager.initMapsApiService(widget.data.provider);
   }
 
   void _updateInfoWindowManager() {
