@@ -2,6 +2,7 @@ import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:maps_core/maps/services/maps_api_config.dart';
 import 'package:maps_core/maps/services/maps_api_service_abstract.dart';
+
 import '../models/network/custom_cancel_token.dart';
 
 abstract class MapsAPIService extends MapsAPIAbstractService {

@@ -233,8 +233,6 @@ class MapsAPIServiceImpl extends MapsAPIService {
     Map<String, String>? paramsKeyMapper,
     CustomCancelToken? cancelToken,
   }) async {
-    // Nearby search keyword mapping for Google
-    // Nearby search keyword mapping for Google vs Viettel
     final keyKeyword = paramsKeyMapper.valueOrKey(config.provider == MapProviderConst.GOOGLE ? MapsAPIConst.kType : MapsAPIConst.kKeyword);
     final keyLocation = paramsKeyMapper.valueOrKey(MapsAPIConst.kLocation);
     final keyRadius = paramsKeyMapper.valueOrKey(MapsAPIConst.kRadius);
@@ -337,8 +335,6 @@ class MapsAPIServiceImpl extends MapsAPIService {
     final keyDestinations =
     paramsKeyMapper.valueOrKey(MapsAPIConst.kDestinations);
     final keyMode = paramsKeyMapper.valueOrKey(MapsAPIConst.kMode);
-
-    // Use appropriate separator
     final params = {
       keyOrigins: origins.map((e) => "${e.latitude},${e.longitude}").join(config.provider == MapProviderConst.GOOGLE ? "|" : ";"),
       keyDestinations:  destinations.map((e) => "${e.latitude},${e.longitude}").join(config.provider == MapProviderConst.GOOGLE ? "|" : ";"),
