@@ -2,7 +2,6 @@
 import 'dart:ui' as ui;
 
 import 'package:dio/dio.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart';
 import 'package:maps_core/maps/extensions/iterable_convert.dart';

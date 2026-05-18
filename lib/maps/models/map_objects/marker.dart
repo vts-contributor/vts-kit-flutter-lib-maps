@@ -3,11 +3,8 @@
 // found in the LICENSE file.
 
 import 'dart:typed_data';
-import 'dart:ui' show Offset;
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart'
-    show immutable, ValueChanged, VoidCallback;
 import 'package:maps_core/maps/constants.dart';
 import 'package:maps_core/maps/extensions/convert.dart';
 import 'package:maps_core/maps/models/map_objects/map_object.dart';
@@ -15,7 +12,6 @@ import 'package:maps_core/maps/models/map_objects/map_object.dart';
 import 'lat_lng.dart';
 import 'marker_icon.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 Object _offsetToJson(Offset offset) {
   return <Object>[offset.dx, offset.dy];
@@ -376,26 +372,6 @@ class Marker implements MapObject<Marker> {
       onDrag: (ggmap.LatLng value) => onDrag?.call(value.toCore()),
       onDragStart: (ggmap.LatLng value) => onDragStart?.call(value.toCore()),
       onDragEnd: (ggmap.LatLng value) => onDragEnd?.call(value.toCore()),
-    );
-  }
-
-  vtmap.SymbolOptions toSymbolOptions() {
-    return vtmap.SymbolOptions(
-      geometry: position.toViettel(),
-      iconImage: icon.data.name,
-      iconOpacity: alpha,
-      iconAnchor: anchor.string,
-      // draggable: true,
-      zIndex: zIndex.toInt(),
-      // fontNames: ["Arial Unicode MS Regular"],
-      // textField: 'Airport',
-      // textSize: 500,
-      // textOffset: Offset(0, 0.8),
-      // textAnchor: 'top',
-      // textColor: '#000000',
-      // textHaloBlur: 1,
-      // textHaloColor: '#ffffff',
-      // textHaloWidth: 0.8,
     );
   }
 }

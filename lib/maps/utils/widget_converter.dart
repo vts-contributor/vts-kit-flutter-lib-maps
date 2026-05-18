@@ -8,7 +8,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 ///
 ///
@@ -16,11 +15,7 @@ import 'package:flutter/widgets.dart';
 ///
 ///
 class WidgetConverter {
-  late GlobalKey _containerKey;
-
-  WidgetConverter() {
-    _containerKey = GlobalKey();
-  }
+  WidgetConverter();
 
   ///
   /// Value for [delay] should increase with widget tree size. Prefered value is 1 seconds
@@ -78,19 +73,25 @@ class WidgetConverter {
 
     final RenderRepaintBoundary repaintBoundary = RenderRepaintBoundary();
     final platformView = WidgetsBinding.instance.platformDispatcher.views;
+    final view = platformView.first;
 
-    Size logicalSize = platformView.first.physicalSize / platformView.first.devicePixelRatio;
-    Size imageSize = platformView.first.physicalSize;
+    final Size logicalSize = targetSize ?? (view.physicalSize / view.devicePixelRatio);
+    final Size imageSize = targetSize == null
+        ? view.physicalSize
+        : Size(
+            logicalSize.width * view.devicePixelRatio,
+            logicalSize.height * view.devicePixelRatio,
+          );
 
     assert(logicalSize.aspectRatio.toStringAsPrecision(5) ==
         imageSize.aspectRatio.toStringAsPrecision(5)); // Adapted (toPrecision was not available)
 
     final RenderView renderView = RenderView(
-      view: platformView.first,
+      view: view,
       child: RenderPositionedBox(alignment: Alignment.center, child: repaintBoundary),
       configuration: ViewConfiguration(
-        size: logicalSize,
-        devicePixelRatio: pixelRatio ?? 1.0,
+        logicalConstraints: BoxConstraints.tight(logicalSize),
+        devicePixelRatio: view.devicePixelRatio,
       ),
     );
 
@@ -177,7 +178,9 @@ class WidgetConverter {
       //   rootElement.deactivateChild(element);
       // });
       buildOwner.finalizeTree();
-    } catch (e) {}
+    } catch (_) {
+      // Finalize can throw if the temporary tree was already disposed.
+    }
 
     return image; // Adapted to directly return the image and not the Uint8List
   }
@@ -213,7 +216,7 @@ class WidgetConverter {
       delay: delay,
       pixelRatio: pixelRatio,
       context: context,
-      constraints: constraints ?? BoxConstraints(),
+      constraints: constraints ?? const BoxConstraints(),
     );
     final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     image.dispose();

@@ -4,8 +4,6 @@ import 'package:maps_core/maps/services/maps_api_service_impl.dart';
 import 'package:map_core_example/config/api_config.dart';
 
 import 'package:maps_core/maps/constants.dart';
-import 'package:maps_core/maps/models/directions.dart';
-import 'package:maps_core/maps/models/models.dart';
 
 
 class DirectionsTestScreen extends StatefulWidget {

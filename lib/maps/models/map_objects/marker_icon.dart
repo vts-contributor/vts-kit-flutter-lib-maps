@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
-import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 
 import 'marker_icon_data_processor.dart';

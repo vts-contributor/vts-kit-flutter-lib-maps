@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:map_core_example/config/api_config.dart';
 import 'package:map_core_example/custom/custom_cluster_manager.dart';
 import 'package:map_core_example/views/test_shapes.dart';
 import 'package:maps_core/maps.dart';
@@ -16,7 +17,7 @@ class TestSharedMarkerScreen extends StatefulWidget {
 }
 
 class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
-  CoreMapType _type = CoreMapType.viettel;
+  final CoreMapType _type = CoreMapType.google;
 
   @override
   Widget build(BuildContext context) {
@@ -31,24 +32,14 @@ class _TestSharedMarkerScreenState extends State<TestSharedMarkerScreen> {
               });
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.swap_horiz),
-            onPressed: () async {
-              setState(() {
-                _type = _type == CoreMapType.viettel
-                    ? CoreMapType.google
-                    : CoreMapType.viettel;
-              });
-            },
-          ),
         ],
       ),
       body: SizedBox(
         child: CoreMap(
           type: _type,
           data: CoreMapData(
-            vtMapAccessToken: "",
-            ggMapAccessToken: "",
+            vtMapAccessToken: ApiConfig.viettelKey,
+            ggMapAccessToken: ApiConfig.googleKey,
             provider: MapProviderConst.VIETTEL,
             // markerAllowOverlap: true,
             initialCameraPosition: CameraPosition(

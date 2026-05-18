@@ -1,16 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/utils/polyline_codec.dart';
 
 void main() {
   test("polyline codec", () {
     List<LatLng> listLatLng = [
-      LatLng(10.2461, 105.5216),
-      LatLng(10.9712, -108.2512),
-      LatLng(10.5025, -107.0828),
-      LatLng(10.5025, -107.0828),
-      LatLng(10.8023, 108.8126),
-      LatLng(10.5025, -107.0828),
+      const LatLng(10.2461, 105.5216),
+      const LatLng(10.9712, -108.2512),
+      const LatLng(10.5025, -107.0828),
+      const LatLng(10.5025, -107.0828),
+      const LatLng(10.8023, 108.8126),
+      const LatLng(10.5025, -107.0828),
     ];
 
     String encodedPolyline = PolylineCodec.encode(listLatLng);

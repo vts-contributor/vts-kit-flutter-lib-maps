@@ -60,7 +60,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     if (instance != null) {
       return instance;
     } else {
-      return MapsAPIServiceImpl(provider: "VIETTEL");
+      return MapsAPIServiceImpl(provider: MapProviderConst.VIETTEL);
     }
   }
 
@@ -202,7 +202,7 @@ class MapsAPIServiceImpl extends MapsAPIService {
     };
     params.removeWhere((key, value) => value == null);
 
-    var result;
+    PlaceList<AutocompletePlace> result;
     if (config.provider == MapProviderConst.GOOGLE) {
       final response = await post<PlaceListingResponse>(
         config.autocompleteSearchPath,
@@ -220,6 +220,10 @@ class MapsAPIServiceImpl extends MapsAPIService {
       );
       result = PlaceList.fromResponse(
           response, (json) => AutocompletePlace.fromJson(json));
+    } else {
+      throw ImplicitServerResponseError(
+        rootCause: Exception('Provider not supported'),
+      );
     }
     return result;
   }

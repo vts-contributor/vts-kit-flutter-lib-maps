@@ -12,7 +12,7 @@ void onRequestHandle(
   handler.next(options);
 }
 
-void onErrorHandle(DioError error, ErrorInterceptorHandler handler) async {
+void onErrorHandle(DioException error, ErrorInterceptorHandler handler) async {
   final response = error.response;
   if (response?.statusCode == 403) {
     final requestOptions = response?.requestOptions;

@@ -3,9 +3,7 @@ import 'package:flutter/foundation.dart'
     show immutable, listEquals, VoidCallback;
 import 'package:flutter/material.dart' show Color, Colors;
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/constants.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 /// Uniquely identifies a [Polygon] among [CoreMap] markers.
 ///
@@ -196,47 +194,6 @@ class Polygon implements MapObject<Polygon> {
         visible: visible,
         zIndex: zIndex,
         onTap: onTap
-    );
-  }
-
-  vtmap.FillOptions toFillOptions() {
-    return vtmap.FillOptions(
-      geometry: [
-        points.map((e) => e.toViettel()).toList(),
-        ...holes.map((list) => list.map((e) => e.toViettel()).toList()).toList()
-      ],
-      fillColor: fillColor.toHex(),
-      fillOpacity: fillColor.opacity,
-      // fillOutlineColor: strokeColor.toRGBA(),
-    );
-  }
-
-  List<vtmap.LineOptions> getOutlineLineOptions() {
-    List<vtmap.LineOptions> result = [];
-
-    result.add(_toFillOutline(points));
-
-    for (final hole in holes) {
-      result.add(_toFillOutline(hole));
-    }
-
-    return result;
-  }
-
-  vtmap.LineOptions _toFillOutline(List<LatLng> points) {
-    points = List.from(points);
-    if (points.length > 2) {
-      //to connect first point and last point
-      points.add(points[0]);
-      //connect second point too to remove the little gap of first and last point
-      points.add(points[1]);
-    }
-    return vtmap.LineOptions(
-      geometry: points.map((e) => e.toViettel()).toList(),
-      lineWidth: strokeWidth * Constant.vtStrokeWidthMultiplier,
-      lineColor: strokeColor.toViettel(),
-      lineOpacity: strokeColor.opacity,
-      lineJoin: "round",
     );
   }
 }

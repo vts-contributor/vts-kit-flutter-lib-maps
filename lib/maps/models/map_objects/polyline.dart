@@ -2,15 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:io';
-
 import 'package:flutter/foundation.dart'
     show immutable, listEquals, VoidCallback;
 import 'package:flutter/material.dart' show Color, Colors;
 import 'package:maps_core/maps.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 /// Uniquely identifies a [Polyline] among [CoreMap] markers.
 ///
@@ -174,16 +171,6 @@ class Polyline implements MapObject<Polyline> {
       width: width,
       zIndex: zIndex,
       startCap: ggmap.Cap.roundCap
-    );
-  }
-
-  vtmap.LineOptions toLineOptions() {
-    return vtmap.LineOptions(
-      geometry: points.toViettel(),
-      lineWidth: width.toDouble(),
-      lineColor: color.toViettel(),
-      lineJoin: jointType.toViettel(),
-      lineOpacity: color.opacity,
     );
   }
 }

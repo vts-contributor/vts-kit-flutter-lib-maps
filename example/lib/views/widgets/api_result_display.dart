@@ -119,7 +119,7 @@ class ApiResultDisplay extends StatelessWidget {
                 );
               },
               child: Text(
-                '${const JsonEncoder.withIndent('  ').convert(data)}',
+                const JsonEncoder.withIndent('  ').convert(data),
                 style: const TextStyle(
                   fontFamily: 'monospace',
                   fontSize: 12,
@@ -153,7 +153,7 @@ class ApiResultDisplay extends StatelessWidget {
                 );
               },
               child: Text(
-                '${const JsonEncoder.withIndent('  ').convert(data)}',
+                const JsonEncoder.withIndent('  ').convert(data),
                 style: const TextStyle(
                   fontFamily: 'monospace',
                   fontSize: 12,

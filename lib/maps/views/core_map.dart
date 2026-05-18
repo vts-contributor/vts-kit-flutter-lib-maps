@@ -13,7 +13,7 @@ class CoreMap extends StatefulWidget {
 
   const CoreMap({
     super.key,
-    this.type = CoreMapType.viettel,
+    this.type = CoreMapType.google,
     this.callbacks,
     required this.data,
     this.shapes,
@@ -130,7 +130,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   void _updateClusterManager() {
     if (widget.data.isUseCluster) {
-      _clusterManager._updateMarkers(widget.shapes?.markers, Constant.getMaxZoomLevel(widget.type));
+      _clusterManager._updateMarkers(widget.shapes?.markers, Constant.getMaxZoomLevel(resolveCoreMapType(widget.type)));
       _clusterManager
           ._updateCustomClusterManager(widget.custom?.clusterManager);
     }
@@ -157,7 +157,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
 
   Widget _buildMapFullParams() {
     return _buildMap(
-        type: widget.type,
+        type: resolveCoreMapType(widget.type),
         data: widget.data.copyWith(
             initialCameraPosition:
             _controller?.getCurrentPosition() ?? widget.data.initialCameraPosition),
@@ -199,7 +199,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
           onCameraIdle: () {
             if (widget.data.isUseCluster) {
               _clusterManager.notifyCameraIdle(
-                  zoomLevel, widget.shapes?.markers, Constant.getMaxZoomLevel(widget.type));
+                  zoomLevel, widget.shapes?.markers, Constant.getMaxZoomLevel(resolveCoreMapType(widget.type)));
             }
           },
         )
@@ -212,45 +212,14 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
     required CoreMapShapes shapes,
     CoreMapCallbacks? callbacks,
   }) {
-    switch (type) {
-      case CoreMapType.google:
-        return _CoreGoogleMap(
-          data: data,
-          callbacks: callbacks,
-          shapes: shapes,
-          markerIconDataFactory: _markerIconDataFactory,
-          infoWindowManager: _infoWindowManager,
-        );
-      case CoreMapType.viettel:
-        return _CoreViettelMap(
-          data: data,
-          callbacks: callbacks,
-          userLocationDrawOptions:
-              getViettelUserLocationDrawOptions(_locationManager._userLocation),
-          shapes: shapes,
-          markerIconDataFactory: _markerIconDataFactory,
-          infoWindowManager: _infoWindowManager,
-        );
-    }
-  }
-
-  ///for pseudo user location icon on the vt map because currently, vt map's
-  ///location feature is broken
-  vt.CircleOptions? getViettelUserLocationDrawOptions(Position? userLocation) {
-    double? lat = userLocation?.latitude;
-    double? lng = userLocation?.longitude;
-
-    if (lat != null && lng != null) {
-      return vt.CircleOptions(
-        geometry: LatLng(lat, lng).toViettel(),
-        circleRadius: 5,
-        circleColor: Colors.blue.toHex(),
-        circleStrokeColor: Colors.white.toHex(),
-        circleStrokeWidth: 1,
-      );
-    } else {
-      return null;
-    }
+    // type is already resolved to google if it was viettel
+    return _CoreGoogleMap(
+      data: data,
+      callbacks: callbacks,
+      shapes: shapes,
+      markerIconDataFactory: _markerIconDataFactory,
+      infoWindowManager: _infoWindowManager,
+    );
   }
 
   double _getAvoidZoomButtonHorizontalPadding(Alignment buttonAlignment, EdgeInsets zoomButtonPadding) {
@@ -452,7 +421,7 @@ class _CoreMapState extends State<CoreMap> with WidgetsBindingObserver {
       return build(context);
     });
     _mapOverlay = overlayEntry;
-    Overlay.of(context)?.insert(
+    Overlay.of(context).insert(
       overlayEntry,
     );
   }

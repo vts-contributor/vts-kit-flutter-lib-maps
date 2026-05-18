@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 
 import '../../../log/log.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 class LatLng {
   final double latitude;
@@ -29,7 +28,9 @@ class LatLng {
       else if (latLngMap.containsKey('latitude') && latLngMap.containsKey('longitude')) {
         return LatLng(latLngMap['latitude'], latLngMap['longitude']);
       }
-      else throw Exception('LatLngMap does not contain lat/lng or latitude/longitude');
+      else {
+        throw Exception('LatLngMap does not contain lat/lng or latitude/longitude');
+      }
     } catch (err) {
       Log.e('LatLng.fromMap',
           'Parse LatLng from Map $latLngMap failed because $err');
@@ -91,10 +92,6 @@ class LatLng {
 
   ggmap.LatLng toGoogle() {
     return ggmap.LatLng(latitude, longitude);
-  }
-
-  vtmap.LatLng toViettel() {
-    return vtmap.LatLng(latitude, longitude);
   }
 }
 
@@ -166,12 +163,4 @@ class LatLngBounds {
       southwest: southwest.toGoogle(),
     );
   }
-
-  vtmap.LatLngBounds toViettel() {
-    return vtmap.LatLngBounds(
-      northeast: northeast.toViettel(),
-      southwest: southwest.toViettel(),
-    );
-  }
 }
-

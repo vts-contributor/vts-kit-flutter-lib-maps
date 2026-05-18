@@ -3,8 +3,6 @@ import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 import '../widgets/api_result_display.dart';
 import 'package:maps_core/maps/services/maps_api_service_impl.dart';
-import 'package:map_core_example/views/widgets/api_result_display.dart';
-import 'package:maps_core/maps/models/place_detail.dart';
 import 'package:map_core_example/config/api_config.dart';
 
 class PlaceDetailTestScreen extends StatefulWidget {
@@ -176,20 +174,20 @@ class _PlaceDetailTestScreenState extends State<PlaceDetailTestScreen> {
               children: [
                 ElevatedButton(
                   onPressed: _isLoading ? null : () => _getPlaceDetails(provider: MapProviderConst.VIETTEL),
-                  child: const Text('Get Details Viettel'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 65, 95, 145),
+                    backgroundColor: const Color.fromARGB(255, 65, 95, 145),
                     foregroundColor: Colors.white,
                   ),
+                  child: const Text('Get Details Viettel'),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _isLoading ? null : () => _getPlaceDetails(provider: MapProviderConst.GOOGLE),
-                  child: const Text('Get Details Google'),
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
-                    foregroundColor: Color.fromARGB(255, 65, 95, 145),
+                    foregroundColor: const Color.fromARGB(255, 65, 95, 145),
                   ),
+                  child: const Text('Get Details Google'),
                 ),
               ],
             ),

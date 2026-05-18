@@ -3,8 +3,6 @@ import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/constants.dart';
 import '../widgets/api_result_display.dart';
 import 'package:maps_core/maps/services/maps_api_service_impl.dart';
-import 'package:map_core_example/views/widgets/api_result_display.dart';
-import 'package:maps_core/maps/models/models.dart';
 import 'package:map_core_example/config/api_config.dart';
 
 class GeocodeTestScreen extends StatefulWidget {
@@ -220,20 +218,20 @@ class _GeocodeTestScreenState extends State<GeocodeTestScreen> {
               children: [
                 ElevatedButton(
                   onPressed: _isLoading ? null : () => _geocodeByCoordinates(provider: MapProviderConst.VIETTEL),
-                  child: const Text('Geocode Coordinates Viettel'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 65, 95, 145),
+                    backgroundColor: const Color.fromARGB(255, 65, 95, 145),
                     foregroundColor: Colors.white,
                   ),
+                  child: const Text('Geocode Coordinates Viettel'),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _isLoading ? null : () => _geocodeByCoordinates(provider: MapProviderConst.GOOGLE),
-                  child: const Text('Geocode Coordinates Google'),
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
-                    foregroundColor: Color.fromARGB(255, 65, 95, 145),
+                    foregroundColor: const Color.fromARGB(255, 65, 95, 145),
                   ),
+                  child: const Text('Geocode Coordinates Google'),
                 ),
               ],
             ),
@@ -270,20 +268,20 @@ class _GeocodeTestScreenState extends State<GeocodeTestScreen> {
               children: [
                 ElevatedButton(
                   onPressed: _isLoading ? null : () => _geocodeByAddress(provider: MapProviderConst.VIETTEL),
-                  child: const Text('Geocode Address Viettel'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 65, 95, 145),
+                    backgroundColor: const Color.fromARGB(255, 65, 95, 145),
                     foregroundColor: Colors.white,
                   ),
+                  child: const Text('Geocode Address Viettel'),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _isLoading ? null : () => _geocodeByAddress(provider: MapProviderConst.GOOGLE),
-                  child: const Text('Geocode Address Google'),
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
-                    foregroundColor: Color.fromARGB(255, 65, 95, 145),
+                    foregroundColor: const Color.fromARGB(255, 65, 95, 145),
                   ),
+                  child: const Text('Geocode Address Google'),
                 ),
               ],
             ),

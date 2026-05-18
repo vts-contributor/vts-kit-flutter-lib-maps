@@ -127,10 +127,10 @@ Marker marker() => Marker(
   draggable: true,
   infoWindow: InfoWindow(
       widget: Container(
-        child: Text("123"),
         height: 50,
         width: 50,
         color: Colors.red,
+        child: const Text("123"),
       )
   ),
   // icon: MarkerIcon.fromWidget("widget112", Container(
@@ -152,10 +152,10 @@ Marker marker2() => Marker(
   draggable: true,
   infoWindow: InfoWindow(
       widget: Container(
-        child: Text("123"),
         height: 50,
         width: 50,
         color: Colors.red,
+        child: const Text("123"),
       )
   ),
 );
@@ -169,17 +169,17 @@ Marker marker3() => Marker(
   draggable: true,
   infoWindow: InfoWindow(
       widget: Container(
-        child: Text("123"),
         height: 50,
         width: 50,
         color: Colors.red,
+        child: const Text("123"),
       )
   ),
   icon: MarkerIcon.fromWidget("widget1", Container(
     color: Colors.blue,
-    child: Image.asset("assets/custom_marker.png"),
     height: 100,
     width: 100,
+    child: Image.asset("assets/custom_marker.png"),
   ),),
   // icon: MarkerIcon.fromAsset("marker icon", "assets/custom_marker.png"),
   // icon: MarkerIcon.fromNetwork("marker network image", "https://cdn-icons-png.flaticon.com/512/25/25613.png")
@@ -194,10 +194,10 @@ Marker marker4() => Marker(
   draggable: true,
   infoWindow: InfoWindow(
       widget: Container(
-        child: Text("123"),
         height: 50,
         width: 50,
         color: Colors.red,
+        child: const Text("123"),
       )
   ),
 );
@@ -211,10 +211,10 @@ Marker marker5() => Marker(
   draggable: true,
   infoWindow: InfoWindow(
       widget: Container(
-        child: Text("123"),
         height: 50,
         width: 50,
         color: Colors.red,
+        child: const Text("123"),
       )
   ),
 );
@@ -228,10 +228,10 @@ Marker marker6() => Marker(
   draggable: true,
   infoWindow: InfoWindow(
       widget: Container(
-        child: Text("123"),
         height: 50,
         width: 50,
         color: Colors.red,
+        child: const Text("123"),
       )
   ),
 );

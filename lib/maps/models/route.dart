@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:maps_core/maps.dart';
 import 'package:maps_core/maps/models/models.dart';
 import 'package:uuid/uuid.dart';
-import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 class MapRoute {
   String id;
@@ -253,17 +252,6 @@ enum TravelMode {
         return "driving";
     }
   }
-
-  vt.VTMapNavigationMode toViettel() {
-    switch(this) {
-      case TravelMode.driving:
-        return vt.VTMapNavigationMode.driving;
-      case TravelMode.drivingWithTraffic:
-        return vt.VTMapNavigationMode.drivingWithTraffic;
-      case TravelMode.walking:
-        return vt.VTMapNavigationMode.walking;
-    }
-  }
 }
 
 ///[skipStep]: skip this amount of points between two consecutive points
@@ -276,7 +264,6 @@ List<LatLng> _decodePolyline(String encoded, {int? skipStep}) {
   List<LatLng> decoded = [];
   int lat = 0;
   int lng = 0;
-  int i=0;
   while (index < len) {
     int b;
     int shift = 0;

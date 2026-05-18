@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:maps_core/maps.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as ggmap;
-import 'package:vtmap_gl/vtmap_gl.dart' as vtmap;
 
 extension ColorConvert on Color {
   String? toHex() {
@@ -22,32 +20,11 @@ extension ColorConvert on Color {
   String toRGBA() {
     return "rgba($red, $green, $blue, $opacity)";
   }
-
-  String? toViettel() {
-    return Platform.isAndroid? toRGBA(): toHex();
-  }
-}
-
-extension VTLatLngConvert on vtmap.LatLng {
-  LatLng toCore() {
-    return LatLng(latitude, longitude);
-  }
 }
 
 extension GoogleLatLngConvert on ggmap.LatLng {
   LatLng toCore() {
     return LatLng(latitude, longitude);
-  }
-}
-
-extension VTCameraPositionConvert on vtmap.CameraPosition {
-  CameraPosition toCore() {
-    return CameraPosition(
-      target: target.toCore(),
-      bearing: bearing,
-      tilt: tilt,
-      zoom: zoom.toZoomCore(CoreMapType.viettel)
-    );
   }
 }
 
@@ -61,15 +38,10 @@ extension GGCameraPositionConvert on ggmap.CameraPosition {
     );
   }
 }
+
 extension GoogleScreenCoordinateConvert on ggmap.ScreenCoordinate {
   ScreenCoordinate toCore() {
     return ScreenCoordinate(x: x, y: y);
-  }
-}
-
-extension ViettelScreenCoordinateConvert on Point<num> {
-  ScreenCoordinate toScreenCoordinate() {
-    return ScreenCoordinate(x: x.toInt(), y: y.toInt());
   }
 }
 
@@ -80,17 +52,9 @@ extension ZoomLevelConvert on double {
   }
 
   double toZoomCore(CoreMapType type) {
+    // Both resolved and legacy types now follow google's zoom logic
     double zoom = validCoreZoomLevel;
-    switch (type) {
-      case CoreMapType.google:
-        return zoom > 1? zoom - 1: zoom;
-      case CoreMapType.viettel:
-        return zoom;
-    }
-  }
-
-  double toZoomViettel() {
-    return validCoreZoomLevel;
+    return zoom > 1? zoom - 1: zoom;
   }
 }
 

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:map_core_example/config/api_config.dart';
 import 'package:map_core_example/view_models/routing_view_model.dart';
 import 'package:map_core_example/views/test_api_screen.dart';
 import 'package:map_core_example/views/test_google_map_screen.dart';
 import 'package:map_core_example/views/test_map_screen.dart';
 import 'package:map_core_example/views/test_routing_screen.dart';
 import 'package:map_core_example/views/test_shared_marker.dart';
-import 'package:map_core_example/views/test_vt_map_screen.dart';
 import 'package:maps_core/maps.dart';
+import 'package:maps_core/maps/constants.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
@@ -34,9 +35,12 @@ class MyApp extends StatelessWidget {
       routes: {
         TestMapScreen.routeName: (_) => const TestMapScreen(),
         TestGoogleMapScreen.routeName: (_) => const TestGoogleMapScreen(),
-        TestVTMapScreen.routeName: (_) => const TestVTMapScreen(),
         TestRoutingScreen.routeName: (_) => ChangeNotifierProvider(
-          create: (_) => RoutingViewModel(MapsAPIServiceImpl(viettelKey: "", googleKey: "", provider: MapProviderConst.VIETTEL)),
+          create: (_) => RoutingViewModel(MapsAPIServiceImpl(
+            viettelKey: ApiConfig.viettelKey,
+            googleKey: ApiConfig.googleKey,
+            provider: MapProviderConst.VIETTEL,
+          )),
           child: const TestRoutingScreen(),
         ),
         TestSharedMarkerScreen.routeName:(context) => const TestSharedMarkerScreen(),
@@ -65,19 +69,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -119,10 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, TestGoogleMapScreen.routeName),
               child: const Text("Test google map"),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, TestVTMapScreen.routeName),
-              child: const Text("Test vt map"),
             ),
             const SizedBox(height: 10,),
             ElevatedButton(

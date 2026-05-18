@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maps_core/maps.dart';
-import 'package:maps_core/maps/models/auto_route.dart';
 import 'package:maps_core/maps/views/managers/core_map_shape_modifier.dart';
-import 'package:vtmap_gl/vtmap_gl.dart' as vt;
 
 
 abstract class RoutingManager implements CoreMapShapeModifier {
@@ -165,32 +163,6 @@ class RoutingOptions {
           const EdgeInsets.only(left: 50, top: 100, right: 50, bottom: 100),
       this.startIndex = 0
   });
-
-  vt.VTMapOptions toViettelMapOptions() {
-    return vt.VTMapOptions(
-      access_token: apiKey,
-      allowsUTurnAtWayPoints: allowsUTurnAtWayPoints,
-      alternatives: alternatives,
-      animateBuildRoute: animateBuildRoute,
-      enableFreeDriveMode: enableFreeDriveMode,
-      enableRefresh: enableRefresh,
-      mode: mode.toViettel(),
-      padding: padding,
-      startIndex: startIndex,
-      language: language,
-      initialLatitude: initialLatitude,
-      initialLongitude: initialLongitude,
-      zoom: zoom,
-      bannerInstructionsEnabled: bannerInstructionsEnabled,
-      bearing: bearing,
-      tilt: tilt,
-      voiceInstructionsEnabled: voiceInstructionsEnabled,
-      simulateRoute: simulateRoute,
-    );
-  }
-  List<vt.WayPoint> getViettelWaypoints() {
-    return points.map((e) => vt.WayPoint(latitude: e.latitude, longitude: e.longitude, name: e.toString())).toList();
-  }
 }
 
 abstract class RouteCachingStrategy {

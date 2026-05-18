@@ -76,9 +76,7 @@ class _TestGoogleMapScreenState extends State<TestGoogleMapScreen> {
         actions: [
           IconButton(
               icon: const Icon(Icons.add),
-              onPressed: () async {
-                final GoogleMapController controller = await _controller.future;
-              }
+              onPressed: () async => _controller.future
           )
         ],
       ),
