@@ -10,6 +10,13 @@ import 'maps_api_service.dart';
 class MapsAPIServiceImpl extends MapsAPIService {
   static MapsAPIServiceImpl? _instance;
 
+  @override
+  late MapAPIConfig configViettel;
+
+  @override
+  late MapAPIConfig configGoogle;
+
+
   @protected
   @override
   MapsAPIResponseParser jsonParser = MapsAPIResponseParser.link([
