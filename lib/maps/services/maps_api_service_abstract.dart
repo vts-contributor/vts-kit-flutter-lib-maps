@@ -19,7 +19,8 @@ abstract class MapsAPIAbstractService {
   abstract MapsAPIResponseParser jsonParser;
 
   MapsAPIAbstractService(String provider) {
-    config = MapAPIConfig.getConfig(provider);
+    //fallen oop
+    // config = MapAPIConfig.getConfig(provider);
   }
 
   MapsAPIResponse _parseJsonFun(Response response) =>

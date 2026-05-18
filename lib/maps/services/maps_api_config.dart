@@ -13,6 +13,47 @@ class MapAPIConfig {
   final String distanceMatrixPath;
   final String provider;
   String? key;
+  String? id;
+  String? fingerprint;
+
+  MapAPIConfig copyWithOrReset({
+    String? mapsHost,
+    String? placeHost,
+    String? routeHost,
+    String? geocodePath,
+    String? placeDetailPath,
+    String? autocompleteSearchPath,
+    String? nearbySearchPath,
+    String? directionPath,
+    String? distanceMatrixPath,
+    String? provider,
+    String? key,
+    String? id,
+    String? fingerprint,
+  }) {
+    final defaultConfig = getConfig(this.provider);
+    return MapAPIConfig(
+      mapsHost: mapsHost == "reset" ? defaultConfig.mapsHost : (mapsHost ?? this.mapsHost),
+      placeHost: placeHost == "reset" ? defaultConfig.placeHost : (placeHost ?? this.placeHost),
+      routeHost: routeHost == "reset" ? defaultConfig.routeHost : (routeHost ?? this.routeHost),
+      geocodePath: geocodePath ?? this.geocodePath,
+      placeDetailPath: placeDetailPath ?? this.placeDetailPath,
+      autocompleteSearchPath:
+          autocompleteSearchPath ?? this.autocompleteSearchPath,
+      nearbySearchPath: nearbySearchPath ?? this.nearbySearchPath,
+      directionPath: directionPath ?? this.directionPath,
+      distanceMatrixPath: distanceMatrixPath ?? this.distanceMatrixPath,
+      provider: provider ?? this.provider,
+      key: key ?? this.key,
+      id: id ?? this.id,
+      fingerprint: fingerprint ?? this.fingerprint,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'MapAPIConfig{mapsHost: $mapsHost, placeHost: $placeHost, routeHost: $routeHost, geocodePath: $geocodePath, placeDetailPath: $placeDetailPath, autocompleteSearchPath: $autocompleteSearchPath, nearbySearchPath: $nearbySearchPath, directionPath: $directionPath, distanceMatrixPath: $distanceMatrixPath, provider: $provider, key: $key, id: $id, fingerprint: $fingerprint}';
+  }
 
   String hostOf(String path) {
     if (provider == MapProviderConst.GOOGLE) {
@@ -49,6 +90,8 @@ class MapAPIConfig {
     required this.distanceMatrixPath,
     required this.provider,
     this.key,
+    this.id,
+    this.fingerprint,
   });
 
   static MapAPIConfig getConfig(String provider) {
